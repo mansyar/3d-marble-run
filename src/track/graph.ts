@@ -34,14 +34,25 @@ function emptyConnections(typeId: PieceTypeId): Record<string, null> {
   return out;
 }
 
+function advanceNextId(g: TrackGraph, id: string): void {
+  const match = /^piece-(\d+)$/.exec(id);
+  if (!match) return;
+  const numericId = Number(match[1]);
+  if (Number.isSafeInteger(numericId)) {
+    g.nextId = Math.max(g.nextId, numericId + 1);
+  }
+}
+
 export function addPiece(
   g: TrackGraph,
   typeId: PieceTypeId,
   placement: Placement,
   explicitId?: string,
 ): string {
-  const id = explicitId ?? `piece-${g.nextId++}`;
-  g.nextId = Math.max(g.nextId, Number(id.split("-")[1] ?? 0) + 1);
+  const id = explicitId ?? `piece-${g.nextId}`;
+  if (!id || g.pieces.has(id)) throw new Error(`Duplicate piece id: ${id}`);
+  if (!explicitId) g.nextId += 1;
+  advanceNextId(g, id);
   g.pieces.set(id, {
     id,
     typeId,
@@ -123,10 +134,49 @@ export function disconnect(g: TrackGraph, id: string, portId: string): void {
  */
 export function restorePiece(g: TrackGraph, snapshot: PlacedPiece): void {
   const clone: PlacedPiece = structuredClone(snapshot);
+  if (g.pieces.has(clone.id)) throw new Error(`Piece already exists: ${clone.id}`);
+
+  const piecePorts = PIECE_TYPE_IDS[clone.typeId].ports;
+  if (
+    Object.keys(clone.connections).length !== piecePorts.length ||
+    piecePorts.some((port) => !Object.hasOwn(clone.connections, port.id)) ||
+    Object.keys(clone.connections).some((portId) => !piecePorts.some((port) => port.id === portId))
+  ) {
+    throw new Error("Cannot restore piece with malformed connections");
+  }
+
+  const targetPorts = new Set<string>();
+  for (const [localPort, ref] of Object.entries(clone.connections)) {
+    if (!ref) continue;
+    const localPortDef = piecePorts.find((port) => port.id === localPort);
+    const other = g.pieces.get(ref.pieceId);
+    const otherPortDef = other
+      ? PIECE_TYPE_IDS[other.typeId].ports.find((port) => port.id === ref.portId)
+      : undefined;
+    const targetKey = `${ref.pieceId}:${ref.portId}`;
+    if (
+      !localPortDef ||
+      !other ||
+      !otherPortDef ||
+      !canConnect(localPortDef.kind, otherPortDef.kind) ||
+      !Object.hasOwn(other.connections, ref.portId) ||
+      targetPorts.has(targetKey) ||
+      (other.connections[ref.portId] !== null &&
+        (other.connections[ref.portId]?.pieceId !== clone.id ||
+          other.connections[ref.portId]?.portId !== localPort))
+    ) {
+      throw new Error("Cannot restore piece with conflicting connections");
+    }
+    targetPorts.add(targetKey);
+  }
+
   g.pieces.set(clone.id, clone);
   for (const [localPort, ref] of Object.entries(clone.connections)) {
     if (!ref) continue;
     const other = g.pieces.get(ref.pieceId);
-    if (other) other.connections[ref.portId] = { pieceId: clone.id, portId: localPort };
+    if (other) {
+      other.connections[ref.portId] = { pieceId: clone.id, portId: localPort };
+    }
   }
+  advanceNextId(g, clone.id);
 }

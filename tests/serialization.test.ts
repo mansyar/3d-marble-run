@@ -63,4 +63,45 @@ describe("track serialization", () => {
     expect(restored.pieces.size).toBe(0);
     expect(restored.nextId).toBe(1);
   });
+
+  it("rejects malformed pieces and asymmetric connections", () => {
+    const unknownType = {
+      version: 1,
+      nextId: 2,
+      pieces: [
+        {
+          id: "piece-1",
+          typeId: "toString",
+          placement: P0,
+          connections: { a: null, b: null },
+        },
+      ],
+    };
+    expect(() => deserializeTrack(JSON.stringify(unknownType))).toThrow();
+
+    const duplicateIds = {
+      version: 1,
+      nextId: 2,
+      pieces: [
+        { id: "piece-1", typeId: "straight", placement: P0, connections: { a: null, b: null } },
+        { id: "piece-1", typeId: "curve", placement: P1, connections: { a: null, b: null } },
+      ],
+    };
+    expect(() => deserializeTrack(JSON.stringify(duplicateIds))).toThrow();
+
+    const asymmetric = {
+      version: 1,
+      nextId: 3,
+      pieces: [
+        {
+          id: "piece-1",
+          typeId: "straight",
+          placement: P0,
+          connections: { a: null, b: { pieceId: "piece-2", portId: "a" } },
+        },
+        { id: "piece-2", typeId: "straight", placement: P1, connections: { a: null, b: null } },
+      ],
+    };
+    expect(() => deserializeTrack(JSON.stringify(asymmetric))).toThrow();
+  });
 });

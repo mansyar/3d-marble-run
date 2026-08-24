@@ -46,4 +46,18 @@ describe("track storage", () => {
     expect(await storage.load(AUTOSAVE_SLOT)).toEqual(graph);
     storage.dispose();
   });
+
+  it("protects the autosave slot and trims named lookups", async () => {
+    const storage = newStorage();
+    const graph = createTrackGraph();
+    addPiece(graph, "straight", { position: [0, 0, 0], yawDeg: 0 });
+
+    await storage.save(" alpha ", graph);
+    expect(await storage.load(" alpha ")).toEqual(graph);
+    await expect(storage.save(AUTOSAVE_SLOT, graph)).rejects.toThrow();
+    await expect(storage.remove(` ${AUTOSAVE_SLOT} `)).rejects.toThrow();
+    await storage.remove(" alpha ");
+    expect(await storage.list()).toEqual([]);
+    storage.dispose();
+  });
 });

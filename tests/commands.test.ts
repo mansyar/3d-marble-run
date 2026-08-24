@@ -10,6 +10,7 @@ import {
   getPiece,
   movePiece,
   removePiece,
+  restorePiece,
   type TrackGraph,
 } from "../src/track/graph";
 
@@ -79,6 +80,32 @@ describe("track graph", () => {
       position: [10, 0, 10],
       yawDeg: 45,
     });
+  });
+
+  it("rejects duplicate explicit ids and preserves allocation for opaque ids", () => {
+    const g = createTrackGraph();
+    addPiece(g, "straight", P0, "custom-id");
+
+    expect(() => addPiece(g, "curve", P1, "custom-id")).toThrow();
+    expect(addPiece(g, "curve", P1)).toBe("piece-1");
+    expect(g.nextId).toBe(2);
+  });
+
+  it("rejects conflicting snapshot restoration without breaking links", () => {
+    const g = createTrackGraph();
+    const a = addPiece(g, "straight", P0);
+    const b = addPiece(g, "straight", P1);
+    const c = addPiece(g, "straight", { position: [0, 0, 4], yawDeg: 0 });
+    expect(connect(g, a, "b", b, "a")).toBe(true);
+    const snapshot = structuredClone(must(getPiece(g, a)));
+
+    removePiece(g, a);
+    expect(connect(g, b, "a", c, "b")).toBe(true);
+
+    expect(() => restorePiece(g, snapshot)).toThrow();
+    expect(getPiece(g, a)).toBeUndefined();
+    expect(getPiece(g, b)?.connections.a).toEqual({ pieceId: c, portId: "b" });
+    expect(getPiece(g, c)?.connections.b).toEqual({ pieceId: b, portId: "a" });
   });
 });
 

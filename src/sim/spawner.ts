@@ -39,6 +39,7 @@ export interface Spawner {
 
 const DEFAULT_MAX_MARBLES = 20;
 const DEFAULT_STREAM_INTERVAL_MS = 500;
+const MAX_CATCH_UP_EVENTS = 20;
 
 /**
  * Creates the pure scheduling state machine used by the physics integration.
@@ -48,6 +49,12 @@ const DEFAULT_STREAM_INTERVAL_MS = 500;
 export function createSpawner(options: SpawnerOptions = {}): Spawner {
   const maxMarbles = options.maxMarbles ?? DEFAULT_MAX_MARBLES;
   const streamIntervalMs = options.streamIntervalMs ?? DEFAULT_STREAM_INTERVAL_MS;
+  if (!Number.isSafeInteger(maxMarbles) || maxMarbles < 1) {
+    throw new Error("maxMarbles must be a positive integer");
+  }
+  if (!Number.isFinite(streamIntervalMs) || streamIntervalMs <= 0) {
+    throw new Error("streamIntervalMs must be finite and positive");
+  }
   let clockMs = 0;
   let nextId = 1;
   let streamElapsedMs = 0;
@@ -83,13 +90,20 @@ export function createSpawner(options: SpawnerOptions = {}): Spawner {
     },
 
     advance(elapsedMs: number): SpawnResult {
-      if (!(elapsedMs > 0)) return emptyResult();
+      if (!Number.isFinite(elapsedMs) || !(elapsedMs > 0)) return emptyResult();
       clockMs += elapsedMs;
       const result = emptyResult();
       if (!continuous) return result;
 
       streamElapsedMs += elapsedMs;
-      while (streamElapsedMs >= streamIntervalMs) {
+      const dueEvents = Math.floor(streamElapsedMs / streamIntervalMs);
+      if (dueEvents > MAX_CATCH_UP_EVENTS) {
+        // A backgrounded tab can deliver a very large frame delta. Discard the
+        // stale backlog rather than allocating thousands of bodies at once.
+        streamElapsedMs = 0;
+        return result;
+      }
+      for (let event = 0; event < dueEvents; event += 1) {
         streamElapsedMs -= streamIntervalMs;
         appendResult(result, spawnAt(clockMs - streamElapsedMs));
       }

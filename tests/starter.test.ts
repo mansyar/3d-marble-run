@@ -1,4 +1,10 @@
+import { ColliderDesc, RigidBodyDesc } from "@dimforge/rapier3d-compat";
+import { Scene } from "three";
 import { describe, expect, it, vi } from "vitest";
+import { spawnStaticPiece } from "../src/pieces/builders";
+import { MARBLE_RADIUS } from "../src/pieces/marble";
+import { createGoalTracker, type GoalEntry } from "../src/sim/goals";
+import { createPhysics } from "../src/sim/physics";
 import type { TrackGraph } from "../src/track/graph";
 import { createStarterGraph } from "../src/track/starter";
 import { loadInitialTrack } from "../src/track/startup";
@@ -37,6 +43,31 @@ describe("starter track", () => {
         });
       }
     }
+  });
+
+  it("lets a marble traverse the starter path into the goal cup", async () => {
+    const graph = createStarterGraph();
+    const world = await createPhysics();
+    const scene = new Scene();
+    for (const piece of graph.pieces.values()) {
+      spawnStaticPiece(scene, world, piece.typeId, piece.placement);
+    }
+
+    const body = world.createRigidBody(RigidBodyDesc.dynamic().setTranslation(0, 4, 0));
+    world.createCollider(ColliderDesc.ball(MARBLE_RADIUS), body);
+    const goals = createGoalTracker();
+    let entries: GoalEntry[] = [];
+
+    for (let step = 0; step < 600 && entries.length === 0; step += 1) {
+      world.step();
+      const position = body.translation();
+      entries = goals.update(graph.pieces.values(), [
+        { id: 1, position: [position.x, position.y, position.z] },
+      ]);
+    }
+
+    expect(entries).toHaveLength(1);
+    expect(entries[0]?.goalPieceId).toBe("piece-5");
   });
 });
 

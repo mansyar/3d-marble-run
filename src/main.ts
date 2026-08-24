@@ -43,6 +43,7 @@ const goalTracker = createGoalTracker();
 interface LiveMarble {
   mesh: ReturnType<typeof createMarbleMesh>;
   body: ReturnType<World["createRigidBody"]>;
+  previousPosition: [number, number, number];
 }
 
 const liveMarbles = new Map<number, LiveMarble>();
@@ -60,7 +61,11 @@ function spawnMarble(marble: MarbleSpawn): void {
     ColliderDesc.ball(MARBLE_RADIUS).setFriction(0.45).setRestitution(0.15),
     body,
   );
-  liveMarbles.set(marble.id, { mesh, body });
+  liveMarbles.set(marble.id, {
+    mesh,
+    body,
+    previousPosition: [...MARBLE_SPAWN_POSITION],
+  });
 }
 
 function removeMarble(id: number): void {
@@ -76,22 +81,37 @@ function applySpawnResult(result: ReturnType<Spawner["drop"]>): void {
   for (const marble of result.spawned) spawnMarble(marble);
 }
 
-function syncMarbles(): void {
-  for (const { mesh, body } of liveMarbles.values()) {
-    const position = body.translation();
-    const rotation = body.rotation();
-    mesh.position.set(position.x, position.y, position.z);
-    mesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+function snapshotMarbles(): void {
+  for (const live of liveMarbles.values()) {
+    const position = live.body.translation();
+    live.previousPosition = [position.x, position.y, position.z];
   }
 }
 
-function latestMarbleTarget(): CameraTarget | null {
+function interpolatedPosition(live: LiveMarble, alpha: number): [number, number, number] {
+  const position = live.body.translation();
+  return [
+    live.previousPosition[0] + (position.x - live.previousPosition[0]) * alpha,
+    live.previousPosition[1] + (position.y - live.previousPosition[1]) * alpha,
+    live.previousPosition[2] + (position.z - live.previousPosition[2]) * alpha,
+  ];
+}
+
+function syncMarbles(alpha: number): void {
+  for (const live of liveMarbles.values()) {
+    const position = interpolatedPosition(live, alpha);
+    const rotation = live.body.rotation();
+    live.mesh.position.set(position[0], position[1], position[2]);
+    live.mesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+  }
+}
+
+function latestMarbleTarget(alpha: number): CameraTarget | null {
   const activeIds = spawner.state().activeIds;
   for (let index = activeIds.length - 1; index >= 0; index -= 1) {
     const live = liveMarbles.get(activeIds[index]);
     if (!live) continue;
-    const position = live.body.translation();
-    return [position.x, position.y, position.z];
+    return interpolatedPosition(live, alpha);
   }
   return null;
 }
@@ -114,14 +134,15 @@ let cameraController: FreeOrbitCamera | null = null;
 
 const handle = initScene(app, (elapsedMs) => {
   applySpawnResult(spawner.advance(elapsedMs));
-  const { steps } = stepper.advance(elapsedMs);
+  const { steps, alpha } = stepper.advance(elapsedMs);
   for (let i = 0; i < steps; i++) {
+    snapshotMarbles();
     world.step();
   }
-  syncMarbles();
+  syncMarbles(alpha);
   detectGoalEntries();
   simulationControls.setTimerMs(spawner.state().timerMs);
-  cameraController?.update(elapsedMs, latestMarbleTarget());
+  cameraController?.update(elapsedMs, latestMarbleTarget(alpha));
 });
 
 // --- Build mode state -------------------------------------------------------
@@ -205,18 +226,20 @@ cameraController = createFreeOrbitCamera({
   isLocked: () => placement.activeTypeId !== null,
 });
 
+function resetSimulationState(): void {
+  const { removedIds } = spawner.reset();
+  for (const id of removedIds) removeMarble(id);
+  goalTracker.reset();
+  simulationControls.setGoalCount(0);
+  simulationControls.setTimerMs(0);
+  simulationControls.setStreamEnabled(false);
+}
+
 const simulationControls = createSimulationControls(document.body, {
   onDrop: () => applySpawnResult(spawner.drop()),
   onToggleStream: () => spawner.toggleContinuous(),
   onToggleCamera: () => cameraController?.toggleMode() ?? "free",
-  onReset: () => {
-    const { removedIds } = spawner.reset();
-    for (const id of removedIds) removeMarble(id);
-    goalTracker.reset();
-    simulationControls.setGoalCount(0);
-    simulationControls.setTimerMs(0);
-    simulationControls.setStreamEnabled(false);
-  },
+  onReset: resetSimulationState,
 });
 
 simulationControls.setStreamEnabled(spawner.isContinuous());
@@ -237,6 +260,7 @@ const saveSlots = createSaveSlotControls(document.body, {
     const loaded = await storage.load(name);
     if (!loaded) throw new Error("Save slot not found");
     placement.cancel();
+    resetSimulationState();
     replaceGraph(loaded);
     storage.scheduleAutosave(graph);
   },

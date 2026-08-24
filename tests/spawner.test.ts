@@ -117,4 +117,18 @@ describe("marble spawner state machine", () => {
     expect(spawner.drop().spawned[0]).toEqual({ id: 2, spawnedAtMs: 700 });
     expect(spawner.state().timerMs).toBe(0);
   });
+
+  it("rejects invalid limits and bounds non-finite or huge stream advances", () => {
+    expect(() => createSpawner({ maxMarbles: 0 })).toThrow();
+    expect(() => createSpawner({ maxMarbles: 1.5 })).toThrow();
+    expect(() => createSpawner({ streamIntervalMs: 0 })).toThrow();
+    expect(() => createSpawner({ streamIntervalMs: Number.POSITIVE_INFINITY })).toThrow();
+
+    const spawner = createSpawner({ streamIntervalMs: 100 });
+    spawner.setContinuous(true);
+    expect(spawner.advance(Number.POSITIVE_INFINITY)).toEqual({ spawned: [], recycled: [] });
+
+    const burst = spawner.advance(1_000_000);
+    expect(burst.spawned.length).toBeLessThanOrEqual(20);
+  });
 });

@@ -57,26 +57,37 @@ export function createTrackStorage(options: TrackStorageOptions = {}): TrackStor
     options.onError?.(error);
   }
 
-  async function save(name: string, graph: TrackGraph): Promise<void> {
+  function normalizeName(name: string, allowAutosave: boolean): string {
     const trimmedName = name.trim();
     if (!trimmedName) throw new Error("Save slot name is required");
+    if (!allowAutosave && trimmedName === AUTOSAVE_SLOT) {
+      throw new Error("The autosave slot is reserved");
+    }
+    return trimmedName;
+  }
+
+  async function write(name: string, graph: TrackGraph): Promise<void> {
     const db = await getDatabase();
     await db.put("slots", {
-      name: trimmedName,
+      name,
       payload: serializeTrack(graph),
       updatedAt: Date.now(),
     });
   }
 
+  async function save(name: string, graph: TrackGraph): Promise<void> {
+    await write(normalizeName(name, false), graph);
+  }
+
   async function load(name: string): Promise<TrackGraph | null> {
     const db = await getDatabase();
-    const slot = await db.get("slots", name);
+    const slot = await db.get("slots", normalizeName(name, true));
     return slot ? deserializeTrack(slot.payload) : null;
   }
 
   async function remove(name: string): Promise<void> {
     const db = await getDatabase();
-    await db.delete("slots", name);
+    await db.delete("slots", normalizeName(name, false));
   }
 
   async function list(): Promise<SaveSlotInfo[]> {
@@ -92,7 +103,7 @@ export function createTrackStorage(options: TrackStorageOptions = {}): TrackStor
     if (autosaveTimer !== null) clearTimeout(autosaveTimer);
     autosaveTimer = setTimeout(() => {
       autosaveTimer = null;
-      void save(AUTOSAVE_SLOT, graph).catch(reportError);
+      void write(AUTOSAVE_SLOT, graph).catch(reportError);
     }, debounceMs);
   }
 
@@ -101,7 +112,7 @@ export function createTrackStorage(options: TrackStorageOptions = {}): TrackStor
       clearTimeout(autosaveTimer);
       autosaveTimer = null;
     }
-    await save(AUTOSAVE_SLOT, graph);
+    await write(AUTOSAVE_SLOT, graph);
   }
 
   function dispose(): void {
