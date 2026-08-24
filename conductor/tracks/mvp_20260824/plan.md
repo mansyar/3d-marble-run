@@ -74,6 +74,8 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: First-launch pre-built starter contraption; subsequent launches load last autosave *(950e86e)*
   - Notes: Added the five-piece connected starter path (descending ramp → straight → curve → funnel → goal cup), loaded `__autosave__` before rendering, persisted the starter on first launch, and retained a storage-failure fallback. User confirmed first-launch, reload persistence, fresh fallback, and mobile behavior.
   - Verify: `CI=true pnpm vitest run --coverage` (77 passed · 81.17% statements, 78.10% branches, 91.00% functions, 82.43% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
-- [~] Task: Performance pass — marble concurrency target, mobile frame-rate sanity, bundle-size budget check
+- [x] Task: Performance pass — marble concurrency target, mobile frame-rate sanity, bundle-size budget check *(261e85d)*
+  - Notes: Added a compact/touch rendering profile (DPR 1.5, no antialiasing, 1024px shadows) while retaining the desktop DPR 2/2048px profile. Set and recorded a V1 payload budget of 3,500 kB JS / 1,250 kB gzip. User confirmed desktop/mobile streaming responsiveness, concurrency behavior, no visible stutter, and no regressions.
+  - Verify: `CI=true pnpm vitest run --coverage` (77 passed · 81.17% statements, 78.10% branches, 91.00% functions, 82.43% lines) · `CI=true pnpm biome check .` · `pnpm build` (3,416.94 kB JS / 1,238.67 kB gzip, within budget; existing single-chunk warning)
 - [ ] Task: Polish audit — `prefers-reduced-motion`, ≥44px touch targets, contrast check
 - [ ] Task: Static deployment setup (shareable URL) + Final Verification & Checkpoint *(Refer to workflow.md)*
