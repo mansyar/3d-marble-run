@@ -43,7 +43,9 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 ## Phase 4 · Marble Simulation
 - [x] Task: Write failing tests — spawner state machine (manual drop / stream toggle, ~20-marble cap with oldest-recycled, reset semantics incl. timer start rule) *(460d050)*
   - Notes: 7 tests define manual and continuous spawning, timer start at first spawn, interval scheduling, oldest-active recycling at the cap, removal, and reset/stop semantics. RED confirmed because the spawner module is not implemented yet.
-- [~] Task: Implement spawner + marble bodies in the Rapier world until green
+- [x] Task: Implement spawner + marble bodies in the Rapier world until green *(042fb6f)*
+  - Notes: Added the pure scheduler, manual/continuous controls, dynamic Rapier marble bodies, shared glossy meshes, 20-marble oldest recycling, goal-removal hook, and reset cleanup. User confirmed controls and accepted isolated horizontal-track stacking as expected until a moving starter contraption is added.
+  - Verify: `CI=true pnpm vitest run` (60 passed) · `CI=true pnpm vitest run --coverage` (98.06% statements, 90.59% branches, 100% functions, 99.55% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
 - [ ] Task: Goal-cup entry detection → counter increment + celebration pop
 - [ ] Task: Run timer logic + HUD counters wired to simulation events
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
