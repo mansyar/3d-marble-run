@@ -5,10 +5,15 @@ commit and Git note per task.
 
 ## Phase 1 · Version Contract & Build Exposure
 
-- [ ] Task: Write failing tests for stable release-tag validation
-  - [ ] Cover matching `v0.1.0` / `0.1.0` cases.
-  - [ ] Cover mismatched versions, malformed tags, and prerelease tags.
-  - [ ] Run the targeted tests and confirm the red phase.
+- [x] Task: Write failing tests for stable release-tag validation *(d55bf12)*
+  - [x] Cover matching `v0.1.0` / `0.1.0` cases.
+  - [x] Cover mismatched versions, malformed tags, and prerelease tags.
+  - [x] Run the targeted tests and confirm the red phase.
+  - Notes: TDD red phase confirmed with the missing validator module, then
+    expanded coverage to CLI success/failure and actionable validation errors.
+  - Verify: 8 targeted tests passed; validator coverage is 84.21% statements,
+    92.3% branches, and 80% functions. Full suite (91 tests), Biome, and
+    TypeScript also passed.
 - [ ] Task: Implement the package/tag version contract
   - [ ] Add a small Node release-check module usable by CI and local commands.
   - [ ] Add `pnpm check:release`.
