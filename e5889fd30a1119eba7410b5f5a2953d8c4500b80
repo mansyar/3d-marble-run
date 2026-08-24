@@ -3,3 +3,10 @@ Summary: Enabled strict JSON imports and added APP_VERSION derived directly from
 Files: src/version.ts, tests/version.test.ts, tsconfig.json
 Why: The About surface and release metadata must never drift from the authoritative package version.
 Verification: Version test coverage 100%; full tests (92), Biome, TypeScript, and production build pass.
+
+Phase 1 checkpoint verification
+User confirmation: Desktop and mobile preview smoke tests passed.
+Automated: 92 Vitest tests passed; release/version scoped coverage 88.46% statements, 92.3% branches, 80% functions overall; Biome clean; TypeScript clean; pnpm build passed.
+Build budget: 3,420.34 kB raw JavaScript and 1,239.65 kB gzip, within the 3,500 kB / 1,250 kB limits.
+Release contract: pnpm check:release -- v0.1.0 passed; mismatched v0.1.1 rejected with an actionable error.
+Manual: Desktop starter track rendered; mobile preview rendered without visible overflow or usability regressions.
