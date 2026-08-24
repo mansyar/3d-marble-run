@@ -7,9 +7,11 @@ import {
   PCFSoftShadowMap,
   PerspectiveCamera,
   PlaneGeometry,
+  PMREMGenerator,
   Scene,
   WebGLRenderer,
 } from "three";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
 const TABLE_COLOR = 0xc79a63;
 const SKY_COLOR = 0xfbf7ef;
@@ -36,6 +38,11 @@ export function initScene(
 
   const scene = new Scene();
   scene.background = new Color(SKY_COLOR);
+
+  // Procedural studio reflections — the toy-plastic gloss source. No assets.
+  const pmrem = new PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  pmrem.dispose();
 
   const camera = new PerspectiveCamera(
     50,

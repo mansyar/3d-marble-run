@@ -1,6 +1,7 @@
 import "./style.css";
 import { createStepper } from "./core/stepper";
 import { spawnStaticPiece } from "./pieces/builders";
+import { createMarbleMesh, MARBLE_RADIUS } from "./pieces/marble";
 import type { PieceTypeId } from "./pieces/registry";
 import { initScene } from "./render/scene";
 import { createPhysics } from "./sim/physics";
@@ -37,3 +38,9 @@ const { scene } = initScene(app, (elapsedMs) => {
 for (const [typeId, position, yawDeg] of PREVIEW) {
   spawnStaticPiece(scene, world, typeId, { position, yawDeg });
 }
+
+// TEMP Phase 2: one marble resting beside the goal cup so the candy-glass
+// material can be eyeballed. Real dynamic marbles arrive in Phase 4.
+const previewMarble = createMarbleMesh();
+previewMarble.position.set(3.8, MARBLE_RADIUS, 0.5);
+scene.add(previewMarble);
