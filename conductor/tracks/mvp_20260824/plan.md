@@ -65,7 +65,7 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: Phase Verification & Checkpoint *(9218430)*
   - Notes: Automated suite passed 65 tests with 98.30% statement coverage, 91.12% branch coverage, 100% function coverage, and 99.61% line coverage. Biome and production build passed with the existing large-bundle warning. Desktop and mobile manual verification was confirmed for free orbit, chase following, mode switching, editing compatibility, Phase 4 regression behavior, touch gestures, responsive HUD, and no scrolling. Full verification report is attached as a Git note to `9218430`.
 
-## Phase 6 · Persistence, Performance & Polish
+## Phase 6 · Persistence, Performance & Polish [checkpoint: 87376cd]
 - [x] Task: Write failing tests — save serialization round-trip (track state ↔ JSON, mock IndexedDB via `idb`) *(44bf646)*
   - Notes: Added four red-phase tests for connected graph round-trips, versioned JSON payloads, independent restoration with monotonic IDs, and empty-graph preservation. RED confirmed because the serialization module is not implemented yet.
 - [x] Task: Implement debounced auto-save + named-slot UI (save / load / delete / list) until green *(988841f)*
@@ -80,4 +80,6 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: Polish audit — `prefers-reduced-motion`, ≥44px touch targets, contrast check *(da73a77)*
   - Notes: Added visible keyboard focus rings, explicit placeholder contrast, 44px rotate/delete touch targets, and a reduced-motion goal-pop override. User confirmed focus visibility, reduced-motion behavior, readability, touch targets, mobile layout, and no scrolling.
   - Verify: `CI=true pnpm vitest run` (77 passed) · `CI=true pnpm biome check .` · `pnpm build` (3,416.94 kB JS / 1,238.67 kB gzip; existing large-bundle warning)
-- [~] Task: Static deployment setup (shareable URL) + Final Verification & Checkpoint *(Refer to workflow.md)*
+- [x] Task: Static deployment setup (shareable URL) + Final Verification & Checkpoint *(87376cd)*
+  - Notes: Added the GitHub Pages workflow and deployment README. Final verification covered the full Phase 6 scope from checkpoint `9218430`; user confirmed desktop/mobile behavior across startup, simulation, persistence, editing, cameras, performance, accessibility, and no-scroll/error checks. A full report is appended to the Git note on `87376cd`. No remote is configured, so publishing the live URL remains a repository/Pages setup step.
+  - Verify: `CI=true pnpm vitest run` (77 passed) · `CI=true pnpm vitest run --coverage` (81.17% statements, 78.10% branches, 91.00% functions, 82.43% lines) · `CI=true pnpm biome check .` · `pnpm build` · `pnpm exec vite build --base="/3d-marble-run/"`
