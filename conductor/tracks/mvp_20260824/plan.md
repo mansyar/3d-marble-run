@@ -49,7 +49,9 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: Goal-cup entry detection → counter increment + celebration pop *(7411318)*
   - Notes: Added world-space cup inlet capture, one-time goal tracking, marble removal, Goals HUD increment, +1 Goal celebration pop, multi-cup support, and reset behavior. User confirmed entry, scoring, celebration, streaming, and reset.
   - Verify: `CI=true pnpm vitest run` (63 passed) · `CI=true pnpm vitest run --coverage` (98.26% statements, 91.12% branches, 100% functions, 99.60% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
-- [~] Task: Run timer logic + HUD counters wired to simulation events
+- [x] Task: Run timer logic + HUD counters wired to simulation events *(a9ef6db)*
+  - Notes: Added the tested MM:SS.t formatter, live Time and Goals outputs, post-first-spawn timer updates, and Reset clearing for both counters. User confirmed timer start/advance, stream timing, goal count, and reset.
+  - Verify: `CI=true pnpm vitest run` (65 passed) · `CI=true pnpm vitest run --coverage` (98.30% statements, 91.12% branches, 100% functions, 99.61% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
 
 ## Phase 5 · Cameras
