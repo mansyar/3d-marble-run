@@ -1,0 +1,5 @@
+Phase 2 Verification Report - Piece System
+
+Automated: CI=true pnpm vitest run -> 22/22 pass (stepper 8, pieces 14); registry.ts coverage 96.29% stmts / 100% fns-lines vs >=80% logic target; tsc strict + biome clean; build OK.
+Manual (user-approved): five piece types read correctly on table in their assigned hues; toy-plastic gloss via procedural RoomEnvironment reflections; candy-glass signature marble beside gold cup; soft shadows, bright even lighting preserved; mobile viewport renders correctly.
+Scope anchor: 15e6326..HEAD; logic modules changed: src/pieces/registry.ts (tested). Geometry/material/preview files exempt per workflow.
