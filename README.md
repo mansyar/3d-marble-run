@@ -39,3 +39,22 @@ For a local production check:
 pnpm build
 pnpm preview
 ```
+
+## Container image
+
+The `Publish container image` workflow builds the production site with Nginx
+and publishes it to GitHub Container Registry on pushes to `master`, version
+tags, or a manual workflow run.
+
+Pull and run the latest image:
+
+```bash
+docker pull ghcr.io/mansyar/3d-marble-run:latest
+docker run --rm -p 8080:80 ghcr.io/mansyar/3d-marble-run:latest
+```
+
+Open `http://localhost:8080`. Build the image locally with:
+
+```bash
+docker build -t marblescape:local .
+```
