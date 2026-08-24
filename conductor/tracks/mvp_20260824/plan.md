@@ -14,8 +14,10 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
 
 ## Phase 2 · Piece System
-- [ ] Task: Write failing tests — piece registry & connector-port math (port transforms, compatibility rules)
-- [ ] Task: Implement piece type definitions + port system until green
+- [x] Task: Write failing tests — piece registry & connector-port math (port transforms, compatibility rules) *(5cf14dc)*
+  - Notes: 14 tests across registry shape, geometric invariants (opposite/perpendicular/rise/mouth-spout/inlet-up), yaw+translate port math, compatibility matrix incl. symmetry. RED confirmed via unresolved-import failure.
+- [x] Task: Implement piece type definitions + port system until green *(3711647)*
+  - Notes: Pure-logic registry module. Shared track dimensions exported for geometry builders (width .6 / straight 2 / curve r1 / ramp rise .5). Symmetric kind allow-list: run-run, spout-run, spout-cup. Coverage 96.29% stmts / 100% fns-lines vs ≥80% target.
 - [ ] Task: Procedural geometry builders for straight / curve / ramp / funnel / goal cup (meshes + Rapier colliders)
   - [ ] Visual check: pieces read correctly on the table
 - [ ] Task: Signature marble mesh + glossy toy-plastic material palette (one hue per piece type)
