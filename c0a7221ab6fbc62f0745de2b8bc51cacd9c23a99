@@ -1,0 +1,4 @@
+Task: Document the release runbook
+Summary: Updated README with pnpm version bump and follow-tags workflow, stable tag contract, local mismatch rehearsal, GitHub Release/Pages/GHCR outputs, exact/latest/SHA image pulls, required GitHub permissions, and preserved Coolify guidance.
+Files: README.md
+Verification: git diff --check passed; pnpm version --help confirmed the default v tag prefix and generated commit/tag behavior.
