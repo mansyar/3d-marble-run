@@ -10,7 +10,9 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
   - Notes: three 0.185.1 + @types/three 0.185.4. DPR clamped at 2 for mobile perf. Warm hemisphere + directional soft-shadow lighting; cream sky, wood-tone table. Bundle now 518kB raw / 129.6kB gzip (three included) — chunk-size warning logged for the Phase 6 budget pass.
 - [x] Task: Fixed-timestep game loop with render interpolation + Rapier physics world init *(c7bf209)*
   - Notes: TDD red→green — 8 stepper tests, 100% coverage on src/core (target ≥80%). Rapier 0.20.0-compat, 60Hz fixed dt, maxSubSteps=5 spiral guard. Interpolation alpha exposed now; mesh application deferred to Phase 4 (bodies exist there). ⚠ Bundle: 3.4MB raw / 1.22MB gzip from embedded WASM — Phase 6 budget pass must address (code-split or non-compat package).
-- [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
+- [x] Task: Phase Verification & Checkpoint *(15e6326)*
+  - Notes: Phase 1 verification covered the scaffold, renderer, fixed-step loop, and Rapier initialization. User confirmed desktop/mobile renderer behavior and no-scroll handling; the stepper suite and quality gates passed.
+  - Verify: `CI=true pnpm vitest run` (8 passed; 100% stepper coverage) · `CI=true pnpm biome check .` · `pnpm build`
 
 ## Phase 2 · Piece System [checkpoint: 476d745]
 - [x] Task: Write failing tests — piece registry & connector-port math (port transforms, compatibility rules) *(5cf14dc)*
@@ -21,7 +23,9 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
   - Notes: Local-space collider specs keep mesh/physics DRY; single spawn point applies placement. Curve = 8 trough segments on quarter arc; ramp chord math lands endpoints exactly on ports; funnel/cup are lathe shells with trimesh colliders. Visual check passed (user-confirmed).
 - [x] Task: Signature marble mesh + glossy toy-plastic material palette (one hue per piece type) *(47f4049)*
   - Notes: Shared geometry+material (created once for all marbles). Clearcoat candy-glass, no transmission (mobile budget). PMREM RoomEnvironment = procedural gloss source for all PBR materials.
-- [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
+- [x] Task: Phase Verification & Checkpoint *(476d745)*
+  - Notes: Phase 2 verification covered all five procedural pieces, connector ports, materials, shadows, and mobile rendering. User confirmed the visual and responsive behavior; registry coverage reached 96.29% statements and 100% functions/lines.
+  - Verify: `CI=true pnpm vitest run` (22 passed) · `CI=true pnpm biome check .` · `pnpm exec tsc --noEmit` · `pnpm build`
 
 ## Phase 3 · Build Mode — Placement & Editing [checkpoint: 93830fd]
 - [x] Task: Write failing tests — snapping solver (nearest compatible port within threshold, validity rules, red-ghost conditions) *(ba045aa)*
@@ -84,6 +88,7 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
   - Notes: Added the GitHub Pages workflow and deployment README. Final verification covered the full Phase 6 scope from checkpoint `9218430`; user confirmed desktop/mobile behavior across startup, simulation, persistence, editing, cameras, performance, accessibility, and no-scroll/error checks. A full report is appended to the Git note on `87376cd`. No remote is configured, so publishing the live URL remains a repository/Pages setup step.
   - Verify: `CI=true pnpm vitest run` (77 passed) · `CI=true pnpm vitest run --coverage` (81.17% statements, 78.10% branches, 91.00% functions, 82.43% lines) · `CI=true pnpm biome check .` · `pnpm build` · `pnpm exec vite build --base="/3d-marble-run/"`
 
-## Review Fixes
-- [~] Task: Apply review hardening for persistence, simulation, graph invariants, and starter coverage
+## Review Fixes [checkpoint: ff8bb15]
+- [x] Task: Apply review hardening for persistence, simulation, graph invariants, and starter coverage *(ff8bb15)*
   - Notes: Review follow-up for the completed MVP track. Scope includes runtime save validation, bounded spawner scheduling, simulation reset on named loads, interpolation consumption, graph identity/restore safeguards, storage slot protection, and starter physics coverage.
+  - Verify: `CI=true pnpm vitest run --coverage` (83 passed; 94.41% statements, 84.78% branches, 98.34% functions, 96.59% lines) · `CI=true pnpm biome check .` · `pnpm exec tsc --noEmit` · `pnpm build` · `pnpm exec vite build --base="/3d-marble-run/"`
