@@ -1,0 +1,7 @@
+Task: Scaffold Vite + TypeScript-strict project with pnpm, configure Biome and Vitest
+
+Changes: package.json scripts (dev/build/preview/test/check), tsconfig strict ES2022 bundler resolution, vite.config.ts with vitest node env (passWithNoTests until Phase 2 logic tests land), biome.json v2.5 config, minimal warm-toned index.html placeholder shell, .gitignore.
+
+Verified: pnpm dev serves HTTP 200, pnpm build passes (0.67kB js), CI=true biome check clean. Toolchain at latest stable: vite 8.2.2, typescript 7.0.2, @biomejs/biome 2.5.10, vitest 4.1.11.
+
+Why: Establishes the toolchain foundation every later phase builds and verifies against.
