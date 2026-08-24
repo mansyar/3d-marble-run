@@ -1,0 +1,8 @@
+{
+  "id": "release_versioning_20260825",
+  "type": "CHORE",
+  "status": "new",
+  "created": "2026-08-25",
+  "updated": "2026-08-25",
+  "description": "Tagged release pipeline and application versioning"
+}
