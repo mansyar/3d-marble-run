@@ -1,0 +1,9 @@
+Task: Static deployment setup (shareable URL)
+
+Summary: Added a GitHub Pages Actions workflow that installs locked pnpm dependencies, runs tests/Biome/type-checking, builds with the repository-name base path, uploads dist/, and deploys through the Pages environment. Added README instructions for GitHub Pages setup and local preview.
+
+Files: .github/workflows/deploy-pages.yml and README.md.
+
+Rationale: Provide a reproducible static-host deployment path without runtime services or external assets. The repository currently has no Git remote, so publishing the final URL remains a user-side push/settings step; the workflow will produce https://<owner>.github.io/<repository>/ once connected to GitHub.
+
+Verification: CI=true pnpm vitest run --coverage passed 10 files / 77 tests with 81.17% statements, 78.10% branches, 91.00% functions, and 82.43% lines overall. CI=true pnpm biome check . passed. pnpm build passed; repository-base-path build pnpm exec vite build --base=/3d-marble-run/ passed. Existing large-bundle warning remains; output is within the documented payload budget.
