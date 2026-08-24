@@ -6,7 +6,6 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: Scaffold Vite + TypeScript-strict project with pnpm, configure Biome and Vitest *(bfd88c2)*
   - Notes: Latest-stable toolchain at install time — vite 8.2.2, typescript 7.0.2, @biomejs/biome 2.5.10, vitest 4.1.11. Biome v2.5 migrated config format. Vitest runs with passWithNoTests until Phase 2 adds real logic tests.
   - Verify: `pnpm dev` HTTP 200 · `pnpm build` passes · `CI=true pnpm biome check .` clean
-  - [ ] Verify: `pnpm dev` serves, `pnpm build` passes, `CI=true pnpm biome check .` clean
 - [x] Task: Bootstrap Three.js renderer — responsive canvas, resize handling, wooden-table environment, lighting rig (per product-guidelines) *(4d8b25f)*
   - Notes: three 0.185.1 + @types/three 0.185.4. DPR clamped at 2 for mobile perf. Warm hemisphere + directional soft-shadow lighting; cream sky, wood-tone table. Bundle now 518kB raw / 129.6kB gzip (three included) — chunk-size warning logged for the Phase 6 budget pass.
 - [x] Task: Fixed-timestep game loop with render interpolation + Rapier physics world init *(c7bf209)*
@@ -25,9 +24,12 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
 
 ## Phase 3 · Build Mode — Placement & Editing
-- [ ] Task: Write failing tests — snapping solver (nearest compatible port within threshold, validity rules, red-ghost conditions)
-- [ ] Task: Write failing tests — undo/redo command stack (place/move/delete semantics)
-- [ ] Task: Implement track-graph module (pieces ↔ ports connections bookkeeping) until green
+- [x] Task: Write failing tests — snapping solver (nearest compatible port within threshold, validity rules, red-ghost conditions) *(ba045aa)*
+  - Notes: 9 tests — threshold export, null-when-far, head-on exact alignment, nearest-of-several, incompatible-kind rejection, occupied-port rejection, vertical spout↔cup preserving drag yaw, corner yaw alignment via roundtrip math, exclude-self for moves. RED confirmed.
+- [x] Task: Write failing tests — undo/redo command stack (place/move/delete semantics) *(1c06b59)*
+  - Notes: Graph rules (unique ids, symmetric compatible+free connect, remove clears partner refs, move detaches); generic stack cycle + redo-tail truncation; Place/Move/Delete semantics incl. full connection restore on delete-undo. RED confirmed.
+- [x] Task: Implement track-graph module (pieces ↔ ports connections bookkeeping) until green *(c254f99)*
+  - Notes: TrackGraph with symmetric free-port connection rules + snapshot-based restorePiece; findSnap solver (SNAP_DISTANCE 0.25, opposing-direction gate, yaw alignment that preserves vertical spout↔cup joins); generic CommandStack; Place/Move/Delete commands — Delete deep-clones its snapshot at construction so removePiece's detach can't corrupt restore. Coverage: commandStack/commands/snapping 100%, graph 95.16%, registry 96.29% stmts vs ≥80% target.
 - [ ] Task: Implement tray HUD + ghost placement flow (desktop pointer events + touch gestures)
 - [ ] Task: Implement move & delete interactions routed through the command stack
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
