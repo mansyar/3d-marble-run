@@ -1,0 +1,3 @@
+Task: Write failing tests for undo/redo command stack
+
+RED. Track graph: unique ids, connect compatibility+free-port symmetry, removePiece clears references, movePiece detaches links. Generic stack: execute/undo/redo cycle, empty-stack false returns, redo-tail truncation on interleave. Commands: Place adds/removes, Move swaps before/after, Delete removes and fully restores piece incl. connections snapshot.
