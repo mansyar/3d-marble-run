@@ -83,3 +83,7 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: Static deployment setup (shareable URL) + Final Verification & Checkpoint *(87376cd)*
   - Notes: Added the GitHub Pages workflow and deployment README. Final verification covered the full Phase 6 scope from checkpoint `9218430`; user confirmed desktop/mobile behavior across startup, simulation, persistence, editing, cameras, performance, accessibility, and no-scroll/error checks. A full report is appended to the Git note on `87376cd`. No remote is configured, so publishing the live URL remains a repository/Pages setup step.
   - Verify: `CI=true pnpm vitest run` (77 passed) · `CI=true pnpm vitest run --coverage` (81.17% statements, 78.10% branches, 91.00% functions, 82.43% lines) · `CI=true pnpm biome check .` · `pnpm build` · `pnpm exec vite build --base="/3d-marble-run/"`
+
+## Review Fixes
+- [~] Task: Apply review hardening for persistence, simulation, graph invariants, and starter coverage
+  - Notes: Review follow-up for the completed MVP track. Scope includes runtime save validation, bounded spawner scheduling, simulation reset on named loads, interpolation consumption, graph identity/restore safeguards, storage slot protection, and starter physics coverage.
