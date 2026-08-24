@@ -40,7 +40,7 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
   - Notes: Phase 3 checkpoint verified against prior checkpoint `476d745`. User confirmed desktop and mobile/touch behavior for placement, snapping, funnel ports, movement, reconnection, deletion, cancellation, undo/redo, touch controls, and no page scrolling. Verification report is attached to functional commit `93830fd`.
   - Verify: `CI=true pnpm vitest run` (52 passed) · `CI=true pnpm vitest run --coverage` (97.47% statements, 89.58% branches, 100% functions, 99.41% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
 
-## Phase 4 · Marble Simulation
+## Phase 4 · Marble Simulation [checkpoint: a9ef6db]
 - [x] Task: Write failing tests — spawner state machine (manual drop / stream toggle, ~20-marble cap with oldest-recycled, reset semantics incl. timer start rule) *(460d050)*
   - Notes: 7 tests define manual and continuous spawning, timer start at first spawn, interval scheduling, oldest-active recycling at the cap, removal, and reset/stop semantics. RED confirmed because the spawner module is not implemented yet.
 - [x] Task: Implement spawner + marble bodies in the Rapier world until green *(042fb6f)*
@@ -52,7 +52,8 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: Run timer logic + HUD counters wired to simulation events *(a9ef6db)*
   - Notes: Added the tested MM:SS.t formatter, live Time and Goals outputs, post-first-spawn timer updates, and Reset clearing for both counters. User confirmed timer start/advance, stream timing, goal count, and reset.
   - Verify: `CI=true pnpm vitest run` (65 passed) · `CI=true pnpm vitest run --coverage` (98.30% statements, 91.12% branches, 100% functions, 99.61% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
-- [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
+- [x] Task: Phase Verification & Checkpoint *(a9ef6db)*
+  - Notes: Automated suite passed 65 tests with 98.30% statement coverage, 91.12% branch coverage, 100% function coverage, and 99.61% line coverage. Biome and production build passed with the existing large-bundle warning. Desktop and mobile manual verification was confirmed for spawning, stream control, physics settling, goal scoring/pop, timer/HUD, reset, touch targets, no scrolling, and Phase 3 regression behavior. Full verification report is attached as a Git note to `a9ef6db`.
 
 ## Phase 5 · Cameras
 - [ ] Task: Free-orbit camera controls (rotate / zoom / pan) for mouse and touch
