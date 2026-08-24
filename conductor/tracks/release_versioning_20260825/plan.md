@@ -35,7 +35,14 @@ commit and Git note per task.
     no duplicated application version string was added.
   - Verify: Version test coverage is 100%; full tests (92), Biome, TypeScript,
     and production build pass.
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`) [checkpoint: e5889fd]
+  - [x] Run automated tests, coverage, Biome, TypeScript, build, and release validation.
+  - [x] Complete desktop preview smoke verification.
+  - [x] Complete mobile preview smoke verification.
+  - Notes: User confirmed desktop and mobile preview checks passed. Full
+    verification is attached as a Git note to `e5889fd`.
+  - Verify: 92 tests passed; release/version coverage exceeded the project
+    target; build remained within the documented JavaScript budget.
 
 ## Phase 2 · Gated Tag Release Pipeline
 
