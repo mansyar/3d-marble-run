@@ -1,0 +1,3 @@
+Task: Write failing tests for snapping solver
+
+RED. 9 tests: threshold export, null-when-far, exact head-on alignment (port coincidence + opposing dirs), nearest-of-several, incompatible-kind rejection (straight vs cup), occupied-port rejection, vertical spout-cup join preserving drag yaw, horizontal corner yaw alignment with roundtrip port math, exclude-self for move mode.
