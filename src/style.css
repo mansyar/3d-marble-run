@@ -81,3 +81,19 @@ canvas {
   z-index: 10;
   box-shadow: 0 4px 12px rgb(61 52 40 / 0.35);
 }
+
+.delete-pill {
+  position: fixed;
+  left: 50%;
+  bottom: calc(max(12px, env(safe-area-inset-bottom)) + 150px);
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border: 2px solid #d00000;
+  border-radius: 999px;
+  background: #fff;
+  color: #a00000;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgb(61 52 40 / 0.22);
+}

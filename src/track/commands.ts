@@ -43,20 +43,44 @@ export class PlaceCommand implements Command<TrackGraph> {
   }
 }
 
-/** Move an existing piece; graph detaches links on both transitions. */
+/**
+ * Move an existing piece, optionally reattaching its new snap. A pre-move
+ * snapshot lets undo restore the original placement and connections rather
+ * than leaving the old neighbours detached.
+ */
 export class MoveCommand implements Command<TrackGraph> {
+  private readonly beforeSnapshot?: PlacedPiece;
+
   constructor(
     private readonly id: string,
     private readonly before: Placement,
     private readonly after: Placement,
-  ) {}
+    private readonly connection?: SnapConnection,
+    beforeSnapshot?: PlacedPiece,
+  ) {
+    this.beforeSnapshot = beforeSnapshot ? structuredClone(beforeSnapshot) : undefined;
+  }
 
   apply(g: TrackGraph): void {
     movePiece(g, this.id, this.after);
+    if (this.connection) {
+      connect(
+        g,
+        this.id,
+        this.connection.dragPortId,
+        this.connection.targetPieceId,
+        this.connection.targetPortId,
+      );
+    }
   }
 
   revert(g: TrackGraph): void {
-    movePiece(g, this.id, this.before);
+    if (this.beforeSnapshot) {
+      removePiece(g, this.id);
+      restorePiece(g, this.beforeSnapshot);
+    } else {
+      movePiece(g, this.id, this.before);
+    }
   }
 }
 

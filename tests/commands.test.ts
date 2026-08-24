@@ -195,6 +195,34 @@ describe("track commands", () => {
     expect(getPiece(g, a)?.placement).toEqual(P0);
   });
 
+  it("MoveCommand reconnects the new snap and restores old links on undo", () => {
+    const { g, a, b } = buildTwoLinked();
+    const before = must(getPiece(g, a));
+    const target = addPiece(g, "straight", { position: [5, 0, 5], yawDeg: 0 });
+    const after: Placement = { position: [5, 0, 7], yawDeg: 90 };
+    const stack = createCommandStack<TrackGraph>();
+
+    stack.execute(
+      g,
+      new MoveCommand(
+        a,
+        P0,
+        after,
+        { targetPieceId: target, targetPortId: "a", dragPortId: "b" },
+        before,
+      ),
+    );
+    expect(getPiece(g, a)?.placement).toEqual(after);
+    expect(getPiece(g, a)?.connections.b).toEqual({ pieceId: target, portId: "a" });
+    expect(getPiece(g, b)?.connections.a).toBeNull();
+
+    expect(stack.undo(g)).toBe(true);
+    expect(getPiece(g, a)?.placement).toEqual(P0);
+    expect(getPiece(g, a)?.connections.b).toEqual({ pieceId: b, portId: "a" });
+    expect(getPiece(g, b)?.connections.a).toEqual({ pieceId: a, portId: "b" });
+    expect(getPiece(g, target)?.connections.a).toBeNull();
+  });
+
   it("DeleteCommand removes piece+links on apply and fully restores them on revert", () => {
     const { g, b } = buildTwoLinked();
     const snapshot = must(getPiece(g, b));

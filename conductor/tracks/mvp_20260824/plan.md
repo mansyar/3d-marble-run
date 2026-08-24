@@ -33,7 +33,7 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: Implement tray HUD + ghost placement flow (desktop pointer events + touch gestures) *(6d7fd0d)*
   - Notes: Added the five-piece bottom tray, translucent pointer/touch ghosts, snap/blocked/free feedback, rotation and cancellation controls, and undoable placement through PlaceCommand. Funnel mouth/spout ↔ run transitions now pass the vertical-to-horizontal snap rule, and snap connections are persisted symmetrically in the graph. User manually confirmed desktop/mobile placement, rotation, cancellation, snapping, and piece visuals.
   - Verify: `CI=true pnpm vitest run` (51 passed) · `CI=true pnpm vitest run --coverage` (97.38% statements overall) · `CI=true pnpm biome check .` · `pnpm build`
-- [ ] Task: Implement move & delete interactions routed through the command stack
+- [~] Task: Implement move & delete interactions routed through the command stack
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
 
 ## Phase 4 · Marble Simulation

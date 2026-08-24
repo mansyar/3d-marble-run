@@ -7,7 +7,7 @@ import { createMarbleMesh, MARBLE_RADIUS } from "./pieces/marble";
 import type { PieceTypeId, Placement } from "./pieces/registry";
 import { initScene } from "./render/scene";
 import { createPhysics } from "./sim/physics";
-import { createTrackGraph, type TrackGraph } from "./track/graph";
+import { addPiece, createTrackGraph, type TrackGraph } from "./track/graph";
 import { createTray } from "./ui/tray";
 
 const FIXED_DT_MS = 1000 / 60;
@@ -44,10 +44,27 @@ function spawnPiece(id: string, typeId: PieceTypeId, placement: Placement): void
   spawned.set(id, spawnStaticPiece(handle.scene, world, typeId, placement));
 }
 
+function removePiece(id: string): void {
+  const live = spawned.get(id);
+  if (!live) return;
+  handle.scene.remove(live.group);
+  world.removeRigidBody(live.body);
+  spawned.delete(id);
+}
+
+function syncScene(): void {
+  for (const id of [...spawned.keys()]) removePiece(id);
+  for (const piece of graph.pieces.values()) {
+    spawnPiece(piece.id, piece.typeId, piece.placement);
+  }
+}
+
 // TEMP Phase 3 visual check: a small starter arrangement so the table isn't
 // empty. Replaced by the real starter contraption in Phase 6.
-spawnPiece("seed-straight", "straight", { position: [0, 0, 0], yawDeg: 0 });
-spawnPiece("seed-cup", "goal-cup", { position: [0, 0, 4], yawDeg: 0 });
+const seedStraight = addPiece(graph, "straight", { position: [0, 0, 0], yawDeg: 0 });
+const seedCup = addPiece(graph, "goal-cup", { position: [0, 0, 4], yawDeg: 0 });
+spawnPiece(seedStraight, "straight", { position: [0, 0, 0], yawDeg: 0 });
+spawnPiece(seedCup, "goal-cup", { position: [0, 0, 4], yawDeg: 0 });
 
 const previewMarble = createMarbleMesh();
 previewMarble.position.set(2.2, MARBLE_RADIUS, -1);
@@ -67,6 +84,13 @@ const placement = createPlacementController({
   graph,
   stack,
   spawn: spawnPiece,
+  remove: removePiece,
+  editablePieces: () =>
+    [...spawned.entries()].flatMap(([id, live]) => {
+      const piece = graph.pieces.get(id);
+      return piece ? [{ id, typeId: piece.typeId, group: live.group }] : [];
+    }),
+  sync: syncScene,
   nextId: () => `piece-${++customIdCounter}`,
   onEnd: () => tray.setActive(null),
 });
