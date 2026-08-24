@@ -56,7 +56,9 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
   - Notes: Automated suite passed 65 tests with 98.30% statement coverage, 91.12% branch coverage, 100% function coverage, and 99.61% line coverage. Biome and production build passed with the existing large-bundle warning. Desktop and mobile manual verification was confirmed for spawning, stream control, physics settling, goal scoring/pop, timer/HUD, reset, touch targets, no scrolling, and Phase 3 regression behavior. Full verification report is attached as a Git note to `a9ef6db`.
 
 ## Phase 5 · Cameras
-- [~] Task: Free-orbit camera controls (rotate / zoom / pan) for mouse and touch
+- [x] Task: Free-orbit camera controls (rotate / zoom / pan) for mouse and touch *(b4fa02a)*
+  - Notes: Added bounded desktop and touch orbit, zoom, and pan gestures with pointer capture, no-scroll handling, grab cursor feedback, and an interaction lock while placing or moving pieces. User confirmed desktop/mobile camera and editing behavior.
+  - Verify: `CI=true pnpm vitest run --coverage` (65 passed; 98.30% statements, 91.12% branches, 100% functions, 99.61% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
 - [ ] Task: Chase-cam spectate mode following latest marble + camera-mode toggle
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
 
