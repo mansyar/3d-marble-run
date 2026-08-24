@@ -114,15 +114,17 @@ describe("port math", () => {
 });
 
 describe("compatibility rules", () => {
-  it("allows run↔run, spout↔run and spout↔cup", () => {
+  it("allows run↔run, mouth↔run, spout↔run and spout↔cup", () => {
     expect(canConnect("run", "run")).toBe(true);
+    expect(canConnect("mouth", "run")).toBe(true);
     expect(canConnect("spout", "run")).toBe(true);
     expect(canConnect("spout", "cup")).toBe(true);
   });
 
   it("rejects everything else", () => {
-    expect(canConnect("mouth", "run")).toBe(false);
     expect(canConnect("mouth", "mouth")).toBe(false);
+    expect(canConnect("mouth", "spout")).toBe(false);
+    expect(canConnect("mouth", "cup")).toBe(false);
     expect(canConnect("run", "cup")).toBe(false);
     expect(canConnect("cup", "cup")).toBe(false);
     expect(canConnect("spout", "spout")).toBe(false);

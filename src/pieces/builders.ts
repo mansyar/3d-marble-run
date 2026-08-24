@@ -103,6 +103,8 @@ function buildStraight(): BuiltPiece {
 function buildRamp(): BuiltPiece {
   // Tilted trough whose endpoints land exactly on the registry ports:
   // chord length √(L²+RISE²), tilt −atan2(RISE,L) about X, lifted by RISE/2.
+  // The tilt lives on an INNER group so spawn/ghost transforms on the outer
+  // group can't flatten it (they overwrite position/quaternion wholesale).
   const chord = Math.hypot(STRAIGHT_LENGTH, RAMP_RISE);
   const slope = Math.atan2(RAMP_RISE, STRAIGHT_LENGTH);
   const built = trough(chord, "ramp");
@@ -115,24 +117,29 @@ function buildRamp(): BuiltPiece {
     lifted[1] += RAMP_RISE / 2;
     return { ...c, position: lifted, rotation: q };
   });
-  return built;
+  const outer = new Group();
+  outer.add(built.group);
+  return { group: outer, colliders: built.colliders };
 }
 
 const CURVE_SEGMENTS = 8;
 
 function buildCurve(): BuiltPiece {
   // Quarter arc approximated by short trough segments along r=CURVE_RADIUS,
-  // sweeping from port a (0,0,r) to port b (r,0,0).
+  // sweeping from port a (-r/2,0,r/2) to port b (r/2,0,-r/2). The arc's
+  // center sits at (-r/2,0,-r/2) so the piece's origin is its visual middle.
   const group = new Group();
   const colliders: ColliderSpec[] = [];
   const segLength = 2 * CURVE_RADIUS * Math.sin(Math.PI / (4 * CURVE_SEGMENTS));
+  const cx = -CURVE_RADIUS / 2;
+  const cz = -CURVE_RADIUS / 2;
   for (let i = 0; i < CURVE_SEGMENTS; i++) {
     const a0 = Math.PI / 2 - (i / CURVE_SEGMENTS) * (Math.PI / 2);
     const a1 = Math.PI / 2 - ((i + 1) / CURVE_SEGMENTS) * (Math.PI / 2);
     const mid: [number, number, number] = [
-      ((Math.cos(a0) + Math.cos(a1)) / 2) * CURVE_RADIUS,
+      ((Math.cos(a0) + Math.cos(a1)) / 2) * CURVE_RADIUS + cx,
       0,
-      ((Math.sin(a0) + Math.sin(a1)) / 2) * CURVE_RADIUS,
+      ((Math.sin(a0) + Math.sin(a1)) / 2) * CURVE_RADIUS + cz,
     ];
     const dx = Math.cos(a1) - Math.cos(a0);
     const dz = Math.sin(a1) - Math.sin(a0);

@@ -1,23 +1,17 @@
 import { describe, expect, it } from "vitest";
+import { type Command, createCommandStack } from "../src/core/commandStack";
+import type { Placement } from "../src/pieces/registry";
+import { DeleteCommand, MoveCommand, PlaceCommand } from "../src/track/commands";
 import {
   addPiece,
   connect,
   createTrackGraph,
+  disconnect,
   getPiece,
   movePiece,
   removePiece,
   type TrackGraph,
 } from "../src/track/graph";
-import {
-  createCommandStack,
-  type Command,
-} from "../src/core/commandStack";
-import {
-  DeleteCommand,
-  MoveCommand,
-  PlaceCommand,
-} from "../src/track/commands";
-import type { Placement } from "../src/pieces/registry";
 
 const P0: Placement = { position: [0, 0, 0], yawDeg: 0 };
 const P1: Placement = { position: [0, 0, 2], yawDeg: 0 };
@@ -42,6 +36,25 @@ describe("track graph", () => {
     // Incompatible kinds are rejected.
     const cup = addPiece(g, "goal-cup", { position: [5, 0, 5], yawDeg: 0 });
     expect(connect(g, b, "b", cup, "inlet")).toBe(false);
+  });
+
+  it("disconnects a pair, freeing both ports", () => {
+    const { g, a, b } = buildTwoLinked();
+    disconnect(g, a, "b");
+    expect(getPiece(g, a)?.connections.b).toBeNull();
+    expect(getPiece(g, b)?.connections.a).toBeNull();
+    // Ports are free again.
+    expect(connect(g, a, "b", b, "a")).toBe(true);
+  });
+
+  it("rejects malformed connection requests", () => {
+    const g = createTrackGraph();
+    const a = addPiece(g, "straight", P0);
+    const b = addPiece(g, "straight", P1);
+    // Self-connection, missing pieces, unknown ports.
+    expect(connect(g, a, "a", a, "b")).toBe(false);
+    expect(connect(g, "missing", "a", b, "a")).toBe(false);
+    expect(connect(g, a, "nope", b, "a")).toBe(false);
   });
 
   it("removing a piece clears connections that referenced it", () => {
@@ -73,7 +86,7 @@ describe("generic command stack", () => {
   interface Doc {
     text: string;
   }
-  const append = (doc: Doc, s: string): Command<Doc> => ({
+  const append = (s: string): Command<Doc> => ({
     apply(d: Doc) {
       d.text += s;
     },
@@ -85,7 +98,7 @@ describe("generic command stack", () => {
   it("executes immediately; undo reverses; redo reapplies", () => {
     const doc: Doc = { text: "" };
     const stack = createCommandStack<Doc>();
-    stack.execute(doc, append(doc, "ab"));
+    stack.execute(doc, append("ab"));
     expect(doc.text).toBe("ab");
     expect(stack.canUndo()).toBe(true);
     stack.undo(doc);
@@ -99,7 +112,7 @@ describe("generic command stack", () => {
     const doc: Doc = { text: "" };
     const stack = createCommandStack<Doc>();
     expect(stack.undo(doc)).toBe(false);
-    stack.execute(doc, append(doc, "x"));
+    stack.execute(doc, append("x"));
     stack.undo(doc);
     stack.redo(doc);
     expect(stack.redo(doc)).toBe(false);
@@ -108,9 +121,9 @@ describe("generic command stack", () => {
   it("truncates the redo tail when a new command interleaves", () => {
     const doc: Doc = { text: "" };
     const stack = createCommandStack<Doc>();
-    stack.execute(doc, append(doc, "a"));
+    stack.execute(doc, append("a"));
     stack.undo(doc);
-    stack.execute(doc, append(doc, "b"));
+    stack.execute(doc, append("b"));
     expect(stack.canRedo()).toBe(false);
     stack.redo(doc); // must be a safe no-op returning false
     expect(doc.text).toBe("b");
@@ -125,6 +138,11 @@ function buildTwoLinked(graph?: TrackGraph) {
   return { g, a, b };
 }
 
+function must<T>(value: T | undefined): T {
+  if (value === undefined) throw new Error("expected a value");
+  return value;
+}
+
 describe("track commands", () => {
   it("PlaceCommand adds on apply and removes on revert", () => {
     const g = createTrackGraph();
@@ -134,6 +152,37 @@ describe("track commands", () => {
     expect(getPiece(g, "p1")?.typeId).toBe("curve");
     stack.undo(g);
     expect(getPiece(g, "p1")).toBeUndefined();
+  });
+
+  it("PlaceCommand records and reverts a snap connection", () => {
+    const g = createTrackGraph();
+    const cup = addPiece(g, "goal-cup", { position: [0, 0, 0], yawDeg: 0 });
+    const stack = createCommandStack<TrackGraph>();
+    stack.execute(
+      g,
+      new PlaceCommand(
+        "funnel-1",
+        "funnel",
+        { position: [0, 0.6, 0], yawDeg: 20 },
+        {
+          targetPieceId: cup,
+          targetPortId: "inlet",
+          dragPortId: "spout",
+        },
+      ),
+    );
+    expect(getPiece(g, "funnel-1")?.connections.spout).toEqual({
+      pieceId: cup,
+      portId: "inlet",
+    });
+    expect(getPiece(g, cup)?.connections.inlet).toEqual({
+      pieceId: "funnel-1",
+      portId: "spout",
+    });
+
+    expect(stack.undo(g)).toBe(true);
+    expect(getPiece(g, "funnel-1")).toBeUndefined();
+    expect(getPiece(g, cup)?.connections.inlet).toBeNull();
   });
 
   it("MoveCommand swaps between before/after placements and detaches links", () => {
@@ -148,13 +197,13 @@ describe("track commands", () => {
 
   it("DeleteCommand removes piece+links on apply and fully restores them on revert", () => {
     const { g, b } = buildTwoLinked();
-    const snapshot = getPiece(g, b)!;
+    const snapshot = must(getPiece(g, b));
     const linksIn = JSON.parse(JSON.stringify(snapshot.connections));
     const stack = createCommandStack<TrackGraph>();
     stack.execute(g, new DeleteCommand(b, snapshot));
     expect(getPiece(g, b)).toBeUndefined();
     stack.undo(g);
-    const restored = getPiece(g, b)!;
+    const restored = must(getPiece(g, b));
     expect(restored.typeId).toBe("straight");
     expect(restored.placement).toEqual(P1);
     expect(restored.connections).toEqual(linksIn);

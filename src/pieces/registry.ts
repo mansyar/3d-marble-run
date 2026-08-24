@@ -60,10 +60,14 @@ const STRAIGHT: PieceTypeDef = {
 
 const CURVE: PieceTypeDef = {
   id: "curve",
-  // Quarter arc of radius CURVE_RADIUS sweeping from +Z to +X.
+  // Quarter arc of radius CURVE_RADIUS sweeping from +Z to +X, centered on
+  // the piece's bounding-box middle so yaw rotation pivots about the piece
+  // itself. Port directions are TANGENTIAL (the way a marble exits along the
+  // track), not radial — tangential dirs are what make solver joints
+  // tangent-continuous with straight pieces.
   ports: [
-    p("a", "run", [0, 0, CURVE_RADIUS], [0, 0, 1]),
-    p("b", "run", [CURVE_RADIUS, 0, 0], [1, 0, 0]),
+    p("a", "run", [-CURVE_RADIUS / 2, 0, CURVE_RADIUS / 2], [-1, 0, 0]),
+    p("b", "run", [CURVE_RADIUS / 2, 0, -CURVE_RADIUS / 2], [0, 0, -1]),
   ],
 };
 
@@ -97,7 +101,7 @@ export const PIECE_TYPE_IDS: Record<PieceTypeId, PieceTypeDef> = {
   "goal-cup": GOAL_CUP,
 };
 
-const COMPATIBLE_PAIRS = new Set(["run|run", "run|spout", "spout|cup"]);
+const COMPATIBLE_PAIRS = new Set(["mouth|run", "run|run", "run|spout", "spout|cup"]);
 
 /**
  * Whether two port kinds may physically join. Symmetric by construction:
@@ -118,6 +122,8 @@ function rotateY(v: Vec3, yawDeg: number): Vec3 {
   const s = Math.sin(t);
   return [v[0] * c + v[2] * s, v[1], -v[0] * s + v[2] * c];
 }
+
+export { rotateY };
 
 /** Map a piece-local port into world space under the given placement. */
 export function getWorldPort(placement: Placement, typeId: PieceTypeId, portId: string): WorldPort {

@@ -18,6 +18,8 @@ const SKY_COLOR = 0xfbf7ef;
 
 export interface SceneHandle {
   scene: Scene;
+  camera: PerspectiveCamera;
+  renderer: WebGLRenderer;
 }
 
 /**
@@ -92,5 +94,5 @@ export function initScene(
     renderer.render(scene, camera);
   });
 
-  return { scene };
+  return { scene, camera, renderer };
 }
