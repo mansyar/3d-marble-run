@@ -43,8 +43,9 @@ pnpm preview
 ## Container image
 
 The `Publish container image` workflow builds the production site with Nginx
-and publishes it to GitHub Container Registry on pushes to `master`, version
-tags, or a manual workflow run.
+and publishes it to GitHub Container Registry on pushes to `master` or a
+manual workflow run. Valid version tags are published by the `Release`
+workflow after its quality gate succeeds.
 
 Pull and run the latest image:
 
@@ -58,6 +59,52 @@ Open `http://localhost:8080`. Build the image locally with:
 ```bash
 docker build -t marblescape:local .
 ```
+
+## Tagged releases
+
+`package.json` is the release source of truth. Releases use stable
+`vMAJOR.MINOR.PATCH` tags, and the tag must exactly match the package version.
+Use pnpm's version command from a clean branch:
+
+```bash
+pnpm version patch # or: minor, major
+git push origin master --follow-tags
+```
+
+The version command creates the version commit and `vX.Y.Z` tag. Pushing both
+starts `.github/workflows/release.yml`, which first installs dependencies with
+the frozen lockfile and runs the release check, tests, Biome, TypeScript, and
+the production build. A successful gate then creates a GitHub Release with
+GitHub-generated notes, deploys GitHub Pages, and publishes GHCR images.
+
+The release check rejects prereleases, malformed tags, and mismatches before
+any output is published. To rehearse it locally:
+
+```bash
+pnpm check:release -- v0.1.0 # succeeds while package.json is 0.1.0
+pnpm check:release -- v0.1.1 # fails until package.json is 0.1.1
+```
+
+Each valid release produces:
+
+- Pages: `https://<owner>.github.io/<repository>/`
+- GitHub Release: `vX.Y.Z` with generated notes
+- GHCR: `ghcr.io/mansyar/3d-marble-run:X.Y.Z`, `:latest`, and `:sha-<commit>`
+
+Pull an immutable release or the moving latest image with:
+
+```bash
+docker pull ghcr.io/mansyar/3d-marble-run:0.1.0
+docker pull ghcr.io/mansyar/3d-marble-run:latest
+docker run --rm -p 8080:80 ghcr.io/mansyar/3d-marble-run:0.1.0
+```
+
+Before the first release, enable **Settings → Pages → GitHub Actions** and
+allow repository Actions to use read/write workflow permissions. The release
+workflow needs contents write permission for generated GitHub Releases, Pages
+write plus OIDC for deployment, and packages write for GHCR; its jobs request
+only those permissions. GHCR must be enabled for the repository, and the
+resulting package may need its visibility or access configured in **Packages**.
 
 ### Coolify deployment trigger
 
