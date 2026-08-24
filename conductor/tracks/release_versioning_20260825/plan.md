@@ -82,7 +82,15 @@ commit and Git note per task.
   - Verify: 92 tests, Biome, TypeScript, production build, and whitespace
     checks pass; metadata action semantics were reviewed for reusable tag
     context.
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`) [checkpoint: f0fee48]
+  - [x] Run automated tests, coverage, Biome, TypeScript, builds, and release validation.
+  - [x] Review workflow triggers, dependencies, permissions, and image tags.
+  - [x] Complete desktop/mobile preview and Pages-base-path verification.
+  - Notes: User confirmed desktop/mobile and repository-base-path smoke tests
+    passed. Full verification is attached as a Git note to `f0fee48`.
+  - Verify: 92 tests passed; standard and base-path builds stayed within the
+    documented JavaScript budget. Remote tag execution remains a post-merge
+    verification item.
 
 ## Phase 3 · In-App About & Version Surface
 
