@@ -1,0 +1,7 @@
+Task: Bootstrap Three.js renderer - responsive canvas, resize handling, wooden-table environment, lighting rig
+
+Changes: initScene() in src/render/scene.ts (antialias renderer, DPR clamp at 2 for mobile perf, PCF soft shadows, hemisphere+directional warm lighting per product-guidelines, 60x60 wood-tone table plane, sky-cream background); main.ts wires #app to initScene; placeholder HTML removed.
+
+Verified: pnpm build passes (518kB raw / 129.6kB gzip with three included - chunk-size warning noted for Phase 6 budget pass), CI=true biome check clean. Visual confirmation deferred to Phase 1 checkpoint per workflow.
+
+Why: Establishes the render surface every piece, marble, camera and HUD interaction builds on.
