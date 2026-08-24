@@ -9,7 +9,8 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
   - [ ] Verify: `pnpm dev` serves, `pnpm build` passes, `CI=true pnpm biome check .` clean
 - [x] Task: Bootstrap Three.js renderer — responsive canvas, resize handling, wooden-table environment, lighting rig (per product-guidelines) *(4d8b25f)*
   - Notes: three 0.185.1 + @types/three 0.185.4. DPR clamped at 2 for mobile perf. Warm hemisphere + directional soft-shadow lighting; cream sky, wood-tone table. Bundle now 518kB raw / 129.6kB gzip (three included) — chunk-size warning logged for the Phase 6 budget pass.
-- [ ] Task: Fixed-timestep game loop with render interpolation + Rapier physics world init
+- [x] Task: Fixed-timestep game loop with render interpolation + Rapier physics world init *(c7bf209)*
+  - Notes: TDD red→green — 8 stepper tests, 100% coverage on src/core (target ≥80%). Rapier 0.20.0-compat, 60Hz fixed dt, maxSubSteps=5 spiral guard. Interpolation alpha exposed now; mesh application deferred to Phase 4 (bodies exist there). ⚠ Bundle: 3.4MB raw / 1.22MB gzip from embedded WASM — Phase 6 budget pass must address (code-split or non-compat package).
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
 
 ## Phase 2 · Piece System
