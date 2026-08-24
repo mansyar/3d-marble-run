@@ -7,6 +7,7 @@ import { type SpawnedPiece, spawnStaticPiece } from "./pieces/builders";
 import { createMarbleMesh, MARBLE_RADIUS } from "./pieces/marble";
 import type { PieceTypeId, Placement } from "./pieces/registry";
 import { initScene } from "./render/scene";
+import { createGoalTracker, type MarblePosition } from "./sim/goals";
 import { createPhysics } from "./sim/physics";
 import { createSpawner, type MarbleSpawn, type Spawner } from "./sim/spawner";
 import { addPiece, createTrackGraph, type TrackGraph } from "./track/graph";
@@ -25,6 +26,8 @@ if (!app) {
 const world = await createPhysics();
 const stepper = createStepper(FIXED_DT_MS, MAX_SUB_STEPS);
 const spawner: Spawner = createSpawner({ maxMarbles: 20, streamIntervalMs: 500 });
+const graph: TrackGraph = createTrackGraph();
+const goalTracker = createGoalTracker();
 
 interface LiveMarble {
   mesh: ReturnType<typeof createMarbleMesh>;
@@ -71,6 +74,20 @@ function syncMarbles(): void {
   }
 }
 
+function detectGoalEntries(): void {
+  const marbles: MarblePosition[] = [];
+  for (const [id, { body }] of liveMarbles) {
+    const position = body.translation();
+    marbles.push({ id, position: [position.x, position.y, position.z] });
+  }
+
+  for (const entry of goalTracker.update(graph.pieces.values(), marbles)) {
+    if (spawner.remove(entry.marbleId)) removeMarble(entry.marbleId);
+    simulationControls.setGoalCount(goalTracker.count());
+    if (entry.celebration === "pop") simulationControls.showGoalPop();
+  }
+}
+
 const handle = initScene(app, (elapsedMs) => {
   applySpawnResult(spawner.advance(elapsedMs));
   const { steps } = stepper.advance(elapsedMs);
@@ -78,11 +95,11 @@ const handle = initScene(app, (elapsedMs) => {
     world.step();
   }
   syncMarbles();
+  detectGoalEntries();
 });
 
 // --- Build mode state -------------------------------------------------------
 
-const graph: TrackGraph = createTrackGraph();
 const stack = createCommandStack<TrackGraph>();
 
 /** Placed pieces' live meshes + physics bodies, keyed by graph piece id. */
@@ -152,8 +169,11 @@ const simulationControls = createSimulationControls(document.body, {
   onReset: () => {
     const { removedIds } = spawner.reset();
     for (const id of removedIds) removeMarble(id);
+    goalTracker.reset();
+    simulationControls.setGoalCount(0);
     simulationControls.setStreamEnabled(false);
   },
 });
 
 simulationControls.setStreamEnabled(spawner.isContinuous());
+simulationControls.setGoalCount(goalTracker.count());

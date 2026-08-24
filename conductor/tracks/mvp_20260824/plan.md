@@ -46,7 +46,7 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: Implement spawner + marble bodies in the Rapier world until green *(042fb6f)*
   - Notes: Added the pure scheduler, manual/continuous controls, dynamic Rapier marble bodies, shared glossy meshes, 20-marble oldest recycling, goal-removal hook, and reset cleanup. User confirmed controls and accepted isolated horizontal-track stacking as expected until a moving starter contraption is added.
   - Verify: `CI=true pnpm vitest run` (60 passed) · `CI=true pnpm vitest run --coverage` (98.06% statements, 90.59% branches, 100% functions, 99.55% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
-- [ ] Task: Goal-cup entry detection → counter increment + celebration pop
+- [~] Task: Goal-cup entry detection → counter increment + celebration pop
 - [ ] Task: Run timer logic + HUD counters wired to simulation events
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
 

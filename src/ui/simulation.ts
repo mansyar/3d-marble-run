@@ -6,6 +6,8 @@ export interface SimulationControlCallbacks {
 
 export interface SimulationControls {
   setStreamEnabled(enabled: boolean): void;
+  setGoalCount(count: number): void;
+  showGoalPop(): void;
 }
 
 /** Small, touch-sized controls for exercising the Phase 4 marble loop. */
@@ -33,7 +35,12 @@ export function createSimulationControls(
   resetButton.textContent = "Reset";
   resetButton.addEventListener("click", callbacks.onReset);
 
-  panel.append(dropButton, streamButton, resetButton);
+  const goalCount = document.createElement("output");
+  goalCount.id = "goal-count";
+  goalCount.setAttribute("aria-live", "polite");
+  goalCount.textContent = "Goals: 0";
+
+  panel.append(dropButton, streamButton, resetButton, goalCount);
   root.appendChild(panel);
 
   function setStreamLabel(enabled: boolean): void {
@@ -41,5 +48,17 @@ export function createSimulationControls(
     streamButton.setAttribute("aria-pressed", String(enabled));
   }
 
-  return { setStreamEnabled: setStreamLabel };
+  function setGoalCount(count: number): void {
+    goalCount.textContent = `Goals: ${count}`;
+  }
+
+  function showGoalPop(): void {
+    const pop = document.createElement("div");
+    pop.className = "goal-pop";
+    pop.textContent = "+1 Goal!";
+    root.appendChild(pop);
+    window.setTimeout(() => pop.remove(), 900);
+  }
+
+  return { setStreamEnabled: setStreamLabel, setGoalCount, showGoalPop };
 }
