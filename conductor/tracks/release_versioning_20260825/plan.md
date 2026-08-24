@@ -104,12 +104,16 @@ commit and Git note per task.
   - Notes: The native dialog owns its accessibility and focus lifecycle; the
     HUD owns only the trigger and `main.ts` passes the package-derived version.
   - Verify: 92 tests, Biome, TypeScript, build, and diff checks pass.
-- [~] Task: Wire and manually verify the About experience
+- [x] Task: Wire and manually verify the About experience *(81488da)*
   - [x] Connect the dialog to `main.ts` without duplicating orchestration logic.
-  - [ ] Verify desktop mouse and keyboard behavior.
-  - [ ] Verify mobile touch behavior and layout at narrow viewport sizes.
-  - [ ] Verify the version shown matches `package.json`.
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+  - [x] Verify desktop mouse and keyboard behavior.
+  - [x] Verify mobile touch behavior and layout at narrow viewport sizes.
+  - [x] Verify the version shown matches `package.json`.
+  - Notes: User confirmed desktop and mobile interaction checks passed,
+    including Close/Escape focus return and the package-derived `v0.1.0`.
+  - Verify: Manual checks and the automated suite passed; full details are
+    attached as a Git note to `81488da`.
+- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
 
 ## Phase 4 · Documentation & Release Rehearsal
 
