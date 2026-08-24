@@ -1,0 +1,3 @@
+Task: Write failing tests for piece registry and port math
+
+RED phase of TDD. 14 tests pinning: five-type registry shape, port completeness/normalization, straight-opposite/curve-perpendicular/ramp-rise/funnel-mouth-spout/cup-inlet geometry invariants, yaw rotation math, translation semantics, compatibility matrix incl. symmetry. Failed on unresolved import as required.
