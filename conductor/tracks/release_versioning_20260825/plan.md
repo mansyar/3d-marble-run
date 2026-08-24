@@ -133,10 +133,13 @@ commit and Git note per task.
   - Notes: README now describes the package/tag contract, gated outputs,
     permissions, local rehearsal, and the existing optional Coolify path.
   - Verify: `git diff --check` passed; pnpm version behavior was confirmed.
-- [~] Task: Perform local release rehearsal and final quality gates
-  - [ ] Confirm matching `v0.1.0` validation succeeds.
-  - [ ] Confirm a mismatched tag fails.
-  - [ ] Run tests, Biome, TypeScript, production build, and preview checks.
-  - [ ] Review workflow permissions and tag conditions.
-  - [ ] Record any remote GitHub Actions verification needed after merge.
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [x] Task: Perform local release rehearsal and final quality gates *(c0a7221)*
+  - [x] Confirm matching `v0.1.0` validation succeeds.
+  - [x] Confirm a mismatched tag fails.
+  - [x] Run tests, Biome, TypeScript, production build, and preview checks.
+  - [x] Review workflow permissions and tag conditions.
+  - [x] Record any remote GitHub Actions verification needed after merge.
+  - Notes: Local rehearsal and all quality gates passed. Remote tag, Release,
+    Pages, GHCR, and optional Coolify behavior remain post-merge checks.
+  - Verify: Full details are attached as a Git note to `c0a7221`.
+- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
