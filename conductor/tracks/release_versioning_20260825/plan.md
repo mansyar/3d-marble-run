@@ -71,11 +71,17 @@ commit and Git note per task.
   - Verify: 92 tests, Biome, TypeScript, production build, and whitespace
     checks pass. Local actionlint was unavailable; workflow structure was
     reviewed against GitHub reusable-workflow syntax.
-- [ ] Task: Align release image metadata
-  - [ ] Publish the exact `X.Y.Z` image tag, `latest`, and SHA tag.
-  - [ ] Preserve OCI version, revision, and source labels.
-  - [ ] Verify tag-triggered reusable workflow context produces the intended
+- [x] Task: Align release image metadata *(f0fee48)*
+  - [x] Publish the exact `X.Y.Z` image tag, `latest`, and SHA tag.
+  - [x] Preserve OCI version, revision, and source labels.
+  - [x] Verify tag-triggered reusable workflow context produces the intended
     image tags.
+  - Notes: Docker Metadata now uses `type=semver,pattern={{version}}` for
+    the immutable release tag, enables `latest` for release tags and the
+    default branch, and retains the SHA tag and generated OCI labels.
+  - Verify: 92 tests, Biome, TypeScript, production build, and whitespace
+    checks pass; metadata action semantics were reviewed for reusable tag
+    context.
 - [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
 
 ## Phase 3 · In-App About & Version Surface
