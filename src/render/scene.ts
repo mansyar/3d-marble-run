@@ -14,12 +14,19 @@ import {
 const TABLE_COLOR = 0xc79a63;
 const SKY_COLOR = 0xfbf7ef;
 
+export interface SceneHandle {
+  scene: Scene;
+}
+
 /**
  * Boots the Three.js renderer inside the given container: a warm wooden
  * playroom-table world with bright, soft, even lighting per product-guidelines.
  * Handles responsive resizing and starts the render loop.
  */
-export function initScene(container: HTMLElement, onFrame?: (elapsedMs: number) => void): void {
+export function initScene(
+  container: HTMLElement,
+  onFrame?: (elapsedMs: number) => void,
+): SceneHandle {
   const renderer = new WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(container.clientWidth, container.clientHeight);
@@ -77,4 +84,6 @@ export function initScene(container: HTMLElement, onFrame?: (elapsedMs: number) 
     lastTime = now;
     renderer.render(scene, camera);
   });
+
+  return { scene };
 }
