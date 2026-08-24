@@ -1,0 +1,5 @@
+Task: Expose the package version to the browser build
+Summary: Enabled strict JSON imports and added APP_VERSION derived directly from package.json with a consistency test.
+Files: src/version.ts, tests/version.test.ts, tsconfig.json
+Why: The About surface and release metadata must never drift from the authoritative package version.
+Verification: Version test coverage 100%; full tests (92), Biome, TypeScript, and production build pass.
