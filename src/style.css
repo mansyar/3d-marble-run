@@ -27,6 +27,8 @@ canvas.camera-orbiting {
   top: max(12px, env(safe-area-inset-top));
   left: max(12px, env(safe-area-inset-left));
   display: flex;
+  flex-wrap: wrap;
+  max-width: min(520px, calc(100vw - 24px));
   gap: 8px;
   padding: 8px;
   background: rgb(255 255 255 / 0.82);

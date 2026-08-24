@@ -7,9 +7,15 @@ export interface FreeOrbitCameraOptions {
   isLocked?: () => boolean;
 }
 
+export type CameraMode = "free" | "chase";
+export type CameraTarget = readonly [number, number, number];
+
 export interface FreeOrbitCamera {
   reset(): void;
   dispose(): void;
+  mode(): CameraMode;
+  toggleMode(): CameraMode;
+  update(elapsedMs: number, chaseTarget: CameraTarget | null): void;
 }
 
 const MIN_RADIUS = 3;
@@ -43,6 +49,10 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
   let mouseMode: MouseMode | null = null;
   let pinchDistance = 0;
   let pinchMidpoint = new Vector2();
+  let cameraMode: CameraMode = "free";
+  const chaseLookAt = new Vector3();
+  const chasePosition = new Vector3();
+  const chaseOffset = new Vector3(5, 4, 7);
 
   function applyCamera(): void {
     spherical.radius = clamp(spherical.radius, MIN_RADIUS, MAX_RADIUS);
@@ -95,7 +105,7 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
   }
 
   function onPointerDown(event: PointerEvent): void {
-    if (isLocked?.()) return;
+    if (cameraMode === "chase" || isLocked?.()) return;
 
     if (event.pointerType === "mouse") {
       if (event.button === 0) mouseMode = "rotate";
@@ -147,7 +157,7 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
   }
 
   function onWheel(event: WheelEvent): void {
-    if (isLocked?.()) return;
+    if (cameraMode === "chase" || isLocked?.()) return;
     zoom(event.deltaY * WHEEL_ZOOM_SPEED);
     applyCamera();
     event.preventDefault();
@@ -161,6 +171,33 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
     target.copy(initialTarget);
     spherical.copy(initialSpherical);
     applyCamera();
+  }
+
+  function mode(): CameraMode {
+    return cameraMode;
+  }
+
+  function setMode(nextMode: CameraMode): void {
+    if (cameraMode === nextMode) return;
+    cameraMode = nextMode;
+    activePointers.clear();
+    mouseMode = null;
+    domElement.classList.remove("camera-orbiting");
+    if (cameraMode === "free") applyCamera();
+  }
+
+  function toggleMode(): CameraMode {
+    setMode(cameraMode === "free" ? "chase" : "free");
+    return cameraMode;
+  }
+
+  function update(elapsedMs: number, targetPosition: CameraTarget | null): void {
+    if (cameraMode !== "chase" || !targetPosition) return;
+    chaseLookAt.set(targetPosition[0], targetPosition[1], targetPosition[2]);
+    chasePosition.copy(chaseLookAt).add(chaseOffset);
+    const blend = 1 - Math.exp(-Math.min(elapsedMs, 100) * 0.01);
+    camera.position.lerp(chasePosition, blend);
+    camera.lookAt(chaseLookAt);
   }
 
   function dispose(): void {
@@ -181,5 +218,5 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
   domElement.addEventListener("contextmenu", onContextMenu);
 
   applyCamera();
-  return { reset, dispose };
+  return { reset, dispose, mode, toggleMode, update };
 }

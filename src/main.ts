@@ -6,7 +6,7 @@ import { createStepper } from "./core/stepper";
 import { type SpawnedPiece, spawnStaticPiece } from "./pieces/builders";
 import { createMarbleMesh, MARBLE_RADIUS } from "./pieces/marble";
 import type { PieceTypeId, Placement } from "./pieces/registry";
-import { createFreeOrbitCamera } from "./render/camera";
+import { type CameraTarget, createFreeOrbitCamera, type FreeOrbitCamera } from "./render/camera";
 import { initScene } from "./render/scene";
 import { createGoalTracker, type MarblePosition } from "./sim/goals";
 import { createPhysics } from "./sim/physics";
@@ -75,6 +75,17 @@ function syncMarbles(): void {
   }
 }
 
+function latestMarbleTarget(): CameraTarget | null {
+  const activeIds = spawner.state().activeIds;
+  for (let index = activeIds.length - 1; index >= 0; index -= 1) {
+    const live = liveMarbles.get(activeIds[index]);
+    if (!live) continue;
+    const position = live.body.translation();
+    return [position.x, position.y, position.z];
+  }
+  return null;
+}
+
 function detectGoalEntries(): void {
   const marbles: MarblePosition[] = [];
   for (const [id, { body }] of liveMarbles) {
@@ -89,6 +100,8 @@ function detectGoalEntries(): void {
   }
 }
 
+let cameraController: FreeOrbitCamera | null = null;
+
 const handle = initScene(app, (elapsedMs) => {
   applySpawnResult(spawner.advance(elapsedMs));
   const { steps } = stepper.advance(elapsedMs);
@@ -98,6 +111,7 @@ const handle = initScene(app, (elapsedMs) => {
   syncMarbles();
   detectGoalEntries();
   simulationControls.setTimerMs(spawner.state().timerMs);
+  cameraController?.update(elapsedMs, latestMarbleTarget());
 });
 
 // --- Build mode state -------------------------------------------------------
@@ -165,7 +179,7 @@ const placement = createPlacementController({
   onEnd: () => tray.setActive(null),
 });
 
-createFreeOrbitCamera({
+cameraController = createFreeOrbitCamera({
   camera: handle.camera,
   domElement: handle.renderer.domElement,
   isLocked: () => placement.activeTypeId !== null,
@@ -174,6 +188,7 @@ createFreeOrbitCamera({
 const simulationControls = createSimulationControls(document.body, {
   onDrop: () => applySpawnResult(spawner.drop()),
   onToggleStream: () => spawner.toggleContinuous(),
+  onToggleCamera: () => cameraController?.toggleMode() ?? "free",
   onReset: () => {
     const { removedIds } = spawner.reset();
     for (const id of removedIds) removeMarble(id);
@@ -187,3 +202,4 @@ const simulationControls = createSimulationControls(document.body, {
 simulationControls.setStreamEnabled(spawner.isContinuous());
 simulationControls.setGoalCount(goalTracker.count());
 simulationControls.setTimerMs(spawner.state().timerMs);
+simulationControls.setCameraMode(cameraController.mode());

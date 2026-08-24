@@ -1,8 +1,10 @@
+import type { CameraMode } from "../render/camera";
 import { formatRunTime } from "../sim/timer";
 
 export interface SimulationControlCallbacks {
   onDrop: () => void;
   onToggleStream: () => boolean;
+  onToggleCamera: () => CameraMode;
   onReset: () => void;
 }
 
@@ -10,6 +12,7 @@ export interface SimulationControls {
   setStreamEnabled(enabled: boolean): void;
   setGoalCount(count: number): void;
   setTimerMs(elapsedMs: number): void;
+  setCameraMode(mode: CameraMode): void;
   showGoalPop(): void;
 }
 
@@ -38,6 +41,13 @@ export function createSimulationControls(
   resetButton.textContent = "Reset";
   resetButton.addEventListener("click", callbacks.onReset);
 
+  const cameraButton = document.createElement("button");
+  cameraButton.type = "button";
+  cameraButton.textContent = "Camera: Free";
+  cameraButton.addEventListener("click", () => {
+    setCameraLabel(callbacks.onToggleCamera());
+  });
+
   const goalCount = document.createElement("output");
   goalCount.id = "goal-count";
   goalCount.setAttribute("aria-live", "polite");
@@ -48,7 +58,7 @@ export function createSimulationControls(
   timer.setAttribute("aria-label", "Run time");
   timer.textContent = "Time: 00:00.0";
 
-  panel.append(dropButton, streamButton, resetButton, goalCount, timer);
+  panel.append(dropButton, streamButton, resetButton, cameraButton, goalCount, timer);
   root.appendChild(panel);
 
   function setStreamLabel(enabled: boolean): void {
@@ -64,6 +74,11 @@ export function createSimulationControls(
     timer.textContent = `Time: ${formatRunTime(elapsedMs)}`;
   }
 
+  function setCameraLabel(mode: CameraMode): void {
+    cameraButton.textContent = `Camera: ${mode === "free" ? "Free" : "Chase"}`;
+    cameraButton.setAttribute("aria-pressed", String(mode === "chase"));
+  }
+
   function showGoalPop(): void {
     const pop = document.createElement("div");
     pop.className = "goal-pop";
@@ -72,5 +87,11 @@ export function createSimulationControls(
     window.setTimeout(() => pop.remove(), 900);
   }
 
-  return { setStreamEnabled: setStreamLabel, setGoalCount, setTimerMs, showGoalPop };
+  return {
+    setStreamEnabled: setStreamLabel,
+    setGoalCount,
+    setTimerMs,
+    setCameraMode: setCameraLabel,
+    showGoalPop,
+  };
 }
