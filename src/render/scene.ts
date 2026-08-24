@@ -15,6 +15,7 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 
 const TABLE_COLOR = 0xc79a63;
 const SKY_COLOR = 0xfbf7ef;
+const MOBILE_VIEWPORT_QUERY = "(max-width: 768px)";
 
 export interface SceneHandle {
   scene: Scene;
@@ -31,8 +32,10 @@ export function initScene(
   container: HTMLElement,
   onFrame?: (elapsedMs: number) => void,
 ): SceneHandle {
-  const renderer = new WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const compactViewport =
+    window.matchMedia(MOBILE_VIEWPORT_QUERY).matches || navigator.maxTouchPoints > 0;
+  const renderer = new WebGLRenderer({ antialias: !compactViewport });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, compactViewport ? 1.5 : 2));
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = PCFSoftShadowMap;
@@ -60,7 +63,8 @@ export function initScene(
   const sun = new DirectionalLight(0xfff4e0, 1.6);
   sun.position.set(8, 14, 6);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
+  const shadowMapSize = compactViewport ? 1024 : 2048;
+  sun.shadow.mapSize.set(shadowMapSize, shadowMapSize);
   sun.shadow.camera.left = -15;
   sun.shadow.camera.right = 15;
   sun.shadow.camera.top = 15;
