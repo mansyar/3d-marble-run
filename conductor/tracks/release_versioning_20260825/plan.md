@@ -142,4 +142,11 @@ commit and Git note per task.
   - Notes: Local rehearsal and all quality gates passed. Remote tag, Release,
     Pages, GHCR, and optional Coolify behavior remain post-merge checks.
   - Verify: Full details are attached as a Git note to `c0a7221`.
-- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`) [checkpoint: c0a7221]
+  - [x] Review all release/versioning changes against the approved scope.
+  - [x] Run final automated, build, preview, and release-contract checks.
+  - [x] Record manual verification and explicit user approval.
+  - Notes: User approved closure with remote GitHub publication verification
+    retained as a post-merge follow-up. Full verification is attached as a
+    Git note to `c0a7221`.
+  - Verify: Local release rehearsal and all quality gates passed.
