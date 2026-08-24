@@ -1,0 +1,7 @@
+Task: Procedural geometry builders for all five piece types
+
+Changes: builders.ts emits local-space meshes + collider specs (trough channels for straight/ramp/curve-as-8-segments; lathe shells + trimesh colliders for funnel/goal-cup); spawnStaticPiece is the single placement application point (fixed body w/ yaw quaternion). materials.ts one bold hue per type per product-guidelines. trimesh.ts BufferGeometry extractor. initScene now returns {scene}. TEMP preview row in main.ts for the visual check - removed when Phase 3 placement UI lands.
+
+Verified: user visual check passed (all five pieces read correctly on table); tsc strict + biome clean; build OK; 22/22 tests unaffected.
+
+Why: Pieces become tangible toys - visual identity and physical presence from one shared spec source.
