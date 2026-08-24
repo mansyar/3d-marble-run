@@ -58,3 +58,22 @@ Open `http://localhost:8080`. Build the image locally with:
 ```bash
 docker build -t marblescape:local .
 ```
+
+### Coolify deployment trigger
+
+The container workflow can trigger a Coolify redeploy after a successful GHCR
+publish on `master` (or a manual workflow run). Configure Coolify to pull
+`ghcr.io/mansyar/3d-marble-run:latest`, then add these GitHub repository
+settings:
+
+1. Create an Actions secret named `COOLIFY_DEPLOY_WEBHOOK` containing the
+   deploy webhook URL from Coolify.
+2. Create an Actions secret named `COOLIFY_DEPLOY_TOKEN` containing the
+   Coolify bearer token.
+3. Create an Actions variable named `COOLIFY_DEPLOY_ENABLED` with the value
+   `true`.
+4. Push to `master` or run **Publish container image** manually.
+
+The webhook URL stays out of the repository and is never printed by the
+workflow. Leave the variable unset or set it to `false` to publish images
+without triggering Coolify.
