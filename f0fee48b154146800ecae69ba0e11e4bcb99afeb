@@ -3,3 +3,9 @@ Summary: Release tags now produce an exact X.Y.Z SemVer image tag, latest, and t
 Files: .github/workflows/publish-container.yml
 Why: Docker image tags must match the package release version without the Git tag's v prefix while preserving immutable revision tracking and metadata-action OCI labels.
 Verification: 92 Vitest tests; Biome; TypeScript; production build; git diff --check passed. Metadata action semantics reviewed for reusable tag context.
+
+Phase 2 checkpoint verification
+User confirmation: Desktop and mobile preview smoke tests passed, including the repository base path.
+Automated: 92 Vitest tests passed; Biome clean; TypeScript clean; standard and /3d-marble-run/ production builds passed; matching v0.1.0 validation passed and mismatched v0.1.1 was rejected; git diff --check passed.
+Build budget: 3,420.34 kB raw JavaScript and 1,239.65 kB gzip, within the documented limits.
+Workflow review: release.yml triggers only on v* tags, validates before quality checks, and gates GitHub Release, Pages, and GHCR jobs on quality. Reusable workflows preserve master/manual paths; container metadata emits X.Y.Z, latest, and SHA tags. Local actionlint was unavailable; no remote tag run was performed.
