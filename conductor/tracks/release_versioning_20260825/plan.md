@@ -124,13 +124,16 @@ commit and Git note per task.
 
 ## Phase 4 · Documentation & Release Rehearsal
 
-- [ ] Task: Document the release runbook
-  - [ ] Document `pnpm version patch|minor|major`.
-  - [ ] Document pushing the generated commit and `vX.Y.Z` tag.
-  - [ ] Document Pages, GitHub Release, and GHCR outputs.
-  - [ ] Document mismatch failures and required GitHub configuration.
-  - [ ] Document exact and `latest` container pull examples.
-- [ ] Task: Perform local release rehearsal and final quality gates
+- [x] Task: Document the release runbook *(c0a7221)*
+  - [x] Document `pnpm version patch|minor|major`.
+  - [x] Document pushing the generated commit and `vX.Y.Z` tag.
+  - [x] Document Pages, GitHub Release, and GHCR outputs.
+  - [x] Document mismatch failures and required GitHub configuration.
+  - [x] Document exact and `latest` container pull examples.
+  - Notes: README now describes the package/tag contract, gated outputs,
+    permissions, local rehearsal, and the existing optional Coolify path.
+  - Verify: `git diff --check` passed; pnpm version behavior was confirmed.
+- [~] Task: Perform local release rehearsal and final quality gates
   - [ ] Confirm matching `v0.1.0` validation succeeds.
   - [ ] Confirm a mismatched tag fails.
   - [ ] Run tests, Biome, TypeScript, production build, and preview checks.
