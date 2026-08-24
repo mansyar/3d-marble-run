@@ -1,4 +1,10 @@
 import "./style.css";
+import { initScene } from "./render/scene";
 
-// Marblescape scaffold entry point.
-// The Three.js renderer replaces this placeholder in the next task.
+const app = document.querySelector<HTMLElement>("#app");
+
+if (!app) {
+  throw new Error("#app container missing from index.html");
+}
+
+initScene(app);

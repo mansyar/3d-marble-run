@@ -1,24 +1,13 @@
-:root {
-  --color-table: #f5efe4;
-  --color-ink: #3d3428;
-}
-
 html,
 body {
   margin: 0;
   height: 100%;
 }
 
-body {
-  background: var(--color-table);
-  color: var(--color-ink);
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+#app {
+  height: 100%;
 }
 
-#app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+canvas {
+  display: block;
 }
