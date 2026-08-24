@@ -11,7 +11,9 @@ import { initScene } from "./render/scene";
 import { createGoalTracker, type MarblePosition } from "./sim/goals";
 import { createPhysics } from "./sim/physics";
 import { createSpawner, type MarbleSpawn, type Spawner } from "./sim/spawner";
-import { addPiece, createTrackGraph, type TrackGraph } from "./track/graph";
+import type { TrackGraph } from "./track/graph";
+import { createStarterGraph } from "./track/starter";
+import { loadInitialTrack } from "./track/startup";
 import { createTrackStorage } from "./track/storage";
 import { createSaveSlotControls } from "./ui/save-slots";
 import { createSimulationControls } from "./ui/simulation";
@@ -29,7 +31,13 @@ if (!app) {
 const world = await createPhysics();
 const stepper = createStepper(FIXED_DT_MS, MAX_SUB_STEPS);
 const spawner: Spawner = createSpawner({ maxMarbles: 20, streamIntervalMs: 500 });
-const graph: TrackGraph = createTrackGraph();
+const storage = createTrackStorage();
+let graph: TrackGraph;
+try {
+  graph = await loadInitialTrack(storage);
+} catch {
+  graph = createStarterGraph();
+}
 const goalTracker = createGoalTracker();
 
 interface LiveMarble {
@@ -119,7 +127,6 @@ const handle = initScene(app, (elapsedMs) => {
 // --- Build mode state -------------------------------------------------------
 
 const stack = createCommandStack<TrackGraph>();
-const storage = createTrackStorage();
 
 /** Placed pieces' live meshes + physics bodies, keyed by graph piece id. */
 const spawned = new Map<string, SpawnedPiece>();
@@ -160,12 +167,7 @@ function replaceGraph(next: TrackGraph): void {
   syncScene();
 }
 
-// TEMP Phase 3 visual check: a small starter arrangement so the table isn't
-// empty. Replaced by the real starter contraption in Phase 6.
-const seedStraight = addPiece(graph, "straight", { position: [0, 0, 0], yawDeg: 0 });
-const seedCup = addPiece(graph, "goal-cup", { position: [0, 0, 4], yawDeg: 0 });
-spawnPiece(seedStraight, "straight", { position: [0, 0, 0], yawDeg: 0 });
-spawnPiece(seedCup, "goal-cup", { position: [0, 0, 4], yawDeg: 0 });
+syncScene();
 
 const previewMarble = createMarbleMesh();
 previewMarble.position.set(2.2, MARBLE_RADIUS, -1);
