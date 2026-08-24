@@ -1,0 +1,7 @@
+Task: Fixed-timestep game loop with render interpolation + Rapier physics world init
+
+Changes: createStepper() pure accumulator (TDD: 8 tests, 100% coverage) with maxSubSteps spiral-of-death guard; createPhysics() async Rapier 0.20.0-compat init (gravity -9.81); initScene accepts onFrame callback; main.ts steps world at 60Hz fixed dt before render.
+
+Scoping note: mesh interpolation application deferred to Phase 4 where marble bodies exist - stepper already yields alpha for it. Bundle grew to 3.4MB raw / 1.22MB gzip from embedded WASM; addressed in Phase 6 budget pass.
+
+Why: Deterministic physics stepping is the backbone of believable marble motion.
