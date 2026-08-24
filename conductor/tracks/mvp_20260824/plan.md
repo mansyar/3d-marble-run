@@ -2,7 +2,7 @@
 
 Progress notes are appended under completed tasks per workflow.md. One commit per task.
 
-## Phase 1 · Scaffold & Foundations
+## Phase 1 · Scaffold & Foundations [checkpoint: 15e6326]
 - [x] Task: Scaffold Vite + TypeScript-strict project with pnpm, configure Biome and Vitest *(bfd88c2)*
   - Notes: Latest-stable toolchain at install time — vite 8.2.2, typescript 7.0.2, @biomejs/biome 2.5.10, vitest 4.1.11. Biome v2.5 migrated config format. Vitest runs with passWithNoTests until Phase 2 adds real logic tests.
   - Verify: `pnpm dev` HTTP 200 · `pnpm build` passes · `CI=true pnpm biome check .` clean
