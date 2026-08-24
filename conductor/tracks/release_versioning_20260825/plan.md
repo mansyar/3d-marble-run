@@ -56,15 +56,21 @@ commit and Git note per task.
     gated centrally without changing master/manual or Coolify behavior.
   - Verify: Workflow diff is whitespace-clean; 92 tests, Biome, TypeScript,
     and production build pass.
-- [ ] Task: Add the validated tag release workflow
-  - [ ] Trigger on `v*` tags.
-  - [ ] Run frozen install, release validation, tests, Biome, TypeScript, and
+- [x] Task: Add the validated tag release workflow *(e72c2f0)*
+  - [x] Trigger on `v*` tags.
+  - [x] Run frozen install, release validation, tests, Biome, TypeScript, and
     production build.
-  - [ ] Stop all publication when validation or quality checks fail.
-  - [ ] Create a GitHub Release with GitHub-generated notes.
-  - [ ] Call the Pages and GHCR workflows only after the quality gate.
-  - [ ] Configure least-privilege permissions for contents, Pages, OIDC, and
+  - [x] Stop all publication when validation or quality checks fail.
+  - [x] Create a GitHub Release with GitHub-generated notes.
+  - [x] Call the Pages and GHCR workflows only after the quality gate.
+  - [x] Configure least-privilege permissions for contents, Pages, OIDC, and
     packages.
+  - Notes: The tag orchestrator validates before quality checks; every
+    publication job depends on `quality`, and each job has only the token
+    permissions it needs.
+  - Verify: 92 tests, Biome, TypeScript, production build, and whitespace
+    checks pass. Local actionlint was unavailable; workflow structure was
+    reviewed against GitHub reusable-workflow syntax.
 - [ ] Task: Align release image metadata
   - [ ] Publish the exact `X.Y.Z` image tag, `latest`, and SHA tag.
   - [ ] Preserve OCI version, revision, and source labels.
