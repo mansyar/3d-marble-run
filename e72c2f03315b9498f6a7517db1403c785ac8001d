@@ -1,0 +1,6 @@
+Task: Add the validated tag release workflow
+Summary: Added a v* tag orchestrator with frozen install, exact release-tag validation, tests, Biome, TypeScript, repository-path production build, generated-notes GitHub Release, and gated reusable Pages/GHCR jobs.
+Files: .github/workflows/release.yml
+Why: A tag must fail before any publication and all release outputs must depend on one successful quality gate.
+Permissions: Read-only quality job; contents write only for GitHub Release; Pages/id-token only for Pages; packages write only for GHCR.
+Verification: git diff --check; actionlint unavailable for local validation; 92 Vitest tests; Biome; TypeScript; production build passed.
