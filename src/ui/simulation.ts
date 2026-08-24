@@ -1,3 +1,5 @@
+import { formatRunTime } from "../sim/timer";
+
 export interface SimulationControlCallbacks {
   onDrop: () => void;
   onToggleStream: () => boolean;
@@ -7,6 +9,7 @@ export interface SimulationControlCallbacks {
 export interface SimulationControls {
   setStreamEnabled(enabled: boolean): void;
   setGoalCount(count: number): void;
+  setTimerMs(elapsedMs: number): void;
   showGoalPop(): void;
 }
 
@@ -40,7 +43,12 @@ export function createSimulationControls(
   goalCount.setAttribute("aria-live", "polite");
   goalCount.textContent = "Goals: 0";
 
-  panel.append(dropButton, streamButton, resetButton, goalCount);
+  const timer = document.createElement("output");
+  timer.id = "run-timer";
+  timer.setAttribute("aria-label", "Run time");
+  timer.textContent = "Time: 00:00.0";
+
+  panel.append(dropButton, streamButton, resetButton, goalCount, timer);
   root.appendChild(panel);
 
   function setStreamLabel(enabled: boolean): void {
@@ -52,6 +60,10 @@ export function createSimulationControls(
     goalCount.textContent = `Goals: ${count}`;
   }
 
+  function setTimerMs(elapsedMs: number): void {
+    timer.textContent = `Time: ${formatRunTime(elapsedMs)}`;
+  }
+
   function showGoalPop(): void {
     const pop = document.createElement("div");
     pop.className = "goal-pop";
@@ -60,5 +72,5 @@ export function createSimulationControls(
     window.setTimeout(() => pop.remove(), 900);
   }
 
-  return { setStreamEnabled: setStreamLabel, setGoalCount, showGoalPop };
+  return { setStreamEnabled: setStreamLabel, setGoalCount, setTimerMs, showGoalPop };
 }

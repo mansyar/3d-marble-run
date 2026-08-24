@@ -96,6 +96,7 @@ const handle = initScene(app, (elapsedMs) => {
   }
   syncMarbles();
   detectGoalEntries();
+  simulationControls.setTimerMs(spawner.state().timerMs);
 });
 
 // --- Build mode state -------------------------------------------------------
@@ -171,9 +172,11 @@ const simulationControls = createSimulationControls(document.body, {
     for (const id of removedIds) removeMarble(id);
     goalTracker.reset();
     simulationControls.setGoalCount(0);
+    simulationControls.setTimerMs(0);
     simulationControls.setStreamEnabled(false);
   },
 });
 
 simulationControls.setStreamEnabled(spawner.isContinuous());
 simulationControls.setGoalCount(goalTracker.count());
+simulationControls.setTimerMs(spawner.state().timerMs);

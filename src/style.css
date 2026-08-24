@@ -47,7 +47,8 @@ canvas {
   background: #f2e8d8;
 }
 
-#goal-count {
+#goal-count,
+#run-timer {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -56,6 +57,10 @@ canvas {
   font-size: 13px;
   font-weight: 700;
   white-space: nowrap;
+}
+
+#run-timer {
+  font-variant-numeric: tabular-nums;
 }
 
 .goal-pop {
