@@ -1,8 +1,8 @@
 {
   "id": "mvp_20260824",
   "type": "MVP",
-  "status": "new",
+  "status": "completed",
   "created": "2026-08-24",
-  "updated": "2026-08-24",
+  "updated": "2026-08-25",
   "description": "Marblescape v1 — full MVP: scaffold, piece system, build mode, marble simulation, cameras, persistence and polish"
 }
