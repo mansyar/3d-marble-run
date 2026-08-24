@@ -1,0 +1,6 @@
+Task: Implement the accessible About dialog
+Summary: Added a touch-sized About trigger to the simulation HUD and a native modal dialog showing Marblescape and the package-derived version.
+Files: src/ui/about.ts, src/ui/simulation.ts, src/main.ts, src/style.css
+Accessibility: Dialog has labelled/described semantics, native modal behavior, Escape cancellation, close control, backdrop close, initial close-button focus, and focus restoration to the trigger.
+Offline: Uses only existing DOM APIs and the existing APP_VERSION export; no network dependency.
+Verification: 92 Vitest tests; Biome; TypeScript; production build (3,422.17 kB raw / 1,240.30 kB gzip); git diff --check passed.
