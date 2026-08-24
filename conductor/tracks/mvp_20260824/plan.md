@@ -30,7 +30,9 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
   - Notes: Graph rules (unique ids, symmetric compatible+free connect, remove clears partner refs, move detaches); generic stack cycle + redo-tail truncation; Place/Move/Delete semantics incl. full connection restore on delete-undo. RED confirmed.
 - [x] Task: Implement track-graph module (pieces ↔ ports connections bookkeeping) until green *(c254f99)*
   - Notes: TrackGraph with symmetric free-port connection rules + snapshot-based restorePiece; findSnap solver (SNAP_DISTANCE 0.25, opposing-direction gate, yaw alignment that preserves vertical spout↔cup joins); generic CommandStack; Place/Move/Delete commands — Delete deep-clones its snapshot at construction so removePiece's detach can't corrupt restore. Coverage: commandStack/commands/snapping 100%, graph 95.16%, registry 96.29% stmts vs ≥80% target.
-- [~] Task: Implement tray HUD + ghost placement flow (desktop pointer events + touch gestures)
+- [x] Task: Implement tray HUD + ghost placement flow (desktop pointer events + touch gestures) *(6d7fd0d)*
+  - Notes: Added the five-piece bottom tray, translucent pointer/touch ghosts, snap/blocked/free feedback, rotation and cancellation controls, and undoable placement through PlaceCommand. Funnel mouth/spout ↔ run transitions now pass the vertical-to-horizontal snap rule, and snap connections are persisted symmetrically in the graph. User manually confirmed desktop/mobile placement, rotation, cancellation, snapping, and piece visuals.
+  - Verify: `CI=true pnpm vitest run` (51 passed) · `CI=true pnpm vitest run --coverage` (97.38% statements overall) · `CI=true pnpm biome check .` · `pnpm build`
 - [ ] Task: Implement move & delete interactions routed through the command stack
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
 
