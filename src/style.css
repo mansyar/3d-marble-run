@@ -15,6 +15,38 @@ canvas {
   touch-action: none; /* pointer events drive placement, not page scroll */
 }
 
+/* --- Simulation controls --------------------------------------------------- */
+
+#simulation-controls {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  left: max(12px, env(safe-area-inset-left));
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: rgb(255 255 255 / 0.82);
+  backdrop-filter: blur(6px);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgb(61 52 40 / 0.18);
+  z-index: 10;
+}
+
+#simulation-controls button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #cdbda8;
+  border-radius: 10px;
+  background: #fff;
+  color: #3d3428;
+  font-size: 13px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#simulation-controls button:active {
+  background: #f2e8d8;
+}
+
 /* --- Bottom tray HUD ------------------------------------------------------ */
 
 #hud-tray {

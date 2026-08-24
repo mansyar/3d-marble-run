@@ -43,7 +43,7 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 ## Phase 4 · Marble Simulation
 - [x] Task: Write failing tests — spawner state machine (manual drop / stream toggle, ~20-marble cap with oldest-recycled, reset semantics incl. timer start rule) *(460d050)*
   - Notes: 7 tests define manual and continuous spawning, timer start at first spawn, interval scheduling, oldest-active recycling at the cap, removal, and reset/stop semantics. RED confirmed because the spawner module is not implemented yet.
-- [ ] Task: Implement spawner + marble bodies in the Rapier world until green
+- [~] Task: Implement spawner + marble bodies in the Rapier world until green
 - [ ] Task: Goal-cup entry detection → counter increment + celebration pop
 - [ ] Task: Run timer logic + HUD counters wired to simulation events
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*

@@ -2,6 +2,15 @@ import { describe, expect, it } from "vitest";
 import { createSpawner } from "../src/sim/spawner";
 
 describe("marble spawner state machine", () => {
+  it("uses defaults and ignores non-positive elapsed time", () => {
+    const spawner = createSpawner();
+
+    expect(spawner.advance(0)).toEqual({ spawned: [], recycled: [] });
+    spawner.setContinuous(true);
+    spawner.setContinuous(true);
+    expect(spawner.advance(499).spawned).toEqual([]);
+  });
+
   it("drops one marble manually and starts the timer at that spawn", () => {
     const spawner = createSpawner({ maxMarbles: 20, streamIntervalMs: 100 });
 

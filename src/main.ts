@@ -1,4 +1,5 @@
 import "./style.css";
+import { ColliderDesc, RigidBodyDesc, type World } from "@dimforge/rapier3d-compat";
 import { createPlacementController } from "./build/placement";
 import { createCommandStack } from "./core/commandStack";
 import { createStepper } from "./core/stepper";
@@ -7,7 +8,9 @@ import { createMarbleMesh, MARBLE_RADIUS } from "./pieces/marble";
 import type { PieceTypeId, Placement } from "./pieces/registry";
 import { initScene } from "./render/scene";
 import { createPhysics } from "./sim/physics";
+import { createSpawner, type MarbleSpawn, type Spawner } from "./sim/spawner";
 import { addPiece, createTrackGraph, type TrackGraph } from "./track/graph";
+import { createSimulationControls } from "./ui/simulation";
 import { createTray } from "./ui/tray";
 
 const FIXED_DT_MS = 1000 / 60;
@@ -21,12 +24,60 @@ if (!app) {
 
 const world = await createPhysics();
 const stepper = createStepper(FIXED_DT_MS, MAX_SUB_STEPS);
+const spawner: Spawner = createSpawner({ maxMarbles: 20, streamIntervalMs: 500 });
+
+interface LiveMarble {
+  mesh: ReturnType<typeof createMarbleMesh>;
+  body: ReturnType<World["createRigidBody"]>;
+}
+
+const liveMarbles = new Map<number, LiveMarble>();
+const MARBLE_SPAWN_POSITION: [number, number, number] = [0, 2, 0];
+
+function spawnMarble(marble: MarbleSpawn): void {
+  const mesh = createMarbleMesh();
+  mesh.position.set(...MARBLE_SPAWN_POSITION);
+  handle.scene.add(mesh);
+
+  const body = world.createRigidBody(
+    RigidBodyDesc.dynamic().setTranslation(...MARBLE_SPAWN_POSITION),
+  );
+  world.createCollider(
+    ColliderDesc.ball(MARBLE_RADIUS).setFriction(0.45).setRestitution(0.15),
+    body,
+  );
+  liveMarbles.set(marble.id, { mesh, body });
+}
+
+function removeMarble(id: number): void {
+  const live = liveMarbles.get(id);
+  if (!live) return;
+  handle.scene.remove(live.mesh);
+  world.removeRigidBody(live.body);
+  liveMarbles.delete(id);
+}
+
+function applySpawnResult(result: ReturnType<Spawner["drop"]>): void {
+  for (const id of result.recycled) removeMarble(id);
+  for (const marble of result.spawned) spawnMarble(marble);
+}
+
+function syncMarbles(): void {
+  for (const { mesh, body } of liveMarbles.values()) {
+    const position = body.translation();
+    const rotation = body.rotation();
+    mesh.position.set(position.x, position.y, position.z);
+    mesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+  }
+}
 
 const handle = initScene(app, (elapsedMs) => {
+  applySpawnResult(spawner.advance(elapsedMs));
   const { steps } = stepper.advance(elapsedMs);
   for (let i = 0; i < steps; i++) {
     world.step();
   }
+  syncMarbles();
 });
 
 // --- Build mode state -------------------------------------------------------
@@ -94,3 +145,15 @@ const placement = createPlacementController({
   nextId: () => `piece-${++customIdCounter}`,
   onEnd: () => tray.setActive(null),
 });
+
+const simulationControls = createSimulationControls(document.body, {
+  onDrop: () => applySpawnResult(spawner.drop()),
+  onToggleStream: () => spawner.toggleContinuous(),
+  onReset: () => {
+    const { removedIds } = spawner.reset();
+    for (const id of removedIds) removeMarble(id);
+    simulationControls.setStreamEnabled(false);
+  },
+});
+
+simulationControls.setStreamEnabled(spawner.isContinuous());
