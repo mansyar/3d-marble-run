@@ -1,0 +1,5 @@
+Task: Make existing Pages and container workflows reusable
+Summary: Added workflow_call entry points to Pages and GHCR workflows and removed the standalone v* container trigger so release orchestration cannot publish duplicate images.
+Files: .github/workflows/deploy-pages.yml, .github/workflows/publish-container.yml
+Why: The tag release workflow must gate publication centrally while preserving master/manual operations and the existing opt-in Coolify path.
+Verification: git diff --check; 92 Vitest tests; Biome; TypeScript; production build (3,420.34 kB raw / 1,239.65 kB gzip) passed.
