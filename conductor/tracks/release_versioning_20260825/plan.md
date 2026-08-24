@@ -14,14 +14,19 @@ commit and Git note per task.
   - Verify: 8 targeted tests passed; validator coverage is 84.21% statements,
     92.3% branches, and 80% functions. Full suite (91 tests), Biome, and
     TypeScript also passed.
-- [ ] Task: Implement the package/tag version contract
-  - [ ] Add a small Node release-check module usable by CI and local commands.
-  - [ ] Add `pnpm check:release`.
-  - [ ] Validate stable SemVer syntax and exact `v${package.json.version}`
+- [x] Task: Implement the package/tag version contract *(d6dc4e8)*
+  - [x] Add a small Node release-check module usable by CI and local commands.
+  - [x] Add `pnpm check:release`.
+  - [x] Validate stable SemVer syntax and exact `v${package.json.version}`
     matching.
-  - [ ] Make validation failures return a non-zero exit code with an
+  - [x] Make validation failures return a non-zero exit code with an
     actionable message.
-  - [ ] Rerun release-check tests and the full test suite.
+  - [x] Rerun release-check tests and the full test suite.
+  - Notes: The validator implementation was introduced during the preceding
+    red-green test task; this task wires it into the package-level command.
+  - Verify: `pnpm check:release -- v0.1.0` succeeds and `v0.1.1` fails with
+    the expected version. Full tests (91), Biome, TypeScript, and production
+    build pass.
 - [ ] Task: Expose the package version to the browser build
   - [ ] Enable package JSON version importing under strict TypeScript.
   - [ ] Add a single `APP_VERSION` export derived from `package.json`.
