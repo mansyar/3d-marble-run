@@ -2,3 +2,8 @@ Task: Document the release runbook
 Summary: Updated README with pnpm version bump and follow-tags workflow, stable tag contract, local mismatch rehearsal, GitHub Release/Pages/GHCR outputs, exact/latest/SHA image pulls, required GitHub permissions, and preserved Coolify guidance.
 Files: README.md
 Verification: git diff --check passed; pnpm version --help confirmed the default v tag prefix and generated commit/tag behavior.
+
+Task: Perform local release rehearsal and final quality gates
+Verification: pnpm check:release -- v0.1.0 succeeded; v0.1.1 failed with the expected actionable mismatch; 92 Vitest tests passed; Biome clean; TypeScript clean; production build passed at 3,422.17 kB raw JavaScript / 1,240.30 kB gzip; HTTP preview smoke check returned 200 and the Marblescape shell; git diff --check passed.
+Workflow review: release.yml tag-only trigger, quality dependency, generated-notes release, Pages/GHCR calls, and least-privilege permissions were manually reviewed. actionlint is not installed locally.
+Remote follow-up: After merge, push a real vX.Y.Z tag and verify GitHub Actions quality, GitHub Release notes, Pages URL, GHCR X.Y.Z/latest/SHA tags, and optional Coolify behavior if enabled.
