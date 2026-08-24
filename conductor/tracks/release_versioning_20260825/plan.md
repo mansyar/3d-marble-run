@@ -113,7 +113,14 @@ commit and Git note per task.
     including Close/Escape focus return and the package-derived `v0.1.0`.
   - Verify: Manual checks and the automated suite passed; full details are
     attached as a Git note to `81488da`.
-- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`) [checkpoint: 81488da]
+  - [x] Review changed UI logic and its accessibility behavior.
+  - [x] Run automated tests, Biome, TypeScript, build, and diff checks.
+  - [x] Complete desktop and mobile manual verification.
+  - Notes: User confirmed the About experience passed desktop and mobile
+    checks. Full verification is attached as a Git note to `81488da`.
+  - Verify: 92 tests passed; the package-derived version and dialog behavior
+    were verified; the build remained within the documented budget.
 
 ## Phase 4 · Documentation & Release Rehearsal
 
