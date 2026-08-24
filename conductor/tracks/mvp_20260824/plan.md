@@ -80,4 +80,4 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: Polish audit — `prefers-reduced-motion`, ≥44px touch targets, contrast check *(da73a77)*
   - Notes: Added visible keyboard focus rings, explicit placeholder contrast, 44px rotate/delete touch targets, and a reduced-motion goal-pop override. User confirmed focus visibility, reduced-motion behavior, readability, touch targets, mobile layout, and no scrolling.
   - Verify: `CI=true pnpm vitest run` (77 passed) · `CI=true pnpm biome check .` · `pnpm build` (3,416.94 kB JS / 1,238.67 kB gzip; existing large-bundle warning)
-- [ ] Task: Static deployment setup (shareable URL) + Final Verification & Checkpoint *(Refer to workflow.md)*
+- [~] Task: Static deployment setup (shareable URL) + Final Verification & Checkpoint *(Refer to workflow.md)*
