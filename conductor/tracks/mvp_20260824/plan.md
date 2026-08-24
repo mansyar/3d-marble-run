@@ -59,7 +59,9 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: Free-orbit camera controls (rotate / zoom / pan) for mouse and touch *(b4fa02a)*
   - Notes: Added bounded desktop and touch orbit, zoom, and pan gestures with pointer capture, no-scroll handling, grab cursor feedback, and an interaction lock while placing or moving pieces. User confirmed desktop/mobile camera and editing behavior.
   - Verify: `CI=true pnpm vitest run --coverage` (65 passed; 98.30% statements, 91.12% branches, 100% functions, 99.61% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
-- [ ] Task: Chase-cam spectate mode following latest marble + camera-mode toggle
+- [x] Task: Chase-cam spectate mode following latest marble + camera-mode toggle *(9218430)*
+  - Notes: Added smooth latest-marble chase following, Free/Chase HUD toggle, free-orbit restoration, gesture lock during chase, and responsive HUD wrapping. User confirmed desktop/mobile spectating, mode switching, placement compatibility, touch layout, and no scrolling.
+  - Verify: `CI=true pnpm vitest run --coverage` (65 passed; 98.30% statements, 91.12% branches, 100% functions, 99.61% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
 
 ## Phase 6 · Persistence, Performance & Polish
