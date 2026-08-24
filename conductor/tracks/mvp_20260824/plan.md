@@ -20,7 +20,8 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
   - Notes: Pure-logic registry module. Shared track dimensions exported for geometry builders (width .6 / straight 2 / curve r1 / ramp rise .5). Symmetric kind allow-list: run-run, spout-run, spout-cup. Coverage 96.29% stmts / 100% fns-lines vs ≥80% target.
 - [x] Task: Procedural geometry builders for straight / curve / ramp / funnel / goal cup (meshes + Rapier colliders) *(93e6cda)*
   - Notes: Local-space collider specs keep mesh/physics DRY; single spawn point applies placement. Curve = 8 trough segments on quarter arc; ramp chord math lands endpoints exactly on ports; funnel/cup are lathe shells with trimesh colliders. Visual check passed (user-confirmed).
-- [ ] Task: Signature marble mesh + glossy toy-plastic material palette (one hue per piece type)
+- [x] Task: Signature marble mesh + glossy toy-plastic material palette (one hue per piece type) *(47f4049)*
+  - Notes: Shared geometry+material (created once for all marbles). Clearcoat candy-glass, no transmission (mobile budget). PMREM RoomEnvironment = procedural gloss source for all PBR materials.
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
 
 ## Phase 3 · Build Mode — Placement & Editing
