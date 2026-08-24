@@ -55,14 +55,15 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: Phase Verification & Checkpoint *(a9ef6db)*
   - Notes: Automated suite passed 65 tests with 98.30% statement coverage, 91.12% branch coverage, 100% function coverage, and 99.61% line coverage. Biome and production build passed with the existing large-bundle warning. Desktop and mobile manual verification was confirmed for spawning, stream control, physics settling, goal scoring/pop, timer/HUD, reset, touch targets, no scrolling, and Phase 3 regression behavior. Full verification report is attached as a Git note to `a9ef6db`.
 
-## Phase 5 · Cameras
+## Phase 5 · Cameras [checkpoint: 9218430]
 - [x] Task: Free-orbit camera controls (rotate / zoom / pan) for mouse and touch *(b4fa02a)*
   - Notes: Added bounded desktop and touch orbit, zoom, and pan gestures with pointer capture, no-scroll handling, grab cursor feedback, and an interaction lock while placing or moving pieces. User confirmed desktop/mobile camera and editing behavior.
   - Verify: `CI=true pnpm vitest run --coverage` (65 passed; 98.30% statements, 91.12% branches, 100% functions, 99.61% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
 - [x] Task: Chase-cam spectate mode following latest marble + camera-mode toggle *(9218430)*
   - Notes: Added smooth latest-marble chase following, Free/Chase HUD toggle, free-orbit restoration, gesture lock during chase, and responsive HUD wrapping. User confirmed desktop/mobile spectating, mode switching, placement compatibility, touch layout, and no scrolling.
   - Verify: `CI=true pnpm vitest run --coverage` (65 passed; 98.30% statements, 91.12% branches, 100% functions, 99.61% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
-- [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
+- [x] Task: Phase Verification & Checkpoint *(9218430)*
+  - Notes: Automated suite passed 65 tests with 98.30% statement coverage, 91.12% branch coverage, 100% function coverage, and 99.61% line coverage. Biome and production build passed with the existing large-bundle warning. Desktop and mobile manual verification was confirmed for free orbit, chase following, mode switching, editing compatibility, Phase 4 regression behavior, touch gestures, responsive HUD, and no scrolling. Full verification report is attached as a Git note to `9218430`.
 
 ## Phase 6 · Persistence, Performance & Polish
 - [ ] Task: Write failing tests — save serialization round-trip (track state ↔ JSON, mock IndexedDB via `idb`)
