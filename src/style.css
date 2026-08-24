@@ -13,6 +13,11 @@ body {
 canvas {
   display: block;
   touch-action: none; /* pointer events drive placement, not page scroll */
+  cursor: grab;
+}
+
+canvas.camera-orbiting {
+  cursor: grabbing;
 }
 
 /* --- Simulation controls --------------------------------------------------- */

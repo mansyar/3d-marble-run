@@ -6,6 +6,7 @@ import { createStepper } from "./core/stepper";
 import { type SpawnedPiece, spawnStaticPiece } from "./pieces/builders";
 import { createMarbleMesh, MARBLE_RADIUS } from "./pieces/marble";
 import type { PieceTypeId, Placement } from "./pieces/registry";
+import { createFreeOrbitCamera } from "./render/camera";
 import { initScene } from "./render/scene";
 import { createGoalTracker, type MarblePosition } from "./sim/goals";
 import { createPhysics } from "./sim/physics";
@@ -162,6 +163,12 @@ const placement = createPlacementController({
   sync: syncScene,
   nextId: () => `piece-${++customIdCounter}`,
   onEnd: () => tray.setActive(null),
+});
+
+createFreeOrbitCamera({
+  camera: handle.camera,
+  domElement: handle.renderer.domElement,
+  isLocked: () => placement.activeTypeId !== null,
 });
 
 const simulationControls = createSimulationControls(document.body, {
