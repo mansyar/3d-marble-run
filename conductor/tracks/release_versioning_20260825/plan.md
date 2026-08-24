@@ -94,15 +94,18 @@ commit and Git note per task.
 
 ## Phase 3 · In-App About & Version Surface
 
-- [ ] Task: Implement the accessible About dialog
-  - [ ] Add an About button to the existing simulation-controls panel.
-  - [ ] Add a modal showing `Marblescape` and `v${APP_VERSION}`.
-  - [ ] Support close button, Escape-to-close, focus return, and touch-sized
+- [x] Task: Implement the accessible About dialog *(81488da)*
+  - [x] Add an About button to the existing simulation-controls panel.
+  - [x] Add a modal showing `Marblescape` and `v${APP_VERSION}`.
+  - [x] Support close button, Escape-to-close, focus return, and touch-sized
     controls.
-  - [ ] Add styling consistent with the existing light HUD and mobile layout.
-  - [ ] Keep the runtime fully offline with no new network dependency.
-- [ ] Task: Wire and manually verify the About experience
-  - [ ] Connect the dialog to `main.ts` without duplicating orchestration logic.
+  - [x] Add styling consistent with the existing light HUD and mobile layout.
+  - [x] Keep the runtime fully offline with no new network dependency.
+  - Notes: The native dialog owns its accessibility and focus lifecycle; the
+    HUD owns only the trigger and `main.ts` passes the package-derived version.
+  - Verify: 92 tests, Biome, TypeScript, build, and diff checks pass.
+- [~] Task: Wire and manually verify the About experience
+  - [x] Connect the dialog to `main.ts` without duplicating orchestration logic.
   - [ ] Verify desktop mouse and keyboard behavior.
   - [ ] Verify mobile touch behavior and layout at narrow viewport sizes.
   - [ ] Verify the version shown matches `package.json`.
