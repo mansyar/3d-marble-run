@@ -1,0 +1,3 @@
+Task: Implement piece type definitions and port system until green
+
+GREEN phase. Pure-logic module: PortDef/PieceTypeDef/Placement types, PIECE_TYPE_IDS for all five v1 types with shared track dimensions (TRACK_WIDTH 0.6, STRAIGHT_LENGTH 2, CURVE_RADIUS 1, RAMP_RISE 0.5), symmetric kind compatibility allow-list (run-run, spout-run, spout-cup), getWorldPort yaw+translate mapping. 22/22 tests pass; tsc strict + biome clean; build OK (known Rapier chunk warning deferred to Phase 6).
