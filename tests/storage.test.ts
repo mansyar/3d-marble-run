@@ -1,0 +1,49 @@
+import "fake-indexeddb/auto";
+import { describe, expect, it } from "vitest";
+import { addPiece, createTrackGraph } from "../src/track/graph";
+import { AUTOSAVE_SLOT, createTrackStorage } from "../src/track/storage";
+
+let databaseNumber = 0;
+
+function newStorage() {
+  databaseNumber += 1;
+  return createTrackStorage({
+    databaseName: `marblescape-test-${databaseNumber}`,
+    debounceMs: 5,
+  });
+}
+
+describe("track storage", () => {
+  it("saves, lists, loads, and deletes named slots", async () => {
+    const storage = newStorage();
+    const graph = createTrackGraph();
+    addPiece(graph, "straight", { position: [1, 0, 2], yawDeg: 45 });
+
+    await storage.save("alpha", graph);
+    await storage.save("beta", graph);
+
+    expect((await storage.list()).map((slot) => slot.name).sort()).toEqual(["alpha", "beta"]);
+    expect(await storage.load("alpha")).toEqual(graph);
+    expect(await storage.load("missing")).toBeNull();
+
+    await storage.remove("alpha");
+    expect((await storage.list()).map((slot) => slot.name)).toEqual(["beta"]);
+    storage.dispose();
+  });
+
+  it("debounces autosave and flushes pending work", async () => {
+    const storage = newStorage();
+    const graph = createTrackGraph();
+    addPiece(graph, "goal-cup", { position: [0, 0, 3], yawDeg: 0 });
+
+    storage.scheduleAutosave(graph);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(await storage.load(AUTOSAVE_SLOT)).toEqual(graph);
+
+    addPiece(graph, "ramp", { position: [2, 0, 1], yawDeg: 90 });
+    storage.scheduleAutosave(graph);
+    await storage.flushAutosave(graph);
+    expect(await storage.load(AUTOSAVE_SLOT)).toEqual(graph);
+    storage.dispose();
+  });
+});

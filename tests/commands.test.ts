@@ -128,6 +128,16 @@ describe("generic command stack", () => {
     stack.redo(doc); // must be a safe no-op returning false
     expect(doc.text).toBe("b");
   });
+
+  it("clears undo and redo history", () => {
+    const doc: Doc = { text: "" };
+    const stack = createCommandStack<Doc>();
+    stack.execute(doc, append("a"));
+    stack.undo(doc);
+    stack.clear();
+    expect(stack.canUndo()).toBe(false);
+    expect(stack.canRedo()).toBe(false);
+  });
 });
 
 function buildTwoLinked(graph?: TrackGraph) {

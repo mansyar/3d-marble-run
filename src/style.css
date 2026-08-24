@@ -85,6 +85,74 @@ canvas.camera-orbiting {
   animation: goal-pop 900ms ease-out both;
 }
 
+/* --- Named save slots ------------------------------------------------------ */
+
+#save-slots {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  display: grid;
+  grid-template-columns: minmax(96px, 1fr) auto;
+  gap: 6px;
+  width: min(290px, calc(100vw - 24px));
+  padding: 8px;
+  background: rgb(255 255 255 / 0.82);
+  backdrop-filter: blur(6px);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgb(61 52 40 / 0.18);
+  z-index: 10;
+}
+
+#save-slots input,
+#save-slots select,
+#save-slots button {
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid #cdbda8;
+  border-radius: 10px;
+  background: #fff;
+  color: #3d3428;
+  font: inherit;
+  font-size: 13px;
+}
+
+#save-slots input,
+#save-slots select {
+  padding: 0 10px;
+}
+
+#save-slots button {
+  padding: 8px 12px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#save-slots button:active {
+  background: #f2e8d8;
+}
+
+#save-slot-list {
+  grid-column: 1 / -1;
+}
+
+#save-slot-status {
+  grid-column: 1 / -1;
+  min-height: 18px;
+  color: #6b5a47;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 640px) {
+  #save-slots {
+    top: calc(max(12px, env(safe-area-inset-top)) + 120px);
+    left: max(12px, env(safe-area-inset-left));
+    right: auto;
+  }
+}
+
 @keyframes goal-pop {
   from {
     opacity: 0;

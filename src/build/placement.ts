@@ -45,6 +45,8 @@ export interface PlacementDeps {
   sync: () => void;
   /** Called after every placement or cancel so UI state can re-sync. */
   onEnd?: () => void;
+  /** Called after a graph edit so persistence can debounce an autosave. */
+  onChange?: () => void;
   nextId: () => string;
 }
 
@@ -207,10 +209,12 @@ export function createPlacementController(deps: PlacementDeps): {
         new MoveCommand(state.id, state.before, placement, connection, state.beforeSnapshot),
       );
       deps.spawn(state.id, state.typeId, placement);
+      deps.onChange?.();
     } else {
       const id = deps.nextId();
       stack.execute(graph, new PlaceCommand(id, activeTypeId, placement, connection));
       deps.spawn(id, activeTypeId, placement);
+      deps.onChange?.();
     }
     moving = null;
     clearGhost();
@@ -268,6 +272,7 @@ export function createPlacementController(deps: PlacementDeps): {
     rotateBtn.hidden = true;
     deleteBtn.hidden = true;
     stack.execute(graph, new DeleteCommand(state.id, state.beforeSnapshot));
+    deps.onChange?.();
     deps.onEnd?.();
   }
 
@@ -300,13 +305,19 @@ export function createPlacementController(deps: PlacementDeps): {
     if (modifier && key === "z") {
       ev.preventDefault();
       cancel();
-      if (ev.shiftKey ? stack.redo(graph) : stack.undo(graph)) deps.sync();
+      if (ev.shiftKey ? stack.redo(graph) : stack.undo(graph)) {
+        deps.sync();
+        deps.onChange?.();
+      }
       return;
     }
     if (modifier && key === "y") {
       ev.preventDefault();
       cancel();
-      if (stack.redo(graph)) deps.sync();
+      if (stack.redo(graph)) {
+        deps.sync();
+        deps.onChange?.();
+      }
       return;
     }
     if (!ghost) return;

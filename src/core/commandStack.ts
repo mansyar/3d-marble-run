@@ -13,6 +13,7 @@ export interface CommandStack<C> {
   execute(ctx: C, command: Command<C>): void;
   undo(ctx: C): boolean;
   redo(ctx: C): boolean;
+  clear(): void;
   canUndo(): boolean;
   canRedo(): boolean;
 }
@@ -40,6 +41,10 @@ export function createCommandStack<C>(): CommandStack<C> {
       command.apply(ctx);
       undoStack.push(command);
       return true;
+    },
+    clear() {
+      undoStack.length = 0;
+      redoStack.length = 0;
     },
     canUndo: () => undoStack.length > 0,
     canRedo: () => redoStack.length > 0,

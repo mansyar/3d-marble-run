@@ -12,6 +12,8 @@ import { createGoalTracker, type MarblePosition } from "./sim/goals";
 import { createPhysics } from "./sim/physics";
 import { createSpawner, type MarbleSpawn, type Spawner } from "./sim/spawner";
 import { addPiece, createTrackGraph, type TrackGraph } from "./track/graph";
+import { createTrackStorage } from "./track/storage";
+import { createSaveSlotControls } from "./ui/save-slots";
 import { createSimulationControls } from "./ui/simulation";
 import { createTray } from "./ui/tray";
 
@@ -36,7 +38,7 @@ interface LiveMarble {
 }
 
 const liveMarbles = new Map<number, LiveMarble>();
-const MARBLE_SPAWN_POSITION: [number, number, number] = [0, 2, 0];
+const MARBLE_SPAWN_POSITION: [number, number, number] = [0, 4, 0];
 
 function spawnMarble(marble: MarbleSpawn): void {
   const mesh = createMarbleMesh();
@@ -117,6 +119,7 @@ const handle = initScene(app, (elapsedMs) => {
 // --- Build mode state -------------------------------------------------------
 
 const stack = createCommandStack<TrackGraph>();
+const storage = createTrackStorage();
 
 /** Placed pieces' live meshes + physics bodies, keyed by graph piece id. */
 const spawned = new Map<string, SpawnedPiece>();
@@ -141,6 +144,20 @@ function syncScene(): void {
   for (const piece of graph.pieces.values()) {
     spawnPiece(piece.id, piece.typeId, piece.placement);
   }
+}
+
+function replaceGraph(next: TrackGraph): void {
+  graph.pieces.clear();
+  graph.nextId = next.nextId;
+  for (const piece of next.pieces.values()) {
+    graph.pieces.set(piece.id, structuredClone(piece));
+  }
+  for (const id of graph.pieces.keys()) {
+    const numericId = Number(id.split("-")[1]);
+    if (Number.isInteger(numericId)) customIdCounter = Math.max(customIdCounter, numericId);
+  }
+  stack.clear();
+  syncScene();
 }
 
 // TEMP Phase 3 visual check: a small starter arrangement so the table isn't
@@ -175,6 +192,7 @@ const placement = createPlacementController({
       return piece ? [{ id, typeId: piece.typeId, group: live.group }] : [];
     }),
   sync: syncScene,
+  onChange: () => storage.scheduleAutosave(graph),
   nextId: () => `piece-${++customIdCounter}`,
   onEnd: () => tray.setActive(null),
 });
@@ -203,3 +221,30 @@ simulationControls.setStreamEnabled(spawner.isContinuous());
 simulationControls.setGoalCount(goalTracker.count());
 simulationControls.setTimerMs(spawner.state().timerMs);
 simulationControls.setCameraMode(cameraController.mode());
+
+async function refreshSaveSlots(): Promise<void> {
+  saveSlots.setSlots(await storage.list());
+}
+
+const saveSlots = createSaveSlotControls(document.body, {
+  onSave: async (name) => {
+    await storage.save(name, graph);
+    await refreshSaveSlots();
+  },
+  onLoad: async (name) => {
+    const loaded = await storage.load(name);
+    if (!loaded) throw new Error("Save slot not found");
+    placement.cancel();
+    replaceGraph(loaded);
+    storage.scheduleAutosave(graph);
+  },
+  onDelete: async (name) => {
+    await storage.remove(name);
+    await refreshSaveSlots();
+  },
+});
+
+void refreshSaveSlots().catch(() => saveSlots.setStatus("Save unavailable"));
+window.addEventListener("pagehide", () => {
+  void storage.flushAutosave(graph).catch(() => undefined);
+});
