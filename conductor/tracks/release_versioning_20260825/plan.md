@@ -46,11 +46,16 @@ commit and Git note per task.
 
 ## Phase 2 · Gated Tag Release Pipeline
 
-- [ ] Task: Make existing Pages and container workflows reusable
-  - [ ] Preserve current `master` and manual triggers.
-  - [ ] Add reusable workflow entry points for release orchestration.
-  - [ ] Prevent duplicate standalone tag publication.
-  - [ ] Preserve the existing optional Coolify behavior.
+- [x] Task: Make existing Pages and container workflows reusable *(f0761c6)*
+  - [x] Preserve current `master` and manual triggers.
+  - [x] Add reusable workflow entry points for release orchestration.
+  - [x] Prevent duplicate standalone tag publication.
+  - [x] Preserve the existing optional Coolify behavior.
+  - Notes: Pages and GHCR workflows now expose `workflow_call`; only the
+    standalone container `v*` trigger was removed, so tag publication can be
+    gated centrally without changing master/manual or Coolify behavior.
+  - Verify: Workflow diff is whitespace-clean; 92 tests, Biome, TypeScript,
+    and production build pass.
 - [ ] Task: Add the validated tag release workflow
   - [ ] Trigger on `v*` tags.
   - [ ] Run frozen install, release validation, tests, Biome, TypeScript, and
