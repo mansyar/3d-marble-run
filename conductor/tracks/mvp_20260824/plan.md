@@ -13,7 +13,7 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
   - Notes: TDD red→green — 8 stepper tests, 100% coverage on src/core (target ≥80%). Rapier 0.20.0-compat, 60Hz fixed dt, maxSubSteps=5 spiral guard. Interpolation alpha exposed now; mesh application deferred to Phase 4 (bodies exist there). ⚠ Bundle: 3.4MB raw / 1.22MB gzip from embedded WASM — Phase 6 budget pass must address (code-split or non-compat package).
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
 
-## Phase 2 · Piece System
+## Phase 2 · Piece System [checkpoint: 476d745]
 - [x] Task: Write failing tests — piece registry & connector-port math (port transforms, compatibility rules) *(5cf14dc)*
   - Notes: 14 tests across registry shape, geometric invariants (opposite/perpendicular/rise/mouth-spout/inlet-up), yaw+translate port math, compatibility matrix incl. symmetry. RED confirmed via unresolved-import failure.
 - [x] Task: Implement piece type definitions + port system until green *(3711647)*
