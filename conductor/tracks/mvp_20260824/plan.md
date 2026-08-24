@@ -3,7 +3,9 @@
 Progress notes are appended under completed tasks per workflow.md. One commit per task.
 
 ## Phase 1 · Scaffold & Foundations
-- [ ] Task: Scaffold Vite + TypeScript-strict project with pnpm, configure Biome and Vitest
+- [x] Task: Scaffold Vite + TypeScript-strict project with pnpm, configure Biome and Vitest *(bfd88c2)*
+  - Notes: Latest-stable toolchain at install time — vite 8.2.2, typescript 7.0.2, @biomejs/biome 2.5.10, vitest 4.1.11. Biome v2.5 migrated config format. Vitest runs with passWithNoTests until Phase 2 adds real logic tests.
+  - Verify: `pnpm dev` HTTP 200 · `pnpm build` passes · `CI=true pnpm biome check .` clean
   - [ ] Verify: `pnpm dev` serves, `pnpm build` passes, `CI=true pnpm biome check .` clean
 - [ ] Task: Bootstrap Three.js renderer — responsive canvas, resize handling, wooden-table environment, lighting rig (per product-guidelines)
 - [ ] Task: Fixed-timestep game loop with render interpolation + Rapier physics world init
