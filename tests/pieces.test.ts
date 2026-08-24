@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { buildPiece, FUNNEL_SPOUT_INNER_RADIUS } from "../src/pieces/builders";
+import { MARBLE_RADIUS } from "../src/pieces/marble";
 import {
   canConnect,
   getWorldPort,
@@ -69,6 +71,14 @@ describe("piece registry", () => {
     expect(port("funnel", "mouth").direction[1]).toBeGreaterThan(0);
     expect(port("funnel", "spout").kind).toBe("spout");
     expect(port("funnel", "spout").direction[1]).toBeLessThan(0);
+  });
+
+  it("funnel spout has a hollow passage wider than the marble", () => {
+    const funnel = buildPiece("funnel");
+    const spout = funnel.group.children[1];
+    expect(FUNNEL_SPOUT_INNER_RADIUS).toBeGreaterThan(MARBLE_RADIUS);
+    expect(spout.type).toBe("Mesh");
+    expect((spout as { geometry: { type: string } }).geometry.type).toBe("LatheGeometry");
   });
 
   it("goal cup has a single upward-facing cup inlet", () => {

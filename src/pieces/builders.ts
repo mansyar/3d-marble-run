@@ -46,6 +46,8 @@ export interface BuiltPiece {
 const FLOOR_T = 0.08;
 const WALL_H = 0.16;
 const RAIL_T = 0.07;
+export const FUNNEL_SPOUT_INNER_RADIUS = 0.13;
+const FUNNEL_SPOUT_OUTER_RADIUS = 0.17;
 const Y_AXIS = new Vector3(0, 1, 0);
 const X_AXIS = new Vector3(1, 0, 0);
 
@@ -179,12 +181,18 @@ function buildFunnel(): BuiltPiece {
     new Vector2(0.34, 0.6),
     new Vector2(0.16, 0.38),
     new Vector2(0.09, 0.22),
-    new Vector2(0.07, 0.13),
+    new Vector2(FUNNEL_SPOUT_INNER_RADIUS, 0.13),
   ];
   const bell = shadowed(new Mesh(new LatheGeometry(profile, 40), mat));
   group.add(bell);
-  const spout = shadowed(new Mesh(new BoxGeometry(0.13, 0.14, 0.13), mat));
-  spout.position.y = 0.07;
+  const spoutProfile = [
+    new Vector2(FUNNEL_SPOUT_OUTER_RADIUS, 0.14),
+    new Vector2(FUNNEL_SPOUT_OUTER_RADIUS, 0),
+    new Vector2(FUNNEL_SPOUT_INNER_RADIUS, 0),
+    new Vector2(FUNNEL_SPOUT_INNER_RADIUS, 0.14),
+    new Vector2(FUNNEL_SPOUT_OUTER_RADIUS, 0.14),
+  ];
+  const spout = shadowed(new Mesh(new LatheGeometry(spoutProfile, 40), mat));
   group.add(spout);
   return {
     group,
