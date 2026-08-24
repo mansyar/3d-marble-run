@@ -6,6 +6,7 @@ export interface SimulationControlCallbacks {
   onToggleStream: () => boolean;
   onToggleCamera: () => CameraMode;
   onReset: () => void;
+  onAbout: () => void;
 }
 
 export interface SimulationControls {
@@ -48,6 +49,13 @@ export function createSimulationControls(
     setCameraLabel(callbacks.onToggleCamera());
   });
 
+  const aboutButton = document.createElement("button");
+  aboutButton.type = "button";
+  aboutButton.textContent = "About";
+  aboutButton.setAttribute("aria-haspopup", "dialog");
+  aboutButton.setAttribute("aria-controls", "about-dialog");
+  aboutButton.addEventListener("click", callbacks.onAbout);
+
   const goalCount = document.createElement("output");
   goalCount.id = "goal-count";
   goalCount.setAttribute("aria-live", "polite");
@@ -58,7 +66,7 @@ export function createSimulationControls(
   timer.setAttribute("aria-label", "Run time");
   timer.textContent = "Time: 00:00.0";
 
-  panel.append(dropButton, streamButton, resetButton, cameraButton, goalCount, timer);
+  panel.append(dropButton, streamButton, resetButton, cameraButton, aboutButton, goalCount, timer);
   root.appendChild(panel);
 
   function setStreamLabel(enabled: boolean): void {

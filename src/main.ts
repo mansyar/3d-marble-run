@@ -15,9 +15,11 @@ import type { TrackGraph } from "./track/graph";
 import { createStarterGraph } from "./track/starter";
 import { loadInitialTrack } from "./track/startup";
 import { createTrackStorage } from "./track/storage";
+import { createAboutDialog } from "./ui/about";
 import { createSaveSlotControls } from "./ui/save-slots";
 import { createSimulationControls } from "./ui/simulation";
 import { createTray } from "./ui/tray";
+import { APP_VERSION } from "./version";
 
 const FIXED_DT_MS = 1000 / 60;
 const MAX_SUB_STEPS = 5;
@@ -235,11 +237,13 @@ function resetSimulationState(): void {
   simulationControls.setStreamEnabled(false);
 }
 
+const aboutDialog = createAboutDialog(document.body, APP_VERSION);
 const simulationControls = createSimulationControls(document.body, {
   onDrop: () => applySpawnResult(spawner.drop()),
   onToggleStream: () => spawner.toggleContinuous(),
   onToggleCamera: () => cameraController?.toggleMode() ?? "free",
   onReset: resetSimulationState,
+  onAbout: aboutDialog.open,
 });
 
 simulationControls.setStreamEnabled(spawner.isContinuous());

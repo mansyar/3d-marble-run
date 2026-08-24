@@ -55,6 +55,7 @@ canvas.camera-orbiting {
 }
 
 #simulation-controls button:focus-visible,
+#about-dialog button:focus-visible,
 #save-slots input:focus-visible,
 #save-slots select:focus-visible,
 #save-slots button:focus-visible,
@@ -79,6 +80,58 @@ canvas.camera-orbiting {
 
 #run-timer {
   font-variant-numeric: tabular-nums;
+}
+
+/* --- About dialog ----------------------------------------------------------- */
+
+#about-dialog {
+  width: min(360px, calc(100vw - 40px));
+  max-width: calc(100vw - 24px);
+  margin: auto;
+  padding: 0;
+  border: 1px solid #cdbda8;
+  border-radius: 20px;
+  background: #fff;
+  color: #3d3428;
+  box-shadow: 0 12px 36px rgb(61 52 40 / 0.28);
+}
+
+#about-dialog::backdrop {
+  background: rgb(61 52 40 / 0.42);
+  backdrop-filter: blur(2px);
+}
+
+.about-dialog-content {
+  display: grid;
+  gap: 10px;
+  padding: 24px;
+}
+
+.about-dialog-content h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.about-dialog-version {
+  margin: 0 0 8px;
+  color: #6b5a47;
+  font-size: 14px;
+}
+
+.about-dialog-close {
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid #cdbda8;
+  border-radius: 10px;
+  background: #fff;
+  color: #3d3428;
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.about-dialog-close:active {
+  background: #f2e8d8;
 }
 
 .goal-pop {
