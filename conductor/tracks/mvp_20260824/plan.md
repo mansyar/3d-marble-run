@@ -66,7 +66,8 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
   - Notes: Automated suite passed 65 tests with 98.30% statement coverage, 91.12% branch coverage, 100% function coverage, and 99.61% line coverage. Biome and production build passed with the existing large-bundle warning. Desktop and mobile manual verification was confirmed for free orbit, chase following, mode switching, editing compatibility, Phase 4 regression behavior, touch gestures, responsive HUD, and no scrolling. Full verification report is attached as a Git note to `9218430`.
 
 ## Phase 6 · Persistence, Performance & Polish
-- [~] Task: Write failing tests — save serialization round-trip (track state ↔ JSON, mock IndexedDB via `idb`)
+- [x] Task: Write failing tests — save serialization round-trip (track state ↔ JSON, mock IndexedDB via `idb`) *(44bf646)*
+  - Notes: Added four red-phase tests for connected graph round-trips, versioned JSON payloads, independent restoration with monotonic IDs, and empty-graph preservation. RED confirmed because the serialization module is not implemented yet.
 - [ ] Task: Implement debounced auto-save + named-slot UI (save / load / delete / list) until green
 - [ ] Task: First-launch pre-built starter contraption; subsequent launches load last autosave
 - [ ] Task: Performance pass — marble concurrency target, mobile frame-rate sanity, bundle-size budget check
