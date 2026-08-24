@@ -41,7 +41,7 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
   - Verify: `CI=true pnpm vitest run` (52 passed) · `CI=true pnpm vitest run --coverage` (97.47% statements, 89.58% branches, 100% functions, 99.41% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
 
 ## Phase 4 · Marble Simulation
-- [ ] Task: Write failing tests — spawner state machine (manual drop / stream toggle, ~20-marble cap with oldest-recycled, reset semantics incl. timer start rule)
+- [~] Task: Write failing tests — spawner state machine (manual drop / stream toggle, ~20-marble cap with oldest-recycled, reset semantics incl. timer start rule)
 - [ ] Task: Implement spawner + marble bodies in the Rapier world until green
 - [ ] Task: Goal-cup entry detection → counter increment + celebration pop
 - [ ] Task: Run timer logic + HUD counters wired to simulation events
