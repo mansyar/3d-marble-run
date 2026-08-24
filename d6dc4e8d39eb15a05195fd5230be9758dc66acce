@@ -1,0 +1,5 @@
+Task: Implement the package/tag version contract
+Summary: Exposed the strict release validator through pnpm check:release.
+Files: package.json
+Why: Local maintainers and CI need one consistent command to reject tags that do not exactly match package.json.
+Verification: pnpm check:release -- v0.1.0 succeeded; v0.1.1 failed as expected; CI=true pnpm vitest run; CI=true pnpm biome check .; pnpm exec tsc --noEmit; pnpm build.
