@@ -1,0 +1,5 @@
+Task: Write failing tests for stable release-tag validation
+Summary: Added strict stable SemVer tag contract tests and a reusable Node validator with CLI coverage.
+Files: scripts/check-release-version.test.mjs, scripts/check-release-version.mjs
+Why: Release artifacts must only publish when vMAJOR.MINOR.PATCH exactly matches package.json version.
+Verification: CI=true pnpm vitest run --coverage scripts/check-release-version.test.mjs; CI=true pnpm vitest run; CI=true pnpm biome check .; pnpm exec tsc --noEmit.
