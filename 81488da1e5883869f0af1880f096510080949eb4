@@ -9,3 +9,9 @@ Task: Wire and manually verify the About experience
 Summary: Connected the About trigger to the package-derived dialog through main.ts without duplicating runtime orchestration.
 Manual verification: User confirmed desktop mouse/keyboard behavior, Close and Escape focus return, mobile touch behavior, narrow layout, and version display all passed. Displayed version matched package.json v0.1.0.
 Automated verification: 92 Vitest tests; Biome; TypeScript; production build passed.
+
+Phase 3 checkpoint verification
+User confirmation: Desktop mouse/keyboard and mobile touch/layout verification passed.
+Automated: 92 Vitest tests passed; Biome clean; TypeScript clean; production build passed at 3,422.17 kB raw JavaScript / 1,240.30 kB gzip, within the documented budget; git diff --check passed.
+Manual: About opens from the HUD, displays Marblescape and package-derived v0.1.0, focuses Close initially, returns focus after Close and Escape, and remains usable at narrow mobile sizes.
+Accessibility: Native dialog semantics, labelled/described content, touch-sized controls, Escape handling, and focus restoration verified.
