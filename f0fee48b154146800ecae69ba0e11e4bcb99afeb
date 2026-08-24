@@ -1,0 +1,5 @@
+Task: Align release image metadata
+Summary: Release tags now produce an exact X.Y.Z SemVer image tag, latest, and the existing SHA tag; branch/manual latest behavior remains supported.
+Files: .github/workflows/publish-container.yml
+Why: Docker image tags must match the package release version without the Git tag's v prefix while preserving immutable revision tracking and metadata-action OCI labels.
+Verification: 92 Vitest tests; Biome; TypeScript; production build; git diff --check passed. Metadata action semantics reviewed for reusable tag context.
