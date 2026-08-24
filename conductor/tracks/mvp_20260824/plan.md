@@ -23,7 +23,7 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
   - Notes: Shared geometry+material (created once for all marbles). Clearcoat candy-glass, no transmission (mobile budget). PMREM RoomEnvironment = procedural gloss source for all PBR materials.
 - [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
 
-## Phase 3 · Build Mode — Placement & Editing
+## Phase 3 · Build Mode — Placement & Editing [checkpoint: 93830fd]
 - [x] Task: Write failing tests — snapping solver (nearest compatible port within threshold, validity rules, red-ghost conditions) *(ba045aa)*
   - Notes: 9 tests — threshold export, null-when-far, head-on exact alignment, nearest-of-several, incompatible-kind rejection, occupied-port rejection, vertical spout↔cup preserving drag yaw, corner yaw alignment via roundtrip math, exclude-self for moves. RED confirmed.
 - [x] Task: Write failing tests — undo/redo command stack (place/move/delete semantics) *(1c06b59)*
@@ -36,7 +36,9 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: Implement move & delete interactions routed through the command stack *(93830fd)*
   - Notes: Added graph-piece raycast hit-testing, drag-to-move ghosts, Delete/Backspace deletion, a touch-friendly delete pill, Escape cancellation, and Ctrl/Cmd undo/redo. Existing connections are freed during a move and restored on cancel/undo; MoveCommand reconnects the new snap and restores the complete pre-move snapshot. User manually confirmed desktop/mobile move, delete, cancellation, undo/redo, and connected-piece behavior.
   - Verify: `CI=true pnpm vitest run` (52 passed) · `CI=true pnpm vitest run --coverage` (97.47% statements overall) · `CI=true pnpm biome check .` · `pnpm build`
-- [ ] Task: Phase Verification & Checkpoint *(Refer to workflow.md)*
+- [x] Task: Phase Verification & Checkpoint *(93830fd)*
+  - Notes: Phase 3 checkpoint verified against prior checkpoint `476d745`. User confirmed desktop and mobile/touch behavior for placement, snapping, funnel ports, movement, reconnection, deletion, cancellation, undo/redo, touch controls, and no page scrolling. Verification report is attached to functional commit `93830fd`.
+  - Verify: `CI=true pnpm vitest run` (52 passed) · `CI=true pnpm vitest run --coverage` (97.47% statements, 89.58% branches, 100% functions, 99.41% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
 
 ## Phase 4 · Marble Simulation
 - [ ] Task: Write failing tests — spawner state machine (manual drop / stream toggle, ~20-marble cap with oldest-recycled, reset semantics incl. timer start rule)
