@@ -1,0 +1,78 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  quality:
+    name: Validate and build release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate release tag
+        run: pnpm check:release -- "${{ github.ref_name }}"
+
+      - name: Run tests
+        run: pnpm vitest run
+
+      - name: Check formatting and lint
+        run: pnpm biome check .
+
+      - name: Type-check
+        run: pnpm exec tsc --noEmit
+
+      - name: Build for the repository Pages path
+        run: pnpm exec vite build --base="/${{ github.event.repository.name }}/"
+
+  github-release:
+    name: Create GitHub Release
+    needs: quality
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create release with generated notes
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+
+  pages:
+    name: Deploy GitHub Pages
+    needs: quality
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy-pages.yml
+
+  container:
+    name: Publish GHCR image
+    needs: quality
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/publish-container.yml
