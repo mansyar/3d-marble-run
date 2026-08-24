@@ -54,6 +54,17 @@ canvas.camera-orbiting {
   background: #f2e8d8;
 }
 
+#simulation-controls button:focus-visible,
+#save-slots input:focus-visible,
+#save-slots select:focus-visible,
+#save-slots button:focus-visible,
+.tray-btn:focus-visible,
+.rotate-pill:focus-visible,
+.delete-pill:focus-visible {
+  outline: 3px solid #005a70;
+  outline-offset: 2px;
+}
+
 #goal-count,
 #run-timer {
   display: inline-flex;
@@ -129,6 +140,11 @@ canvas.camera-orbiting {
 
 #save-slots button:active {
   background: #f2e8d8;
+}
+
+#save-slots input::placeholder {
+  color: #6b5a47;
+  opacity: 1;
 }
 
 #save-slot-list {
@@ -225,6 +241,7 @@ canvas.camera-orbiting {
   bottom: calc(max(12px, env(safe-area-inset-bottom)) + 96px);
   transform: translateX(-50%);
   padding: 12px 22px;
+  min-height: 44px;
   border: none;
   border-radius: 999px;
   background: #3d3428;
@@ -241,6 +258,7 @@ canvas.camera-orbiting {
   bottom: calc(max(12px, env(safe-area-inset-bottom)) + 150px);
   transform: translateX(-50%);
   padding: 10px 20px;
+  min-height: 44px;
   border: 2px solid #d00000;
   border-radius: 999px;
   background: #fff;
@@ -249,4 +267,10 @@ canvas.camera-orbiting {
   cursor: pointer;
   z-index: 10;
   box-shadow: 0 4px 12px rgb(61 52 40 / 0.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .goal-pop {
+    animation: none;
+  }
 }
