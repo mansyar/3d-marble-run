@@ -180,7 +180,7 @@ function buildFunnel(): BuiltPiece {
     new Vector2(0.55, 0.82),
     new Vector2(0.34, 0.6),
     new Vector2(0.16, 0.38),
-    new Vector2(0.09, 0.22),
+    new Vector2(0.15, 0.22),
     new Vector2(FUNNEL_SPOUT_INNER_RADIUS, 0.13),
   ];
   const bell = shadowed(new Mesh(new LatheGeometry(profile, 40), mat));

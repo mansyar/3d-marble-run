@@ -1,5 +1,7 @@
+import { ColliderDesc, RigidBodyDesc } from "@dimforge/rapier3d-compat";
+import { Mesh, Scene } from "three";
 import { describe, expect, it } from "vitest";
-import { buildPiece, FUNNEL_SPOUT_INNER_RADIUS } from "../src/pieces/builders";
+import { buildPiece, FUNNEL_SPOUT_INNER_RADIUS, spawnStaticPiece } from "../src/pieces/builders";
 import { MARBLE_RADIUS } from "../src/pieces/marble";
 import {
   canConnect,
@@ -8,6 +10,7 @@ import {
   type PieceTypeId,
   type PortKind,
 } from "../src/pieces/registry";
+import { createPhysics } from "../src/sim/physics";
 
 const ALL_KINDS: PortKind[] = ["run", "mouth", "spout", "cup"];
 
@@ -77,8 +80,9 @@ describe("piece registry", () => {
     const funnel = buildPiece("funnel");
     const spout = funnel.group.children[1];
     expect(FUNNEL_SPOUT_INNER_RADIUS).toBeGreaterThan(MARBLE_RADIUS);
-    expect(spout.type).toBe("Mesh");
-    expect((spout as { geometry: { type: string } }).geometry.type).toBe("LatheGeometry");
+    expect(spout).toBeInstanceOf(Mesh);
+    if (!(spout instanceof Mesh)) return;
+    expect(spout.geometry.type).toBe("LatheGeometry");
   });
 
   it("goal cup has a single upward-facing cup inlet", () => {
@@ -120,6 +124,19 @@ describe("port math", () => {
     expect(world.position[1]).toBeCloseTo(local.position[1] + 2, 5);
     expect(world.position[2]).toBeCloseTo(local.position[2] - 4, 5);
     expect(world.direction).toEqual(local.direction);
+  });
+});
+
+describe("funnel physics", () => {
+  it("lets a marble fall through the lower spout", async () => {
+    const world = await createPhysics();
+    spawnStaticPiece(new Scene(), world, "funnel", { position: [0, 0, 0], yawDeg: 0 });
+    const body = world.createRigidBody(RigidBodyDesc.dynamic().setTranslation(0, 2, 0));
+    world.createCollider(ColliderDesc.ball(MARBLE_RADIUS), body);
+
+    for (let step = 0; step < 180; step += 1) world.step();
+
+    expect(body.translation().y).toBeLessThan(-0.2);
   });
 });
 
