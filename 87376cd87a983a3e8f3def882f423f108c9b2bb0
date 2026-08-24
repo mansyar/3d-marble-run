@@ -7,3 +7,13 @@ Files: .github/workflows/deploy-pages.yml and README.md.
 Rationale: Provide a reproducible static-host deployment path without runtime services or external assets. The repository currently has no Git remote, so publishing the final URL remains a user-side push/settings step; the workflow will produce https://<owner>.github.io/<repository>/ once connected to GitHub.
 
 Verification: CI=true pnpm vitest run --coverage passed 10 files / 77 tests with 81.17% statements, 78.10% branches, 91.00% functions, and 82.43% lines overall. CI=true pnpm biome check . passed. pnpm build passed; repository-base-path build pnpm exec vite build --base=/3d-marble-run/ passed. Existing large-bundle warning remains; output is within the documented payload budget.
+
+Phase 6 Final Verification Report
+
+Scope: Phase 6 changes from checkpoint 9218430 through functional deployment commit 87376cd. The diff covered 22 paths with 866 additions and 28 deletions: IndexedDB serialization/storage, named save slots and autosave, starter startup loading, funnel pass-through regression, mobile rendering profile, accessibility polish, GitHub Pages workflow, README, and their tests/docs.
+
+Automated verification: exact CI=true pnpm vitest run passed 10 files / 77 tests. Coverage run passed with 81.17% statements, 78.10% branches, 91.00% functions, and 82.43% lines overall. Changed persistence/startup logic was covered by serialization 84.61% statements, storage 89.47%, starter 100%, and startup 100%; command stack remained 100%. CI=true pnpm biome check . passed. pnpm build passed TypeScript/Vite. pnpm exec vite build --base=/3d-marble-run/ passed for the GitHub Pages repository path. Output was 3,416.94 kB JS / 1,238.67 kB gzip, within the documented 3,500 / 1,250 kB budget; the existing Vite single-chunk warning remains.
+
+Manual verification: User confirmed desktop and mobile behavior for first-launch starter/autoload fallback, marble travel through ramp/straight/curve/funnel/cup, Goals and Time, stream/reset, named save/load/delete and autosave reload without duplicates, all piece placement/snapping including funnel mouth/spout, move/delete/cancel/undo/redo, free/chase camera controls, mobile touch gestures, performance responsiveness, focus rings, reduced-motion behavior, readable controls, touch targets, no page scrolling, and no reported console errors or regressions.
+
+Deployment: GitHub Pages workflow and README are prepared. No Git remote is configured in this workspace, so a live shareable URL cannot be published here; after pushing to GitHub and selecting GitHub Actions in Settings > Pages, the workflow publishes https://<owner>.github.io/<repository>/. No security issues were identified.
