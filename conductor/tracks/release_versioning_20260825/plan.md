@@ -27,10 +27,14 @@ commit and Git note per task.
   - Verify: `pnpm check:release -- v0.1.0` succeeds and `v0.1.1` fails with
     the expected version. Full tests (91), Biome, TypeScript, and production
     build pass.
-- [ ] Task: Expose the package version to the browser build
-  - [ ] Enable package JSON version importing under strict TypeScript.
-  - [ ] Add a single `APP_VERSION` export derived from `package.json`.
-  - [ ] Add a test ensuring the exported version matches package metadata.
+- [x] Task: Expose the package version to the browser build *(e5889fd)*
+  - [x] Enable package JSON version importing under strict TypeScript.
+  - [x] Add a single `APP_VERSION` export derived from `package.json`.
+  - [x] Add a test ensuring the exported version matches package metadata.
+  - Notes: `src/version.ts` is now the single browser-facing version source;
+    no duplicated application version string was added.
+  - Verify: Version test coverage is 100%; full tests (92), Biome, TypeScript,
+    and production build pass.
 - [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
 
 ## Phase 2 · Gated Tag Release Pipeline
