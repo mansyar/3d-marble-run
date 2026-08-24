@@ -1,0 +1,7 @@
+Task: Signature marble mesh + glossy toy-plastic material palette
+
+Changes: marble.ts - shared SphereGeometry + MeshPhysicalMaterial (clearcoat 1, roughness .08, candy red) created once for all future marbles; scene.ts adds PMREM RoomEnvironment as scene.environment (procedural studio reflections, zero assets, disposed after bake); TEMP preview marble beside goal cup in main.ts.
+
+Verified: tsc strict + biome clean; build OK; 22/22 tests; visual confirmation folded into Phase 2 checkpoint per workflow (rendering glue).
+
+Why: The marble is the hero object - its candy-glass read defines the toy feel.
