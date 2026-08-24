@@ -71,7 +71,7 @@ Progress notes are appended under completed tasks per workflow.md. One commit pe
 - [x] Task: Implement debounced auto-save + named-slot UI (save / load / delete / list) until green *(988841f)*
   - Notes: Added versioned JSON graph serialization, IndexedDB storage via `idb`, debounced `__autosave__` writes with pagehide flush, named save/load/delete/list controls, graph replacement with cleared undo history, and autosave callbacks for placement, move, delete, and undo/redo. User confirmed named-slot and autosave behavior; marble spawn height was raised to y=4.
   - Verify: `CI=true pnpm vitest run --coverage` (74 passed · 80.50% statements, 77.84% branches, 90.81% functions, 81.77% lines) · `CI=true pnpm biome check .` · `pnpm build` (existing large-bundle warning only)
-- [ ] Task: First-launch pre-built starter contraption; subsequent launches load last autosave
+- [~] Task: First-launch pre-built starter contraption; subsequent launches load last autosave
 - [ ] Task: Performance pass — marble concurrency target, mobile frame-rate sanity, bundle-size budget check
 - [ ] Task: Polish audit — `prefers-reduced-motion`, ≥44px touch targets, contrast check
 - [ ] Task: Static deployment setup (shareable URL) + Final Verification & Checkpoint *(Refer to workflow.md)*
