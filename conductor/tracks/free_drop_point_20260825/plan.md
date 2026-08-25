@@ -27,13 +27,14 @@ and input-glue tasks use the phase manual-verification checkpoint.
   - [x] Preserve advisory states and editing independence. Drop-point health is
     additive, leaving the legacy gate health API available during migration.
 
-- [ ] Verification checkpoint: Phase 1 domain and health tests, coverage,
-  Biome, TypeScript, and focused code review.
+- [x] Verification checkpoint: Phase 1 domain and health tests, coverage,
+  Biome, TypeScript, and focused code review. `[0fa2a7e]` User accepted the
+  checkpoint after full automated and desktop/mobile verification.
 
 ## Phase 2: Free placement, guide rendering, and gate-aware runtime replacement
 
-- [ ] Task: Add the non-snapped Drop point placement controller
-  - [ ] Add placement tests for free X/Z movement, one-point replacement,
+- [~] Task: Add the non-snapped Drop point placement controller
+  - [~] Add placement tests for free X/Z movement, one-point replacement,
     deletion, undo/redo, and no graph mutation.
   - [ ] Implement tray selection, marker placement, movement, touch input, and
     command-stack integration.
