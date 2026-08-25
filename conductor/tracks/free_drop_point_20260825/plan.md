@@ -91,13 +91,15 @@ and input-glue tasks use the phase manual-verification checkpoint.
   - [x] Verify migration preserves physical connections and rejects invalid
     legacy references; full tests, coverage, Biome, TypeScript, and build pass.
 
-- [~] Task: Update starter and startup/load integration
-  - [~] Write failing tests for the five-piece starter, Drop point placement,
-    ready health, first Drop traversal, and first-launch persistence.
-  - [ ] Implement starter creation, startup defaults, load replacement, reset,
-    and persistence callbacks for the separate Drop point setting.
+- [x] Task: Update starter and startup/load integration `[3aaba2d]`
+  - [x] Write failing tests for the five-piece starter, Drop point placement,
+    ready health, first Drop traversal, and first-launch persistence. `[9aeedd6]`
+  - [x] Implement starter creation, startup defaults, load replacement, reset,
+    and persistence callbacks for the separate Drop point setting. `[3aaba2d]`
+  - [x] Verify targeted starter, storage, and serialization tests (19 tests),
+    targeted coverage, Biome, and TypeScript pass.
 
-- [ ] Verification checkpoint: persistence/starter regression, full tests,
+- [~] Verification checkpoint: persistence/starter regression, full tests,
   coverage, Biome, TypeScript, and production build.
 
 ## Phase 4: UI polish, documentation, accessibility, and release verification
