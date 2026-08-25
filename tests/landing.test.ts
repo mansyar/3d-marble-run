@@ -1,14 +1,15 @@
 import { ColliderDesc, RigidBodyDesc } from "@dimforge/rapier3d-compat";
 import { describe, expect, it } from "vitest";
-import { createDropPoint, type DropPoint } from "../src/track/dropPoint";
-import { createPhysics } from "../src/sim/physics";
 import { resolveLanding, selectLandingHit } from "../src/sim/landing";
+import { createPhysics } from "../src/sim/physics";
+import { createDropPoint, type DropPoint } from "../src/track/dropPoint";
 
 describe("drop point landing", () => {
   it("resolves the first upward-facing physical surface and its piece", async () => {
     const world = await createPhysics();
     const body = world.createRigidBody(RigidBodyDesc.fixed());
     world.createCollider(ColliderDesc.cuboid(1, 0.05, 1), body);
+    world.step();
 
     const result = resolveLanding(
       world,
@@ -35,6 +36,7 @@ describe("drop point landing", () => {
     const world = await createPhysics();
     const body = world.createRigidBody(RigidBodyDesc.fixed());
     world.createCollider(ColliderDesc.cuboid(1, 0.05, 1), body);
+    world.step();
 
     expect(resolveLanding(world, createDropPoint([0, 0, 0]), new Map())).toEqual({
       status: "no-landing",
