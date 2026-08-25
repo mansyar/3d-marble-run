@@ -12,11 +12,13 @@ and input-glue tasks use the phase manual-verification checkpoint.
   - [x] Run targeted tests and changed-logic coverage. Drop point coverage is
     100%; Biome and TypeScript also pass.
 
-- [ ] Task: Define landing-raycast results and readiness states
-  - [ ] Write failing tests for first valid upward-facing surface, ignored wall
-    hits, no landing, and invalid bounds/positions.
-  - [ ] Implement a testable Rapier raycast adapter and landing result model.
-  - [ ] Run targeted tests, coverage, Biome, and TypeScript.
+- [x] Task: Define landing-raycast results and readiness states `[df69703]`
+  - [x] Write failing tests for first valid upward-facing surface, ignored wall
+    hits, no landing, and invalid bounds/positions. `[4100516]`
+  - [x] Implement a testable Rapier raycast adapter and landing result model.
+    `[df69703]`
+  - [x] Run targeted tests, coverage, Biome, and TypeScript. Landing coverage is
+    96.29% statements / 100% lines.
 
 - [ ] Task: Adapt track health from gate roots to landing-piece roots
   - [ ] Write failing tests for missing Drop point, missing landing, disconnected
