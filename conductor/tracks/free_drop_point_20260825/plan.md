@@ -99,24 +99,34 @@ and input-glue tasks use the phase manual-verification checkpoint.
   - [x] Verify targeted starter, storage, and serialization tests (19 tests),
     targeted coverage, Biome, and TypeScript pass.
 
-- [~] Verification checkpoint: persistence/starter regression, full tests,
-  coverage, Biome, TypeScript, and production build.
+- [x] Verification checkpoint: persistence/starter regression, full tests,
+  coverage, Biome, TypeScript, and production build. `[3aaba2d]` Full
+  verification passed with 23 test files / 139 tests, 92.19% statements /
+  94.64% lines, Biome, TypeScript, and standard and `/marblescape/` builds at
+  3,433.63 kB JavaScript / 1,243.71 kB gzip. A fresh desktop load created the
+  five-piece starter with a ready Drop point; a Drop marble reached `Goals: 1`;
+  named save/load restored the Drop point and ready state; and 360px mobile
+  verification showed six 52.3px × 66px tray tools with no overflow. Browser
+  output had no application errors and only the known Three.js shadow-map
+  warning. User accepted the checkpoint.
 
 ## Phase 4: UI polish, documentation, accessibility, and release verification
 
-- [ ] Task: Update tray, HUD, status copy, and responsive styling
-  - [ ] Add friendly Drop point labels, accessible names, no-landing guidance,
-    ready state, and disabled Drop/Stream semantics.
-  - [ ] Preserve ≥44px controls, narrow-tray layout, focus rings, and reduced
-    motion.
+- [x] Task: Update tray, HUD, status copy, and responsive styling
+  - [x] Add friendly Drop point labels, accessible names, no-landing guidance,
+    ready state, and disabled Drop/Stream semantics. `[a1cce2e, a782c2b]`
+  - [x] Preserve ≥44px controls, narrow-tray layout, focus rings, and reduced
+    motion. `[1b005e5, a1cce2b]` Existing Phase 2 UI implementation satisfies
+    the approved responsive and accessibility requirements.
 
-- [ ] Task: Update product documentation and migration notes
-  - [ ] Document the Drop point workflow, landing guide, readiness guidance,
-    and v1 Start-gate migration.
-  - [ ] Keep out-of-scope boundaries and offline guarantees explicit.
+- [x] Task: Update product documentation and migration notes `[73f4d2e]`
+  - [x] Document the Drop point workflow, landing guide, readiness guidance,
+    and v1 Start-gate migration. `[73f4d2e]`
+  - [x] Keep out-of-scope boundaries and offline guarantees explicit. The
+    documentation retains offline-only persistence and the approved exclusions.
 
-- [ ] Task: Run final regression and manual verification
-  - [ ] Run `CI=true pnpm vitest run`.
+- [~] Task: Run final regression and manual verification
+  - [~] Run `CI=true pnpm vitest run`.
   - [ ] Run `CI=true pnpm biome check .`.
   - [ ] Run `CI=true pnpm vitest run --coverage`.
   - [ ] Run `pnpm build` and `pnpm build -- --base=/marblescape/`.
