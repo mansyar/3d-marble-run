@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canPlacePiece } from "../src/build/placement";
+import { canPlacePiece } from "../src/build/placementRules";
 import { addPiece, createTrackGraph } from "../src/track/graph";
 
 describe("placement availability", () => {

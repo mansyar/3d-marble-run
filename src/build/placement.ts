@@ -11,8 +11,8 @@ import {
   restorePiece,
   type TrackGraph,
 } from "../track/graph";
-import { getStartGate } from "../track/health";
 import { classifySnap, type SnapClassification } from "../track/snapping";
+import { canPlacePiece } from "./placementRules";
 
 /**
  * Ghost placement flow: pick a piece in the tray, a translucent ghost follows
@@ -61,11 +61,6 @@ interface MoveState {
   typeId: PieceTypeId;
   before: Placement;
   beforeSnapshot: PlacedPiece;
-}
-
-/** Whether a new piece can be started from the tray without violating rules. */
-export function canPlacePiece(graph: TrackGraph, typeId: PieceTypeId): boolean {
-  return typeId !== "start-gate" || !getStartGate(graph);
 }
 
 export function createPlacementController(deps: PlacementDeps): {
