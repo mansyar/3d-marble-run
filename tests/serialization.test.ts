@@ -9,15 +9,15 @@ const P1: Placement = { position: [0.5, 0.25, 2], yawDeg: 90 };
 describe("track serialization", () => {
   it("round-trips pieces, placements, connections, and the next id", () => {
     const graph = createTrackGraph();
-    const straight = addPiece(graph, "straight", P0, "piece-7");
+    const gate = addPiece(graph, "start-gate", P0, "piece-7");
     const curve = addPiece(graph, "curve", P1, "piece-12");
-    expect(connect(graph, straight, "b", curve, "a")).toBe(true);
+    expect(connect(graph, gate, "spout", curve, "a")).toBe(true);
 
     const restored = deserializeTrack(serializeTrack(graph));
 
     expect(restored.nextId).toBe(13);
     expect([...restored.pieces.values()]).toEqual([...graph.pieces.values()]);
-    expect(getPiece(restored, straight)?.connections.b).toEqual({
+    expect(getPiece(restored, gate)?.connections.spout).toEqual({
       pieceId: curve,
       portId: "a",
     });
@@ -64,7 +64,21 @@ describe("track serialization", () => {
     expect(restored.nextId).toBe(1);
   });
 
-  it("rejects malformed pieces and asymmetric connections", () => {
+  it("loads v1 saves that do not contain a start gate", () => {
+    const payload = {
+      version: 1,
+      nextId: 2,
+      pieces: [
+        { id: "piece-1", typeId: "straight", placement: P0, connections: { a: null, b: null } },
+      ],
+    };
+
+    expect(deserializeTrack(JSON.stringify(payload)).pieces.get("piece-1")?.typeId).toBe(
+      "straight",
+    );
+  });
+
+  it("rejects malformed pieces, duplicate start gates, and asymmetric connections", () => {
     const unknownType = {
       version: 1,
       nextId: 2,
@@ -78,6 +92,16 @@ describe("track serialization", () => {
       ],
     };
     expect(() => deserializeTrack(JSON.stringify(unknownType))).toThrow();
+
+    const duplicateStartGates = {
+      version: 1,
+      nextId: 3,
+      pieces: [
+        { id: "piece-1", typeId: "start-gate", placement: P0, connections: { spout: null } },
+        { id: "piece-2", typeId: "start-gate", placement: P1, connections: { spout: null } },
+      ],
+    };
+    expect(() => deserializeTrack(JSON.stringify(duplicateStartGates))).toThrow();
 
     const duplicateIds = {
       version: 1,
