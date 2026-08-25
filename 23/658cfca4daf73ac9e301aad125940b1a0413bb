@@ -1,0 +1,1 @@
+Task: Clarify the simulation reset label\n\nSummary: Renamed the simulation control from Reset to Reset run without changing its callback or behavior.\n\nFile: src/ui/simulation.ts\nWhy: Children should understand that the run resets while the track build remains intact.
