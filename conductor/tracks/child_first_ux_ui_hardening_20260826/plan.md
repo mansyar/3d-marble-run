@@ -19,11 +19,17 @@ a verification checkpoint before proceeding.
     automation and viewport verification remain scheduled for the phase
     checkpoint.
 
-- [ ] Task: Collapse named saves behind a Saved tracks control
-  - [ ] Preserve the existing save, load, delete, and status behavior.
-  - [ ] Add an accessible responsive drawer or dialog with keyboard escape,
+- [x] Task: Collapse named saves behind a Saved tracks control *(6ff3ba3)*
+  - [x] Preserve the existing save, load, delete, and status behavior.
+  - [x] Add an accessible responsive drawer or dialog with keyboard escape,
     backdrop/touch close, and focus management.
-  - [ ] Ensure the save surface cannot obscure gameplay guidance.
+  - [x] Ensure the save surface cannot obscure gameplay guidance.
+  - Notes: Converted the always-visible save panel into an inline drawer under a
+    Saved tracks trigger. Escape, outside touch, close-button, and focus-return
+    behavior are handled without changing storage callbacks.
+  - Verify: `pnpm exec tsc --noEmit` and `git diff --check` passed; full phase
+    automation and viewport verification remain scheduled for the phase
+    checkpoint.
 
 - [ ] Task: Clarify the simulation reset label
   - [ ] Rename the visible control to **Reset run** while preserving its current
