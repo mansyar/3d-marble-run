@@ -25,13 +25,7 @@ describe("Drop point track health", () => {
     const straightId = addPiece(graph, "straight", { position: [0, 0, 0], yawDeg: 0 });
     addPiece(graph, "goal-cup", { position: [3, 0, 0], yawDeg: 0 });
 
-    expect(
-      assessDropPointHealth(
-        graph,
-        createDropPoint([0, 0, 0]),
-        straightId,
-      ),
-    ).toEqual({
+    expect(assessDropPointHealth(graph, createDropPoint([0, 0, 0]), straightId)).toEqual({
       status: "no-connected-goal",
       reachableGoalIds: [],
     });
