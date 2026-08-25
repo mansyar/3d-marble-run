@@ -65,7 +65,7 @@ a verification checkpoint before proceeding.
     unavailable.
   - Verify: Focused Vitest tests (4), strict TypeScript, and Biome passed.
 
-- [ ] Task: Render non-blocking first-run coach marks
+- [~] Task: Render non-blocking first-run coach marks
   - [ ] Show short hints for selecting a piece, placing it, and dropping a
     marble.
   - [ ] Allow dismissal at any time without blocking canvas or tray interaction.
