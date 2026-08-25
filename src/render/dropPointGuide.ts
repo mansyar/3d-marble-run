@@ -1,5 +1,14 @@
 import type { World } from "@dimforge/rapier3d-compat";
-import { CylinderGeometry, Mesh, MeshStandardMaterial, type Scene, SphereGeometry } from "three";
+import {
+  DynamicDrawUsage,
+  InstancedMesh,
+  Mesh,
+  MeshBasicMaterial,
+  MeshStandardMaterial,
+  Object3D,
+  type Scene,
+  SphereGeometry,
+} from "three";
 import type { DropPointState } from "../build/dropPointPlacement";
 import type { Vec3 } from "../pieces/registry";
 import { type LandingResult, resolveLanding } from "../sim/landing";
@@ -7,6 +16,9 @@ import { createDropPoint, type DropPoint } from "../track/dropPoint";
 
 const MARKER_COLOR = 0x8338ec;
 const GUIDE_COLOR = 0x2a9d8f;
+const GUIDE_DOT_RADIUS = 0.04;
+const GUIDE_DOT_SPACING = 0.35;
+const GUIDE_MAX_DOTS = 59;
 
 export interface DropPointGuideDeps {
   scene: Scene;
@@ -32,17 +44,22 @@ export function createDropPointGuide(deps: DropPointGuideDeps): DropPointGuide {
   marker.castShadow = true;
   marker.visible = false;
 
-  const guide = new Mesh(
-    new CylinderGeometry(0.025, 0.025, 1, 12),
-    new MeshStandardMaterial({
+  const guide = new InstancedMesh(
+    new SphereGeometry(GUIDE_DOT_RADIUS, 8, 6),
+    new MeshBasicMaterial({
       color: GUIDE_COLOR,
-      roughness: 0.5,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.85,
+      depthWrite: false,
+      depthTest: false,
     }),
+    GUIDE_MAX_DOTS,
   );
+  guide.instanceMatrix.setUsage(DynamicDrawUsage);
+  guide.frustumCulled = false;
   guide.visible = false;
   deps.scene.add(marker, guide);
+  const dotTransform = new Object3D();
 
   let preview: DropPoint | null | undefined;
   let lastResult: LandingResult = {
@@ -86,11 +103,19 @@ export function createDropPointGuide(deps: DropPointGuideDeps): DropPointGuide {
     const result = resolveLanding(deps.world, point, deps.trackBodies);
     if (result.status === "ready" && result.position && result.distance !== null) {
       guide.visible = true;
-      guide.position.set(
-        point.position[0],
-        result.position[1] + result.distance / 2,
-        point.position[2],
+      guide.position.set(point.position[0], result.position[1], point.position[2]);
+      const dotCount = Math.min(
+        GUIDE_MAX_DOTS,
+        Math.max(2, Math.ceil(result.distance / GUIDE_DOT_SPACING) + 1),
       );
+      dotTransform.scale.set(1, 1 / result.distance, 1);
+      for (let index = 0; index < dotCount; index += 1) {
+        dotTransform.position.set(0, index / (dotCount - 1), 0);
+        dotTransform.updateMatrix();
+        guide.setMatrixAt(index, dotTransform.matrix);
+      }
+      guide.count = dotCount;
+      guide.instanceMatrix.needsUpdate = true;
       guide.scale.set(1, result.distance, 1);
     } else {
       guide.visible = false;
@@ -116,7 +141,7 @@ export function createDropPointGuide(deps: DropPointGuideDeps): DropPointGuide {
       marker.geometry.dispose();
       (marker.material as MeshStandardMaterial).dispose();
       guide.geometry.dispose();
-      (guide.material as MeshStandardMaterial).dispose();
+      guide.material.dispose();
     },
     get lastResult() {
       return lastResult;
