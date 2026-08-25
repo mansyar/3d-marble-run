@@ -2,18 +2,27 @@
 
 ## Phase 1 · Master CI-only validation
 
-- [ ] Task: Add the master-push CI-only workflow
-  - [ ] Create a workflow triggered by pushes to `master` only.
-  - [ ] Run pnpm 11/Node 22 setup with a frozen lockfile install.
-  - [ ] Run Vitest, Biome, TypeScript, and the production build.
-  - [ ] Keep deployment, package publication, and deployment secrets out of the
+- [x] Task: Add the master-push CI-only workflow
+  - [x] Create a workflow triggered by pushes to `master` only.
+  - [x] Run pnpm 11/Node 22 setup with a frozen lockfile install.
+  - [x] Run Vitest, Biome, TypeScript, and the production build.
+  - [x] Keep deployment, package publication, and deployment secrets out of the
     CI-only workflow.
-- [ ] Task: Validate the CI-only workflow contract
-  - [ ] Review trigger, permissions, steps, and failure behavior.
-  - [ ] Run local tests, Biome, TypeScript, build, and diff checks.
-  - [ ] Run workflow syntax validation when `actionlint` is available, otherwise
+  - Commit: `ce1271a` (`ci(release): Add master-only CI workflow`); Git note attached.
+- [x] Task: Validate the CI-only workflow contract
+  - [x] Review trigger, permissions, steps, and failure behavior.
+  - [x] Run local tests, Biome, TypeScript, build, and diff checks.
+  - [x] Run workflow syntax validation when `actionlint` is available, otherwise
     record the manual YAML review and remote GitHub result.
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+  - Verification: 92 tests passed; Biome, TypeScript, production build, and
+    `git diff --check` passed. `actionlint` was unavailable; manual workflow
+    review passed. Build measured 3,422.17 kB raw / 1,240.30 kB gzip.
+  - Commit: validation is recorded in the Phase 1 plan update; implementation
+    commit is `ce1271a` with a Git note.
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`) [checkpoint: ce1271a]
+  - Automated verification and manual desktop/mobile confirmation are recorded
+    in the full Git note appended to `ce1271a`.
+  - Remote CI execution remains post-push verification.
 
 ## Phase 2 · Release-only publication policy
 
