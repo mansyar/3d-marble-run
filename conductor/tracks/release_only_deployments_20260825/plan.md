@@ -67,14 +67,30 @@
   - [x] Document release-triggered optional Coolify behavior and existing
     configuration requirements.
   - Commit: `8cd30aa` (`docs(release): Document release-only deployment policy`); Git note attached.
-- [~] Task: Perform local and remote release-policy verification
+- [x] Task: Perform local and remote release-policy verification
   - [x] Run matching and mismatched release-tag validation checks.
   - [x] Run the complete local tests, Biome, TypeScript, production build, and
     preview checks.
-    - Verification: matching `v0.1.0` passed; mismatched `v0.1.1` was rejected;
+    - Verification: matching `v0.1.1` passed; mismatched `v0.1.0` was rejected;
       92 tests, Biome, TypeScript, build, `git diff --check`, and preview HTTP
       smoke check passed. Build measured 3,422.17 kB raw / 1,240.30 kB gzip.
-  - [ ] Verify a master push runs CI without Pages/GHCR publication.
-  - [ ] Verify a valid release tag runs quality and then the configured outputs.
-  - [ ] Record any GitHub Actions annotations or follow-up maintenance items.
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+  - [x] Verify a master push runs CI without Pages/GHCR publication.
+    - Verification: master CI run `32798476496` passed; no publication workflow
+      ran for that push.
+  - [x] Verify a valid release tag runs quality and then the configured outputs.
+    - Verification: release run `32798523908` passed quality, GitHub Release,
+      Pages, GHCR, and optional Coolify. GHCR logs confirmed `0.1.1`, `latest`,
+      and `sha-f94b836` tags plus OCI version/revision/source labels. The
+      `github-pages` environment allows `master` and `v*`.
+  - [x] Record any GitHub Actions annotations or follow-up maintenance items.
+    - Verification: non-blocking Node.js 20 deprecation annotations recorded;
+      local `actionlint` was unavailable. GitHub API package-tag inspection was
+      unavailable because the local token lacks `read:packages`; workflow logs
+      provided the tag and label evidence.
+  - Commits: `77a6194`, `9b6a07b`, `4f7fb6f`, and `f94b836`; Git notes attached.
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`) [checkpoint: f94b836]
+  - Full automated, remote, and manual verification is recorded in the Git note
+    appended to `f94b836`.
+  - User confirmed the live Pages URL on desktop and mobile/narrow viewport,
+    including editor loading, piece editing, marble interaction, About dialog,
+    touch-sized controls, and canvas interaction.
