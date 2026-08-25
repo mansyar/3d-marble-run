@@ -45,7 +45,7 @@ export function createSimulationControls(
 
   const resetButton = document.createElement("button");
   resetButton.type = "button";
-  resetButton.textContent = "Reset";
+  resetButton.textContent = "Reset run";
   resetButton.addEventListener("click", callbacks.onReset);
 
   const cameraButton = document.createElement("button");
