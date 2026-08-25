@@ -37,10 +37,13 @@ One commit per task.
 
 ## Phase 2 · Gate-Driven Simulation & Lost-Marble Cleanup
 
-- [~] Task: Write failing tests for spawn resolution and playable bounds
-  - [ ] Verify the gate’s world-space spawn anchor under placement and yaw.
-  - [ ] Verify missing-gate and invalid-boundary classifications.
-  - [ ] Verify cleanup state does not count a goal or leave an active marble.
+- [x] Task: Write failing tests for spawn resolution and playable bounds `[9f736da]`
+  - [x] Verify the gate’s world-space spawn anchor under placement and yaw.
+  - [x] Verify missing-gate and invalid-boundary classifications.
+  - [x] Verify cleanup state does not count a goal or leave an active marble.
+  - Notes: Added Red-phase coverage for gate-driven spawn resolution,
+    boundary classification, lost-marble identification, goal non-counting,
+    and active-spawner cleanup.
 - [ ] Task: Replace the fixed spawn position with gate-driven spawning
   - [ ] Resolve the active gate from the graph.
   - [ ] Make manual drops and streams use the gate anchor.
