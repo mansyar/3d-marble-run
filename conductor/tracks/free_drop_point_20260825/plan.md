@@ -20,11 +20,12 @@ and input-glue tasks use the phase manual-verification checkpoint.
   - [x] Run targeted tests, coverage, Biome, and TypeScript. Landing coverage is
     96.29% statements / 100% lines.
 
-- [ ] Task: Adapt track health from gate roots to landing-piece roots
-  - [ ] Write failing tests for missing Drop point, missing landing, disconnected
-    goal, direct Goal cup landing, and ready connected routes.
-  - [ ] Implement route reachability from the detected landing piece.
-  - [ ] Preserve advisory states and editing independence.
+- [x] Task: Adapt track health from gate roots to landing-piece roots `[0fa2a7e]`
+  - [x] Write failing tests for missing Drop point, missing landing, disconnected
+    goal, direct Goal cup landing, and ready connected routes. `[1ca55b9]`
+  - [x] Implement route reachability from the detected landing piece. `[0fa2a7e]`
+  - [x] Preserve advisory states and editing independence. Drop-point health is
+    additive, leaving the legacy gate health API available during migration.
 
 - [ ] Verification checkpoint: Phase 1 domain and health tests, coverage,
   Biome, TypeScript, and focused code review.
