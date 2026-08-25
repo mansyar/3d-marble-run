@@ -87,6 +87,11 @@ function applySpawnResult(result: ReturnType<typeof createGateSpawnerDrop>): voi
   for (const marble of result.spawned) spawnMarble(marble);
 }
 
+function applyGateSpawnResult(result: ReturnType<typeof createGateSpawnerDrop>): void {
+  if (result.streamStopped) simulationControls.setStreamEnabled(false);
+  applySpawnResult(result);
+}
+
 function snapshotMarbles(): void {
   for (const live of liveMarbles.values()) {
     const position = live.body.translation();
@@ -148,7 +153,7 @@ function cleanupOutOfBoundsMarbles(): void {
 let cameraController: FreeOrbitCamera | null = null;
 
 const handle = initScene(app, (elapsedMs) => {
-  applySpawnResult(createGateSpawnerAdvance(spawner, graph, elapsedMs));
+  applyGateSpawnResult(createGateSpawnerAdvance(spawner, graph, elapsedMs));
   const { steps, alpha } = stepper.advance(elapsedMs);
   for (let i = 0; i < steps; i++) {
     snapshotMarbles();
@@ -260,7 +265,7 @@ function resetSimulationState(): void {
 
 const aboutDialog = createAboutDialog(document.body, APP_VERSION);
 const simulationControls = createSimulationControls(document.body, {
-  onDrop: () => applySpawnResult(createGateSpawnerDrop(spawner, graph)),
+  onDrop: () => applyGateSpawnResult(createGateSpawnerDrop(spawner, graph)),
   onToggleStream: () => {
     if (resolveSpawnAnchor(graph).status === "missing-start") {
       spawner.setContinuous(false);

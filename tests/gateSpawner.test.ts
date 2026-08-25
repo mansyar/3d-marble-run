@@ -32,9 +32,10 @@ describe("gate-aware spawning", () => {
     expect(createGateSpawnerAdvance(spawner, graph, 100).spawned).toHaveLength(1);
     removePiece(graph, gateId);
 
-    expect(createGateSpawnerAdvance(spawner, graph, 100)).toEqual({
+    expect(createGateSpawnerAdvance(spawner, graph, 100)).toMatchObject({
       spawned: [],
       recycled: [],
+      streamStopped: true,
     });
     expect(spawner.isContinuous()).toBe(false);
   });

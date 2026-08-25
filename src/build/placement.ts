@@ -11,6 +11,7 @@ import {
   restorePiece,
   type TrackGraph,
 } from "../track/graph";
+import { getStartGate } from "../track/health";
 import { classifySnap, type SnapClassification } from "../track/snapping";
 
 /**
@@ -60,6 +61,11 @@ interface MoveState {
   typeId: PieceTypeId;
   before: Placement;
   beforeSnapshot: PlacedPiece;
+}
+
+/** Whether a new piece can be started from the tray without violating rules. */
+export function canPlacePiece(graph: TrackGraph, typeId: PieceTypeId): boolean {
+  return typeId !== "start-gate" || !getStartGate(graph);
 }
 
 export function createPlacementController(deps: PlacementDeps): {
@@ -187,6 +193,10 @@ export function createPlacementController(deps: PlacementDeps): {
 
   function place(): void {
     if (!ghost || !activeTypeId || !cursorPos || lastStatus === "blocked") return;
+    if (!moving && !canPlacePiece(graph, activeTypeId)) {
+      cancel();
+      return;
+    }
     const query = {
       typeId: activeTypeId,
       placement: { position: [cursorPos.x, 0, cursorPos.z] as [number, number, number], yawDeg },
@@ -357,6 +367,10 @@ export function createPlacementController(deps: PlacementDeps): {
     }
     activeTypeId = null;
     cursorPos = null;
+    if (!canPlacePiece(graph, typeId)) {
+      deps.onEnd?.();
+      return;
+    }
     activeTypeId = typeId;
     yawDeg = 0;
     ghost = makeGhost(typeId);
