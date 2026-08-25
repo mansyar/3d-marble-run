@@ -74,13 +74,16 @@ and input-glue tasks use the phase manual-verification checkpoint.
 
 ## Phase 3: Version-2 persistence, v1 migration, and starter integration
 
-- [~] Task: Add version-2 Drop point serialization
-  - [~] Write failing tests for v2 round trips, null points, malformed points,
-    duplicate point data, and stable save output.
-  - [ ] Implement v2 serialization/deserialization with strict validation.
+- [x] Task: Add version-2 Drop point serialization `[1d63632]`
+  - [x] Write failing tests for v2 round trips, null points, malformed points,
+    duplicate point data, and stable save output. `[816e9b1]`
+  - [x] Implement v2 serialization/deserialization with strict fixed-height and
+    bounds validation. `[1d63632]`
+  - [x] Verify version-1 gate-less saves remain loadable with no Drop point;
+    full tests, coverage, Biome, TypeScript, and build pass.
 
-- [ ] Task: Migrate version-1 Start-gate saves
-  - [ ] Write failing tests for gate-less v1 saves, connected gate migration,
+- [~] Task: Migrate version-1 Start-gate saves
+  - [~] Write failing tests for gate-less v1 saves, connected gate migration,
     discarded gate edges, preserved physical connections, and invalid legacy
     data.
   - [ ] Implement migration before scene restoration and keep legacy gate data
