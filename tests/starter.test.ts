@@ -4,8 +4,8 @@ import { describe, expect, it, vi } from "vitest";
 import { spawnStaticPiece } from "../src/pieces/builders";
 import { MARBLE_RADIUS } from "../src/pieces/marble";
 import { createGoalTracker, type GoalEntry } from "../src/sim/goals";
-import { resolveSpawnAnchor } from "../src/sim/playability";
 import { createPhysics } from "../src/sim/physics";
+import { resolveSpawnAnchor } from "../src/sim/playability";
 import type { TrackGraph } from "../src/track/graph";
 import { assessTrackHealth } from "../src/track/health";
 import { createStarterGraph } from "../src/track/starter";
@@ -38,7 +38,7 @@ describe("starter track", () => {
     expect(assessTrackHealth(graph).status).toBe("ready");
     expect(resolveSpawnAnchor(graph)).toEqual({
       status: "ready",
-      position: [0, 2.75, -0.17],
+      position: [0, 2.75, 0],
     });
 
     for (const piece of graph.pieces.values()) {

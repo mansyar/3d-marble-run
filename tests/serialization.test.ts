@@ -22,8 +22,8 @@ describe("track serialization", () => {
       portId: "a",
     });
     expect(getPiece(restored, curve)?.connections.a).toEqual({
-      pieceId: straight,
-      portId: "b",
+      pieceId: gate,
+      portId: "spout",
     });
   });
 

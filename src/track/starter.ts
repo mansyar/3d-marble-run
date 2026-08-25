@@ -5,12 +5,17 @@ import { addPiece, connect, createTrackGraph } from "./graph";
 const STARTER_Z_OFFSET = -0.17;
 
 /**
- * Build the first-run contraption: a descending ramp feeds a straight and a
- * quarter-turn into a funnel and goal cup. The high end sits below the
- * default marble drop point so the first release demonstrates motion.
+ * Build the first-run contraption: a start gate feeds a descending ramp,
+ * straight, and quarter-turn into a funnel and goal cup.
  */
 export function createStarterGraph(): TrackGraph {
   const graph = createTrackGraph();
+  const gate = addPiece(graph, "start-gate", {
+    // Settle the chute just inside the ramp's high end so the first marble
+    // clears the endpoint seam and rolls into the starter route.
+    position: [0, 1.6, STARTER_Z_OFFSET + 0.17],
+    yawDeg: 0,
+  });
   const ramp = addPiece(graph, "ramp", {
     position: [0, 1.1, 1 + STARTER_Z_OFFSET],
     yawDeg: 180,
@@ -32,6 +37,7 @@ export function createStarterGraph(): TrackGraph {
     yawDeg: 0,
   });
 
+  connect(graph, gate, "spout", ramp, "b");
   connect(graph, ramp, "a", straight, "a");
   connect(graph, straight, "b", curve, "a");
   connect(graph, curve, "b", funnel, "mouth");

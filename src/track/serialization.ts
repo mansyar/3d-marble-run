@@ -25,7 +25,8 @@ function isPieceTypeId(value: unknown): value is PieceTypeId {
     value === "curve" ||
     value === "ramp" ||
     value === "funnel" ||
-    value === "goal-cup"
+    value === "goal-cup" ||
+    value === "start-gate"
   );
 }
 
@@ -144,6 +145,12 @@ export function deserializeTrack(serialized: string): TrackGraph {
   for (const rawPiece of pieces) {
     const piece = parsePiece(rawPiece);
     if (ids.has(piece.id)) throw new Error("Duplicate piece id in track save");
+    if (
+      piece.typeId === "start-gate" &&
+      [...graph.pieces.values()].some((item) => item.typeId === "start-gate")
+    ) {
+      throw new Error("Multiple start gates in track save");
+    }
     ids.add(piece.id);
     graph.pieces.set(piece.id, piece);
   }
