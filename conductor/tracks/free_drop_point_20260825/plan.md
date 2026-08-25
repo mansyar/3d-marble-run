@@ -138,5 +138,7 @@ and input-glue tasks use the phase manual-verification checkpoint.
     deletion disabled Drop/Stream with friendly guidance; mobile had no
     overflow and retained six 52.3px × 66px tools.
 
-- [~] Verification checkpoint: final automated and desktop/mobile verification
-  with explicit user acceptance and a Git verification note.
+- [x] Verification checkpoint: final automated and desktop/mobile verification
+  with explicit user acceptance and a Git verification note. `[73f4d2e]` User
+  accepted the final checkpoint after the completed regression and manual
+  verification report.
