@@ -33,12 +33,13 @@ and input-glue tasks use the phase manual-verification checkpoint.
 
 ## Phase 2: Free placement, guide rendering, and gate-aware runtime replacement
 
-- [~] Task: Add the non-snapped Drop point placement controller
-  - [~] Add placement tests for free X/Z movement, one-point replacement,
-    deletion, undo/redo, and no graph mutation.
-  - [ ] Implement tray selection, marker placement, movement, touch input, and
-    command-stack integration.
-  - [ ] Keep physical-piece snapping and editing unchanged.
+- [x] Task: Add the non-snapped Drop point placement controller `[a1cce2e]`
+  - [x] Add placement tests for free X/Z movement, one-point replacement,
+    deletion, undo/redo, and no graph mutation. `[e93af76]`
+  - [x] Implement tray selection, free-plane movement, touch input, and
+    command-stack integration. `[543a448, a1cce2e]`
+  - [x] Keep physical-piece snapping and editing unchanged. The Drop point
+    controller has no TrackGraph or snapping dependency.
 
 - [ ] Task: Render and update the marker and vertical landing guide
   - [ ] Implement the toy-like marker and guide scene objects.
