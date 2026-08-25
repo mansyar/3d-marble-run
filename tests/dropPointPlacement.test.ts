@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { createDropPointEditor, createDropPointState } from "../src/build/dropPointPlacement";
 import { createCommandStack } from "../src/core/commandStack";
-import {
-  createDropPointEditor,
-  createDropPointState,
-} from "../src/build/dropPointPlacement";
 import { addPiece, createTrackGraph } from "../src/track/graph";
 
 describe("Drop point placement state", () => {
