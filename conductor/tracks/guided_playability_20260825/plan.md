@@ -99,12 +99,15 @@ One commit per task.
 
 ## Phase 4 · Regression, Accessibility & Budget Verification
 
-- [~] Task: Audit changed logic coverage and invariants
-  - [ ] Run targeted coverage for graph health, serialization, spawn
+- [x] Task: Audit changed logic coverage and invariants `[d0f0af3, 6f1e733]`
+  - [x] Run targeted coverage for graph health, serialization, spawn
     resolution, and cleanup.
-  - [ ] Confirm changed logic meets the project’s approximately 80% target.
-  - [ ] Review singleton, save-format, and active-marble lifecycle invariants.
-- [ ] Task: Complete automated and manual verification
+  - [x] Confirm changed logic meets the project’s approximately 80% target.
+  - [x] Review singleton, save-format, and active-marble lifecycle invariants.
+  - Notes: Targeted coverage passed 41 tests at 89.42% statements / 92.84%
+    lines overall; changed graph, health, serialization, playability, starter,
+    and storage paths are covered above the project target.
+- [~] Task: Complete automated and manual verification
   - [ ] Run tests, Biome, TypeScript, production build, and base-path build.
   - [ ] Verify desktop and touch placement, spawning, status feedback,
     deletion, undo/redo, and loading.
