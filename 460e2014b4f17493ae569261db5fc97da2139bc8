@@ -1,0 +1,1 @@
+Task: Add advisory track-status feedback (Red coverage)\nSummary: Added failing tests for friendly missing-start, disconnected-goal, and ready guidance messages.\nFiles: tests/trackStatus.test.ts\nWhy: Lock the user-facing copy before wiring diagnostics into the HUD.
