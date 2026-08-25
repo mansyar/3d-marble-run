@@ -55,11 +55,15 @@ a verification checkpoint before proceeding.
 
 ## Phase 2: First-run child guidance
 
-- [~] Task: Add tested coach-mark state behavior
-  - [~] Write Vitest tests first for step order, dismissal, completion, and
+- [x] Task: Add tested coach-mark state behavior *(c5b5146)*
+  - [x] Write Vitest tests first for step order, dismissal, completion, and
     locally remembered dismissal.
-  - [ ] Implement the smallest pure state and persistence helper needed for the
+  - [x] Implement the smallest pure state and persistence helper needed for the
     coach marks.
+  - Notes: Added ordered coach-mark progression with optional local persistence,
+    malformed-storage handling, and silent degradation when browser storage is
+    unavailable.
+  - Verify: Focused Vitest tests (4), strict TypeScript, and Biome passed.
 
 - [ ] Task: Render non-blocking first-run coach marks
   - [ ] Show short hints for selecting a piece, placing it, and dropping a
