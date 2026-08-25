@@ -97,7 +97,7 @@ One commit per task.
     passed. User accepted the checkpoint. See the verification note on
     `6f1e733`.
 
-## Phase 4 · Regression, Accessibility & Budget Verification
+## Phase 4 · Regression, Accessibility & Budget Verification `[6282163]`
 
 - [x] Task: Audit changed logic coverage and invariants `[d0f0af3, 6f1e733]`
   - [x] Run targeted coverage for graph health, serialization, spawn
@@ -121,9 +121,11 @@ One commit per task.
     stream load, status, undo/redo, saves, reduced motion, touch targets, and
     no page scrolling. Eight seconds of streaming scored seven goals without
     runtime errors.
-- [~] Task: Update user-facing documentation and record the final checkpoint
+- [x] Task: Update user-facing documentation and record the final checkpoint `[6282163]`
   - [x] Document the start gate and custom-track spawning behavior. `[6282163]`
   - [x] Add implementation notes and verification results to `plan.md`.
-  - [~] Complete the phase checkpoint according to `workflow.md`.
+  - [x] Complete the phase checkpoint according to `workflow.md`. `[6282163]`
   - Notes: README and product definition now describe the six-piece tray,
-    single gate entry point, advisory guidance, and local persistence.
+    single gate entry point, advisory guidance, and local persistence. Final
+    automated and real-touch verification was accepted by the user; see the
+    verification note on `6282163`.
