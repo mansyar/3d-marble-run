@@ -6,12 +6,18 @@ a verification checkpoint before proceeding.
 
 ## Phase 1: Responsive HUD and contextual saved tracks
 
-- [ ] Task: Remove mobile HUD overlap and preserve guidance
-  - [ ] Map the current simulation, status, tray, and save-panel geometry at
+- [x] Task: Remove mobile HUD overlap and preserve guidance *(293a956)*
+  - [x] Map the current simulation, status, tray, and save-panel geometry at
     360px, 390px, tablet, and desktop widths.
-  - [ ] Implement responsive stacking and spacing so the status region is never
+  - [x] Implement responsive stacking and spacing so the status region is never
     covered and the page never horizontally scrolls.
-  - [ ] Preserve safe-area spacing, focus rings, live regions, and 44px controls.
+  - [x] Preserve safe-area spacing, focus rings, live regions, and 44px controls.
+  - Notes: Added a shared `#top-hud` layout that places the simulation and save
+    panels side by side on desktop and stacks them below 900px, removing the
+    brittle mobile pixel offset.
+  - Verify: `pnpm exec tsc --noEmit` and `git diff --check` passed; full phase
+    automation and viewport verification remain scheduled for the phase
+    checkpoint.
 
 - [ ] Task: Collapse named saves behind a Saved tracks control
   - [ ] Preserve the existing save, load, delete, and status behavior.
