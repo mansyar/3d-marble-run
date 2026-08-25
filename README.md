@@ -94,8 +94,8 @@ The release check rejects prereleases, malformed tags, and mismatches before
 any output is published. To rehearse it locally:
 
 ```bash
-pnpm check:release -- v0.1.0 # succeeds while package.json is 0.1.0
-pnpm check:release -- v0.1.1 # fails until package.json is 0.1.1
+pnpm check:release v0.1.0 # succeeds while package.json is 0.1.0
+pnpm check:release v0.1.1 # fails until package.json is 0.1.1
 ```
 
 Each valid release produces:
@@ -113,12 +113,14 @@ docker pull ghcr.io/mansyar/3d-marble-run:latest
 docker run --rm -p 8080:80 ghcr.io/mansyar/3d-marble-run:0.1.0
 ```
 
-Before the first release, enable **Settings → Pages → GitHub Actions** and
-allow repository Actions to use read/write workflow permissions. The release
-workflow needs contents write permission for generated GitHub Releases, Pages
-write plus OIDC for deployment, and packages write for GHCR; its jobs request
-only those permissions. GHCR must be enabled for the repository, and the
-resulting package may need its visibility or access configured in **Packages**.
+Before the first release, enable **Settings → Pages → GitHub Actions**, allow
+repository Actions to use read/write workflow permissions, and configure the
+`github-pages` environment to allow both the `master` branch and `v*` tags in
+its deployment branch and tag policy. The release workflow needs contents
+write permission for generated GitHub Releases, Pages write plus OIDC for
+deployment, and packages write for GHCR; its jobs request only those
+permissions. GHCR must be enabled for the repository, and the resulting
+package may need its visibility or access configured in **Packages**.
 
 ### Coolify deployment trigger
 
