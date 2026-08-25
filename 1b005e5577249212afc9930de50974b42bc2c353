@@ -1,0 +1,1 @@
+Task: Phase 1 checkpoint mobile correction\nSummary: Kept the six-piece tray inside narrow viewports with responsive flex sizing and preserved 44px-plus touch targets.\nFiles: src/style.css\nWhy: Manual mobile verification showed clipped first and last tray buttons after adding the sixth piece.
