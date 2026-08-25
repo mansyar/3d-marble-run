@@ -16,9 +16,30 @@ export function createSaveSlotControls(
   root: HTMLElement,
   callbacks: SaveSlotCallbacks,
 ): SaveSlotControls {
+  const saveRegion = document.createElement("div");
+  saveRegion.id = "save-slot-region";
+
+  const toggleButton = document.createElement("button");
+  toggleButton.type = "button";
+  toggleButton.id = "save-slot-toggle";
+  toggleButton.textContent = "Saved tracks";
+  toggleButton.setAttribute("aria-controls", "save-slots");
+  toggleButton.setAttribute("aria-expanded", "false");
+
   const panel = document.createElement("section");
   panel.id = "save-slots";
-  panel.setAttribute("aria-label", "Saved tracks");
+  panel.hidden = true;
+  panel.setAttribute("aria-labelledby", "save-slots-title");
+
+  const heading = document.createElement("h2");
+  heading.id = "save-slots-title";
+  heading.textContent = "Saved tracks";
+
+  const closeButton = document.createElement("button");
+  closeButton.type = "button";
+  closeButton.className = "save-slot-close";
+  closeButton.textContent = "Close";
+  closeButton.setAttribute("aria-label", "Close saved tracks");
 
   const nameInput = document.createElement("input");
   nameInput.type = "text";
@@ -47,9 +68,62 @@ export function createSaveSlotControls(
   status.id = "save-slot-status";
   status.setAttribute("aria-live", "polite");
 
-  panel.append(nameInput, saveButton, slotSelect, loadButton, deleteButton, status);
-  root.appendChild(panel);
+  panel.append(
+    heading,
+    closeButton,
+    nameInput,
+    saveButton,
+    slotSelect,
+    loadButton,
+    deleteButton,
+    status,
+  );
+  saveRegion.append(toggleButton, panel);
+  root.appendChild(saveRegion);
   let hasSlots = false;
+  let returnFocus: HTMLElement | null = null;
+
+  function close(): void {
+    if (panel.hidden) return;
+    panel.hidden = true;
+    toggleButton.setAttribute("aria-expanded", "false");
+    const focusTarget = returnFocus;
+    returnFocus = null;
+    if (focusTarget?.isConnected) {
+      focusTarget.focus();
+    } else {
+      toggleButton.focus();
+    }
+  }
+
+  function open(): void {
+    if (!panel.hidden) return;
+    const activeElement = document.activeElement;
+    returnFocus = activeElement instanceof HTMLElement ? activeElement : null;
+    panel.hidden = false;
+    toggleButton.setAttribute("aria-expanded", "true");
+    nameInput.focus();
+  }
+
+  toggleButton.addEventListener("click", () => {
+    if (panel.hidden) {
+      open();
+    } else {
+      close();
+    }
+  });
+  closeButton.addEventListener("click", close);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !panel.hidden) {
+      event.preventDefault();
+      close();
+    }
+  });
+  document.addEventListener("pointerdown", (event) => {
+    if (!panel.hidden && event.target instanceof Node && !saveRegion.contains(event.target)) {
+      close();
+    }
+  });
 
   async function run(action: () => Promise<void>, successMessage: string): Promise<void> {
     saveButton.disabled = true;
