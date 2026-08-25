@@ -1,0 +1,1 @@
+Task: Write failing tests for start-gate registry and graph rules\nSummary: Added Red-phase Vitest coverage for the sixth piece type, start-gate port transforms, singleton graph enforcement, and missing/disconnected/ready track-health states.\nFiles: tests/pieces.test.ts, tests/commands.test.ts, tests/trackHealth.test.ts\nWhy: Pin the approved behavior before implementation.
