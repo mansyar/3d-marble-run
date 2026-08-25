@@ -44,18 +44,21 @@ One commit per task.
   - Notes: Added Red-phase coverage for gate-driven spawn resolution,
     boundary classification, lost-marble identification, goal non-counting,
     and active-spawner cleanup.
-- [~] Task: Replace the fixed spawn position with gate-driven spawning
+- [x] Task: Replace the fixed spawn position with gate-driven spawning `[2ac4375, 354f4ca]`
   - [x] Resolve the active gate from the graph. `[bd9cb31]`
-  - [ ] Make manual drops and streams use the gate anchor.
-  - [ ] Prevent invisible spawns when no gate exists.
-  - [ ] Disable/stop streaming safely when the gate is deleted.
-  - Notes: Added the pure gate-anchor resolver and missing-start
-    classification; main-loop wiring remains in progress.
-- [ ] Task: Implement lost-marble cleanup
-  - [ ] Add documented playable-world bounds.
-  - [ ] Remove out-of-bounds meshes, bodies, and spawner entries.
-  - [ ] Keep timer, stream state, goal count, and reset behavior coherent.
-- [ ] Task: Add advisory track-status feedback
+  - [x] Make manual drops and streams use the gate anchor. `[2ac4375, 354f4ca]`
+  - [x] Prevent invisible spawns when no gate exists. `[2ac4375, 354f4ca]`
+  - [x] Disable/stop streaming safely when the gate is deleted. `[2ac4375, 354f4ca]`
+  - Notes: Added the pure gate-anchor resolver, positioned scheduler adapter,
+    missing-gate guard, and main-loop integration.
+- [x] Task: Implement lost-marble cleanup `[bd9cb31, 354f4ca]`
+  - [x] Add documented playable-world bounds.
+  - [x] Remove out-of-bounds meshes, bodies, and spawner entries.
+  - [x] Keep timer, stream state, goal count, and reset behavior coherent.
+  - Notes: Added the shared safety envelope and cleanup before goal detection;
+    cleanup removes the scheduler entry and physics body without incrementing
+    goals.
+- [~] Task: Add advisory track-status feedback
   - [ ] Show friendly no-gate, disconnected-goal, and ready states.
   - [ ] Refresh status after edits, undo/redo, startup, and loads.
   - [ ] Keep all editing actions available regardless of status.
