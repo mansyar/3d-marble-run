@@ -4,6 +4,18 @@ Marblescape is an offline, browser-based 3D marble-run builder. Build a track
 from procedural toy pieces, release physics-driven marbles, and save layouts
 locally in the browser.
 
+## Build and play
+
+The tray contains six pieces: straight, curve, ramp, funnel, goal cup, and
+Start gate. The Start gate is the track's single marble entry point; manual
+drops and streams begin there. A fresh launch includes a connected gate-to-goal
+starter route, while custom layouts remain editable at any time.
+
+The Track status helper explains what is needed: add a Start gate, connect a
+goal cup, or drop a marble when the route is ready. Disconnected pieces are not
+blocked, so experimentation stays forgiving. Marbles that leave the playable
+world are cleaned up automatically, and all saves remain local to the browser.
+
 ## Development
 
 ```bash
