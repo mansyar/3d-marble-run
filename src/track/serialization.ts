@@ -5,7 +5,7 @@ import {
   type DropPoint,
   isValidDropPointPosition,
 } from "./dropPoint";
-import type { ConnectionRef, PlacedPiece, TrackGraph } from "./graph";
+import { type ConnectionRef, type PlacedPiece, removePiece, type TrackGraph } from "./graph";
 
 export const TRACK_FORMAT_VERSION = 2;
 export const LEGACY_TRACK_FORMAT_VERSION = 1;
@@ -185,6 +185,16 @@ function parseGraph(payload: Record<string, unknown>): TrackGraph {
   return graph;
 }
 
+function migrateLegacyDropPoint(graph: TrackGraph): DropPoint | null {
+  const startGate = [...graph.pieces.values()].find((piece) => piece.typeId === "start-gate");
+  if (!startGate) return null;
+  const dropPoint = createDropPoint(startGate.placement.position);
+  if (!dropPoint) throw new Error("Invalid legacy Start gate position");
+  removePiece(graph, startGate.id);
+  validateConnections(graph);
+  return dropPoint;
+}
+
 /** Restore a graph and Drop point from a versioned save payload. */
 export function deserializeTrackDocument(serialized: string): TrackDocument {
   const payload: unknown = JSON.parse(serialized);
@@ -197,7 +207,7 @@ export function deserializeTrackDocument(serialized: string): TrackDocument {
     if (Object.hasOwn(payload, "dropPoint") || Object.hasOwn(payload, "dropPoints")) {
       throw new Error("Malformed Drop point in track save");
     }
-    return { graph, dropPoint: null };
+    return { graph, dropPoint: migrateLegacyDropPoint(graph) };
   }
   if (!Object.hasOwn(payload, "dropPoint") || Object.hasOwn(payload, "dropPoints")) {
     throw new Error("Malformed Drop point in track save");
