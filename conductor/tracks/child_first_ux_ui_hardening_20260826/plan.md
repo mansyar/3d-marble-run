@@ -1,0 +1,110 @@
+# Implementation Plan: Child-First UX/UI Hardening
+
+This feature follows the project workflow: logic-bearing behavior gets tests
+first, UI/render/input work gets manual verification, and every phase ends with
+a verification checkpoint before proceeding.
+
+## Phase 1: Responsive HUD and contextual saved tracks
+
+- [ ] Task: Remove mobile HUD overlap and preserve guidance
+  - [ ] Map the current simulation, status, tray, and save-panel geometry at
+    360px, 390px, tablet, and desktop widths.
+  - [ ] Implement responsive stacking and spacing so the status region is never
+    covered and the page never horizontally scrolls.
+  - [ ] Preserve safe-area spacing, focus rings, live regions, and 44px controls.
+
+- [ ] Task: Collapse named saves behind a Saved tracks control
+  - [ ] Preserve the existing save, load, delete, and status behavior.
+  - [ ] Add an accessible responsive drawer or dialog with keyboard escape,
+    backdrop/touch close, and focus management.
+  - [ ] Ensure the save surface cannot obscure gameplay guidance.
+
+- [ ] Task: Clarify the simulation reset label
+  - [ ] Rename the visible control to **Reset run** while preserving its current
+    simulation-only behavior.
+
+- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - [ ] Run relevant automated tests, Biome, strict TypeScript, and the
+    production build.
+  - [ ] Manually verify save flows, focus behavior, keyboard/touch closing, and
+    non-overlapping layouts at 360px, 390px, tablet, and desktop.
+  - [ ] Record the checkpoint SHA, Git note, user confirmation, and plan update
+    commit.
+
+## Phase 2: First-run child guidance
+
+- [ ] Task: Add tested coach-mark state behavior
+  - [ ] Write Vitest tests first for step order, dismissal, completion, and
+    locally remembered dismissal.
+  - [ ] Implement the smallest pure state and persistence helper needed for the
+    coach marks.
+
+- [ ] Task: Render non-blocking first-run coach marks
+  - [ ] Show short hints for selecting a piece, placing it, and dropping a
+    marble.
+  - [ ] Allow dismissal at any time without blocking canvas or tray interaction.
+  - [ ] Hide or advance hints when the corresponding action is completed.
+  - [ ] Respect reduced-motion preferences and keep copy child-friendly.
+
+- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - [ ] Run the coach-mark tests plus the full required automated checks.
+  - [ ] Manually verify first launch, progression, dismissal persistence, touch
+    interaction, keyboard operation, and reduced motion on desktop and mobile.
+  - [ ] Record the checkpoint SHA, Git note, user confirmation, and plan update
+    commit.
+
+## Phase 3: Visible mistake recovery and tray clarity
+
+- [ ] Task: Expose touch Undo and Redo
+  - [ ] Add visible controls with accessible labels and correct disabled states.
+  - [ ] Keep keyboard shortcuts and command-stack behavior unchanged.
+  - [ ] Refresh button state after placement, deletion, move, undo, redo, and
+    cancellation.
+
+- [ ] Task: Add recognizable tray shape previews
+  - [ ] Add lightweight inline or procedural shape cues for every piece.
+  - [ ] Preserve labels, color differentiation, active selection, and touch
+    sizing.
+  - [ ] Ensure shape cues are not the sole accessible name.
+
+- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - [ ] Run the full automated checks and production build.
+  - [ ] Manually verify recovery after every supported edit path, disabled
+    states, keyboard parity, tray selection, narrow widths, and screen-reader
+    labels.
+  - [ ] Record the checkpoint SHA, Git note, user confirmation, and plan update
+    commit.
+
+## Phase 4: Mobile camera framing and integrated polish
+
+- [ ] Task: Improve initial mobile camera framing
+  - [ ] Adjust initial framing so the starter route and goal cup are visible in
+    portrait mobile views.
+  - [ ] Avoid overriding user-controlled camera movement after initialization.
+  - [ ] Preserve free and chase camera behavior and desktop composition.
+
+- [ ] Task: Perform child-facing copy and accessibility polish
+  - [ ] Review primary labels and guidance for short, direct, child-friendly
+    wording.
+  - [ ] Verify focus order, live status announcements, contrast, touch targets,
+    and reduced-motion behavior.
+  - [ ] Fix the missing favicon or document any remaining non-blocking browser
+    diagnostics.
+
+- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - [ ] Run the full test suite, Biome, strict TypeScript, standard build,
+    hosted-path build, and bundle-size check.
+  - [ ] Manually verify 360px, 390px, tablet, desktop, mouse, touch, keyboard,
+    screen-reader-sized layouts, reduced motion, and console output.
+  - [ ] Complete the workflow security review for DOM and input changes.
+  - [ ] Record the final checkpoint SHA and Git note, obtain user confirmation,
+    and update the plan.
+
+## Constraints
+
+- No external runtime assets, network dependencies, audio, broad settings
+  system, or new/blank-track workflow.
+- Follow existing TypeScript, DOM, CSS, Three.js, Vitest, Biome, and commit
+  conventions.
+- Keep `plan.md` as the execution source of truth and mark task progress with
+  `[~]` and `[x]` plus commit hashes.
