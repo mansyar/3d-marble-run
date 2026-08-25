@@ -8,9 +8,15 @@ import { createMarbleMesh, MARBLE_RADIUS } from "./pieces/marble";
 import type { PieceTypeId, Placement } from "./pieces/registry";
 import { type CameraTarget, createFreeOrbitCamera, type FreeOrbitCamera } from "./render/camera";
 import { initScene } from "./render/scene";
+import {
+  createGateSpawnerAdvance,
+  createGateSpawnerDrop,
+  type PositionedMarbleSpawn,
+} from "./sim/gateSpawner";
 import { createGoalTracker, type MarblePosition } from "./sim/goals";
 import { createPhysics } from "./sim/physics";
-import { createSpawner, type MarbleSpawn, type Spawner } from "./sim/spawner";
+import { findOutOfBoundsMarbleIds, resolveSpawnAnchor } from "./sim/playability";
+import { createSpawner, type Spawner } from "./sim/spawner";
 import type { TrackGraph } from "./track/graph";
 import { createStarterGraph } from "./track/starter";
 import { loadInitialTrack } from "./track/startup";
@@ -49,16 +55,13 @@ interface LiveMarble {
 }
 
 const liveMarbles = new Map<number, LiveMarble>();
-const MARBLE_SPAWN_POSITION: [number, number, number] = [0, 4, 0];
 
-function spawnMarble(marble: MarbleSpawn): void {
+function spawnMarble(marble: PositionedMarbleSpawn): void {
   const mesh = createMarbleMesh();
-  mesh.position.set(...MARBLE_SPAWN_POSITION);
+  mesh.position.set(...marble.position);
   handle.scene.add(mesh);
 
-  const body = world.createRigidBody(
-    RigidBodyDesc.dynamic().setTranslation(...MARBLE_SPAWN_POSITION),
-  );
+  const body = world.createRigidBody(RigidBodyDesc.dynamic().setTranslation(...marble.position));
   world.createCollider(
     ColliderDesc.ball(MARBLE_RADIUS).setFriction(0.45).setRestitution(0.15),
     body,
@@ -66,7 +69,7 @@ function spawnMarble(marble: MarbleSpawn): void {
   liveMarbles.set(marble.id, {
     mesh,
     body,
-    previousPosition: [...MARBLE_SPAWN_POSITION],
+    previousPosition: [...marble.position],
   });
 }
 
@@ -78,7 +81,7 @@ function removeMarble(id: number): void {
   liveMarbles.delete(id);
 }
 
-function applySpawnResult(result: ReturnType<Spawner["drop"]>): void {
+function applySpawnResult(result: ReturnType<typeof createGateSpawnerDrop>): void {
   for (const id of result.recycled) removeMarble(id);
   for (const marble of result.spawned) spawnMarble(marble);
 }
@@ -97,6 +100,15 @@ function interpolatedPosition(live: LiveMarble, alpha: number): [number, number,
     live.previousPosition[1] + (position.y - live.previousPosition[1]) * alpha,
     live.previousPosition[2] + (position.z - live.previousPosition[2]) * alpha,
   ];
+}
+
+function currentMarblePositions(): MarblePosition[] {
+  const marbles: MarblePosition[] = [];
+  for (const [id, { body }] of liveMarbles) {
+    const position = body.translation();
+    marbles.push({ id, position: [position.x, position.y, position.z] });
+  }
+  return marbles;
 }
 
 function syncMarbles(alpha: number): void {
@@ -119,29 +131,30 @@ function latestMarbleTarget(alpha: number): CameraTarget | null {
 }
 
 function detectGoalEntries(): void {
-  const marbles: MarblePosition[] = [];
-  for (const [id, { body }] of liveMarbles) {
-    const position = body.translation();
-    marbles.push({ id, position: [position.x, position.y, position.z] });
-  }
-
-  for (const entry of goalTracker.update(graph.pieces.values(), marbles)) {
+  for (const entry of goalTracker.update(graph.pieces.values(), currentMarblePositions())) {
     if (spawner.remove(entry.marbleId)) removeMarble(entry.marbleId);
     simulationControls.setGoalCount(goalTracker.count());
     if (entry.celebration === "pop") simulationControls.showGoalPop();
   }
 }
 
+function cleanupOutOfBoundsMarbles(): void {
+  for (const id of findOutOfBoundsMarbleIds(currentMarblePositions())) {
+    if (spawner.remove(id)) removeMarble(id);
+  }
+}
+
 let cameraController: FreeOrbitCamera | null = null;
 
 const handle = initScene(app, (elapsedMs) => {
-  applySpawnResult(spawner.advance(elapsedMs));
+  applySpawnResult(createGateSpawnerAdvance(spawner, graph, elapsedMs));
   const { steps, alpha } = stepper.advance(elapsedMs);
   for (let i = 0; i < steps; i++) {
     snapshotMarbles();
     world.step();
   }
   syncMarbles(alpha);
+  cleanupOutOfBoundsMarbles();
   detectGoalEntries();
   simulationControls.setTimerMs(spawner.state().timerMs);
   cameraController?.update(elapsedMs, latestMarbleTarget(alpha));
@@ -239,8 +252,14 @@ function resetSimulationState(): void {
 
 const aboutDialog = createAboutDialog(document.body, APP_VERSION);
 const simulationControls = createSimulationControls(document.body, {
-  onDrop: () => applySpawnResult(spawner.drop()),
-  onToggleStream: () => spawner.toggleContinuous(),
+  onDrop: () => applySpawnResult(createGateSpawnerDrop(spawner, graph)),
+  onToggleStream: () => {
+    if (resolveSpawnAnchor(graph).status === "missing-start") {
+      spawner.setContinuous(false);
+      return false;
+    }
+    return spawner.toggleContinuous();
+  },
   onToggleCamera: () => cameraController?.toggleMode() ?? "free",
   onReset: resetSimulationState,
   onAbout: aboutDialog.open,
