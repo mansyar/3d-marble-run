@@ -286,6 +286,26 @@ canvas.camera-orbiting {
   color: #3d3428;
 }
 
+@media (max-width: 640px) {
+  #hud-tray {
+    left: max(12px, env(safe-area-inset-left));
+    right: max(12px, env(safe-area-inset-right));
+    transform: none;
+    gap: 2px;
+    padding: 8px 6px;
+  }
+
+  .tray-btn {
+    min-width: 0;
+    flex: 1 1 0;
+    padding: 8px 2px;
+  }
+
+  .tray-label {
+    text-align: center;
+  }
+}
+
 /* --- Rotate pill (visible while placing) ---------------------------------- */
 
 .rotate-pill {
