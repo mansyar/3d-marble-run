@@ -1,0 +1,1 @@
+Task: Add procedural start-gate geometry and tray integration\nSummary: Exposed all piece types, including the new start gate, with friendly labels and accessible tray actions; registry-driven placement continues to provide ghost, snap, rotation, and touch behavior.\nFiles: src/ui/tray.ts\nWhy: Make the new piece discoverable without adding a separate interaction path.
