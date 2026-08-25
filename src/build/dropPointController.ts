@@ -9,6 +9,7 @@ export interface DropPointControllerDeps {
   state: DropPointState;
   stack: CommandStack<DropPointState>;
   onChange?: () => void;
+  onMove?: (position: Vec3 | null) => void;
   onEnd?: () => void;
 }
 
@@ -50,11 +51,14 @@ export function createDropPointController(deps: DropPointControllerDeps): {
   function end(): void {
     active = false;
     cursorPosition = null;
+    deps.onMove?.(null);
     deps.onEnd?.();
   }
 
   function updateCursor(ev: PointerEvent): void {
-    if (active) cursorPosition = pointOnTable(ev.clientX, ev.clientY);
+    if (!active) return;
+    cursorPosition = pointOnTable(ev.clientX, ev.clientY);
+    deps.onMove?.(cursorPosition);
   }
 
   function onPointerMove(ev: PointerEvent): void {
@@ -110,6 +114,7 @@ export function createDropPointController(deps: DropPointControllerDeps): {
     begin() {
       active = true;
       cursorPosition = null;
+      deps.onMove?.(null);
     },
     cancel() {
       if (active) end();

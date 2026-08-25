@@ -9,6 +9,7 @@ import { type SpawnedPiece, spawnStaticPiece } from "./pieces/builders";
 import { createMarbleMesh, MARBLE_RADIUS } from "./pieces/marble";
 import type { PieceTypeId, Placement } from "./pieces/registry";
 import { type CameraTarget, createFreeOrbitCamera, type FreeOrbitCamera } from "./render/camera";
+import { createDropPointGuide, type DropPointGuide } from "./render/dropPointGuide";
 import { initScene } from "./render/scene";
 import {
   createGateSpawnerAdvance,
@@ -153,6 +154,7 @@ function cleanupOutOfBoundsMarbles(): void {
 }
 
 let cameraController: FreeOrbitCamera | null = null;
+let dropPointGuide: DropPointGuide | null = null;
 
 const handle = initScene(app, (elapsedMs) => {
   applyGateSpawnResult(createGateSpawnerAdvance(spawner, graph, elapsedMs));
@@ -162,6 +164,7 @@ const handle = initScene(app, (elapsedMs) => {
     world.step();
   }
   syncMarbles(alpha);
+  dropPointGuide?.refresh();
   cleanupOutOfBoundsMarbles();
   detectGoalEntries();
   simulationControls.setTimerMs(spawner.state().timerMs);
@@ -174,12 +177,15 @@ const stack = createCommandStack<TrackGraph>();
 
 /** Placed pieces' live meshes + physics bodies, keyed by graph piece id. */
 const spawned = new Map<string, SpawnedPiece>();
+const staticBodyToPiece = new Map<number, string>();
 
 // Seed counter above graph-internal ids ("piece-N") to avoid collisions.
 let customIdCounter = 1000;
 
 function spawnPiece(id: string, typeId: PieceTypeId, placement: Placement): void {
-  spawned.set(id, spawnStaticPiece(handle.scene, world, typeId, placement));
+  const live = spawnStaticPiece(handle.scene, world, typeId, placement);
+  spawned.set(id, live);
+  staticBodyToPiece.set(live.body.handle, id);
 }
 
 function removePiece(id: string): void {
@@ -187,6 +193,7 @@ function removePiece(id: string): void {
   if (!live) return;
   handle.scene.remove(live.group);
   world.removeRigidBody(live.body);
+  staticBodyToPiece.delete(live.body.handle);
   spawned.delete(id);
 }
 
@@ -249,11 +256,19 @@ const placement = createPlacementController({
 
 const dropPointState = createDropPointState();
 const dropPointStack = createCommandStack<DropPointState>();
+dropPointGuide = createDropPointGuide({
+  scene: handle.scene,
+  world,
+  state: dropPointState,
+  trackBodies: staticBodyToPiece,
+});
 const dropPointPlacement = createDropPointController({
   camera: handle.camera,
   domElement: handle.renderer.domElement,
   state: dropPointState,
   stack: dropPointStack,
+  onMove: (position) => dropPointGuide?.setPreview(position),
+  onChange: () => dropPointGuide?.refresh(),
   onEnd: () => tray.setActive(null),
 });
 
@@ -275,7 +290,7 @@ tray = createTray(document.body, (selection) => {
 cameraController = createFreeOrbitCamera({
   camera: handle.camera,
   domElement: handle.renderer.domElement,
-  isLocked: () => placement.activeTypeId !== null,
+  isLocked: () => placement.activeTypeId !== null || dropPointPlacement.active,
 });
 
 function resetSimulationState(): void {
