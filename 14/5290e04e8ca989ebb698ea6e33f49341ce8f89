@@ -1,0 +1,1 @@
+Phase 1 manual verification exposed the native hidden attribute being overridden by the #save-slots display rule. Added an explicit hidden-state rule so the Saved tracks drawer is collapsed by default while preserving its accessible open, Escape-close, and focus-return behavior.
