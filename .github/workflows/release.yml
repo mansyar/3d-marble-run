@@ -34,7 +34,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Validate release tag
-        run: pnpm check:release -- "${{ github.ref_name }}"
+        run: pnpm check:release "${{ github.ref_name }}"
 
       - name: Run tests
         run: pnpm vitest run

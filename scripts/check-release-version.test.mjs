@@ -1,9 +1,15 @@
 import { execFileSync, spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { isMatchingReleaseTag, run, validateReleaseTag } from "./check-release-version.mjs";
 
 const scriptPath = fileURLToPath(new URL("./check-release-version.mjs", import.meta.url));
+const packagePath = fileURLToPath(new URL("../package.json", import.meta.url));
+const packageVersion = JSON.parse(readFileSync(packagePath, "utf8")).version;
+const matchingTag = `v${packageVersion}`;
+const [major, minor, patch] = packageVersion.split(".");
+const mismatchedTag = `v${major}.${minor}.${Number(patch) + 1}`;
 
 describe("release tag validation", () => {
   it("accepts an exact stable package version with the v prefix", () => {
@@ -44,20 +50,20 @@ describe("release tag validation", () => {
   });
 
   it("loads package metadata when run as a command", async () => {
-    await expect(run(["node", scriptPath, "v0.1.0"], {})).resolves.toBeUndefined();
+    await expect(run(["node", scriptPath, matchingTag], {})).resolves.toBeUndefined();
     await expect(run(["node", scriptPath], {})).rejects.toThrow(
       "Release tag must use stable SemVer",
     );
   });
 
   it("validates a matching tag from the command line", () => {
-    expect(execFileSync(process.execPath, [scriptPath, "v0.1.0"], { encoding: "utf8" })).toContain(
-      "matches package.json version 0.1.0",
+    expect(execFileSync(process.execPath, [scriptPath, matchingTag], { encoding: "utf8" })).toContain(
+      `matches package.json version ${packageVersion}`,
     );
   });
 
   it("returns a failure status for a mismatched command-line tag", () => {
-    const result = spawnSync(process.execPath, [scriptPath, "v0.1.1"], { encoding: "utf8" });
+    const result = spawnSync(process.execPath, [scriptPath, mismatchedTag], { encoding: "utf8" });
 
     expect(result.status).toBe(1);
     expect(result.stderr).toContain("does not match package.json version");
