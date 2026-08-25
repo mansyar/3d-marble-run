@@ -1,1 +1,9 @@
 Task: Verify named and autosave preservation of the starter gate\nSummary: Added storage regression coverage for connected start-gate round-trips through both named and reserved autosave slots, including ready health after reload.\nFiles: tests/storage.test.ts\nWhy: Ensure the new gate survives the existing IndexedDB persistence paths without special-case storage logic.\nVerification: Serialization, starter, and storage suites passed (14 tests); Biome and TypeScript passed.
+
+Phase 3 verification report
+
+Automated: CI=true pnpm vitest run passed 16 files and 109 tests. CI=true pnpm biome check . passed. TypeScript passed. CI=true pnpm vitest run --coverage passed at 94.1% statements / 96.3% lines overall. pnpm build passed at 3,425.28 kB JavaScript / 1,241.28 kB gzip, within the 3,500 / 1,250 kB budget.
+
+Manual desktop/mobile: Desktop loaded the six-piece starter with Run ready guidance, Drop marble reached Goals: 1, and a named save loaded back with ready status intact. Mobile at 360x732 showed all six tray buttons at approximately 52.3x66 px with no horizontal overflow; Start gate selection exposed the Turn control. Console contained only the known favicon 404 and Three.js/WebGL warnings.
+
+User accepted the checkpoint and authorized Phase 4 continuation.
