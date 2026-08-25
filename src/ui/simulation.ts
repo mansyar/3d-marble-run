@@ -1,5 +1,7 @@
 import type { CameraMode } from "../render/camera";
 import { formatRunTime } from "../sim/timer";
+import type { TrackHealthStatus } from "../track/health";
+import { getTrackStatusMessage } from "./trackStatus";
 
 export interface SimulationControlCallbacks {
   onDrop: () => void;
@@ -13,6 +15,7 @@ export interface SimulationControls {
   setStreamEnabled(enabled: boolean): void;
   setGoalCount(count: number): void;
   setTimerMs(elapsedMs: number): void;
+  setTrackHealth(status: TrackHealthStatus): void;
   setCameraMode(mode: CameraMode): void;
   showGoalPop(): void;
 }
@@ -66,7 +69,21 @@ export function createSimulationControls(
   timer.setAttribute("aria-label", "Run time");
   timer.textContent = "Time: 00:00.0";
 
-  panel.append(dropButton, streamButton, resetButton, cameraButton, aboutButton, goalCount, timer);
+  const trackStatus = document.createElement("output");
+  trackStatus.id = "track-status";
+  trackStatus.setAttribute("aria-label", "Track status");
+  trackStatus.setAttribute("aria-live", "polite");
+
+  panel.append(
+    dropButton,
+    streamButton,
+    resetButton,
+    cameraButton,
+    aboutButton,
+    goalCount,
+    timer,
+    trackStatus,
+  );
   root.appendChild(panel);
 
   function setStreamLabel(enabled: boolean): void {
@@ -80,6 +97,11 @@ export function createSimulationControls(
 
   function setTimerMs(elapsedMs: number): void {
     timer.textContent = `Time: ${formatRunTime(elapsedMs)}`;
+  }
+
+  function setTrackHealth(status: TrackHealthStatus): void {
+    trackStatus.dataset.status = status;
+    trackStatus.textContent = getTrackStatusMessage(status);
   }
 
   function setCameraLabel(mode: CameraMode): void {
@@ -99,6 +121,7 @@ export function createSimulationControls(
     setStreamEnabled: setStreamLabel,
     setGoalCount,
     setTimerMs,
+    setTrackHealth,
     setCameraMode: setCameraLabel,
     showGoalPop,
   };

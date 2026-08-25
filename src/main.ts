@@ -18,6 +18,7 @@ import { createPhysics } from "./sim/physics";
 import { findOutOfBoundsMarbleIds, resolveSpawnAnchor } from "./sim/playability";
 import { createSpawner, type Spawner } from "./sim/spawner";
 import type { TrackGraph } from "./track/graph";
+import { assessTrackHealth } from "./track/health";
 import { createStarterGraph } from "./track/starter";
 import { loadInitialTrack } from "./track/startup";
 import { createTrackStorage } from "./track/storage";
@@ -203,6 +204,10 @@ function replaceGraph(next: TrackGraph): void {
   syncScene();
 }
 
+function refreshTrackHealth(): void {
+  simulationControls.setTrackHealth(assessTrackHealth(graph).status);
+}
+
 syncScene();
 
 const previewMarble = createMarbleMesh();
@@ -230,7 +235,10 @@ const placement = createPlacementController({
       return piece ? [{ id, typeId: piece.typeId, group: live.group }] : [];
     }),
   sync: syncScene,
-  onChange: () => storage.scheduleAutosave(graph),
+  onChange: () => {
+    storage.scheduleAutosave(graph);
+    refreshTrackHealth();
+  },
   nextId: () => `piece-${++customIdCounter}`,
   onEnd: () => tray.setActive(null),
 });
@@ -269,6 +277,7 @@ simulationControls.setStreamEnabled(spawner.isContinuous());
 simulationControls.setGoalCount(goalTracker.count());
 simulationControls.setTimerMs(spawner.state().timerMs);
 simulationControls.setCameraMode(cameraController.mode());
+refreshTrackHealth();
 
 async function refreshSaveSlots(): Promise<void> {
   saveSlots.setSlots(await storage.list());
@@ -285,6 +294,7 @@ const saveSlots = createSaveSlotControls(document.body, {
     placement.cancel();
     resetSimulationState();
     replaceGraph(loaded);
+    refreshTrackHealth();
     storage.scheduleAutosave(graph);
   },
   onDelete: async (name) => {
