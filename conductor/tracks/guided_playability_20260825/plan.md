@@ -58,11 +58,13 @@ One commit per task.
   - Notes: Added the shared safety envelope and cleanup before goal detection;
     cleanup removes the scheduler entry and physics body without incrementing
     goals.
-- [~] Task: Add advisory track-status feedback
-  - [ ] Show friendly no-gate, disconnected-goal, and ready states.
-  - [ ] Refresh status after edits, undo/redo, startup, and loads.
-  - [ ] Keep all editing actions available regardless of status.
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [x] Task: Add advisory track-status feedback `[cb1ad23]`
+  - [x] Show friendly no-gate, disconnected-goal, and ready states.
+  - [x] Refresh status after edits, undo/redo, startup, and loads.
+  - [x] Keep all editing actions available regardless of status.
+  - Notes: Added an accessible live HUD output with concise guidance and
+    refreshed it through placement changes, startup, and load replacement.
+- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
 
 ## Phase 3 · Starter Track & Save Compatibility
 
