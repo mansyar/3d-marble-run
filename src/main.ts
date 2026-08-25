@@ -12,16 +12,17 @@ import { type CameraTarget, createFreeOrbitCamera, type FreeOrbitCamera } from "
 import { createDropPointGuide, type DropPointGuide } from "./render/dropPointGuide";
 import { initScene } from "./render/scene";
 import {
-  createGateSpawnerAdvance,
-  createGateSpawnerDrop,
-  type PositionedMarbleSpawn,
-} from "./sim/gateSpawner";
+  createDropPointSpawnerAdvance,
+  createDropPointSpawnerDrop,
+  type PositionedDropPointMarbleSpawn,
+} from "./sim/dropPointSpawner";
 import { createGoalTracker, type MarblePosition } from "./sim/goals";
+import type { LandingResult } from "./sim/landing";
 import { createPhysics } from "./sim/physics";
-import { findOutOfBoundsMarbleIds, resolveSpawnAnchor } from "./sim/playability";
+import { findOutOfBoundsMarbleIds } from "./sim/playability";
 import { createSpawner, type Spawner } from "./sim/spawner";
 import type { TrackGraph } from "./track/graph";
-import { assessTrackHealth } from "./track/health";
+import { assessDropPointHealth } from "./track/health";
 import { createStarterGraph } from "./track/starter";
 import { loadInitialTrack } from "./track/startup";
 import { createTrackStorage } from "./track/storage";
@@ -51,6 +52,14 @@ try {
   graph = createStarterGraph();
 }
 const goalTracker = createGoalTracker();
+const dropPointState = createDropPointState();
+let dropPointLanding: LandingResult = {
+  status: "no-landing",
+  position: null,
+  normal: null,
+  distance: null,
+  pieceId: null,
+};
 
 interface LiveMarble {
   mesh: ReturnType<typeof createMarbleMesh>;
@@ -60,7 +69,7 @@ interface LiveMarble {
 
 const liveMarbles = new Map<number, LiveMarble>();
 
-function spawnMarble(marble: PositionedMarbleSpawn): void {
+function spawnMarble(marble: PositionedDropPointMarbleSpawn): void {
   const mesh = createMarbleMesh();
   mesh.position.set(...marble.position);
   handle.scene.add(mesh);
@@ -85,12 +94,12 @@ function removeMarble(id: number): void {
   liveMarbles.delete(id);
 }
 
-function applySpawnResult(result: ReturnType<typeof createGateSpawnerDrop>): void {
+function applySpawnResult(result: ReturnType<typeof createDropPointSpawnerDrop>): void {
   for (const id of result.recycled) removeMarble(id);
   for (const marble of result.spawned) spawnMarble(marble);
 }
 
-function applyGateSpawnResult(result: ReturnType<typeof createGateSpawnerDrop>): void {
+function applyDropPointSpawnResult(result: ReturnType<typeof createDropPointSpawnerDrop>): void {
   if (result.streamStopped) simulationControls.setStreamEnabled(false);
   applySpawnResult(result);
 }
@@ -157,14 +166,16 @@ let cameraController: FreeOrbitCamera | null = null;
 let dropPointGuide: DropPointGuide | null = null;
 
 const handle = initScene(app, (elapsedMs) => {
-  applyGateSpawnResult(createGateSpawnerAdvance(spawner, graph, elapsedMs));
+  dropPointGuide?.refresh();
+  applyDropPointSpawnResult(
+    createDropPointSpawnerAdvance(spawner, dropPointState.point, dropPointLanding, elapsedMs),
+  );
   const { steps, alpha } = stepper.advance(elapsedMs);
   for (let i = 0; i < steps; i++) {
     snapshotMarbles();
     world.step();
   }
   syncMarbles(alpha);
-  dropPointGuide?.refresh();
   cleanupOutOfBoundsMarbles();
   detectGoalEntries();
   simulationControls.setTimerMs(spawner.state().timerMs);
@@ -218,8 +229,19 @@ function replaceGraph(next: TrackGraph): void {
   syncScene();
 }
 
-function refreshTrackHealth(): void {
-  simulationControls.setTrackHealth(assessTrackHealth(graph).status);
+function refreshDropPointHealth(): void {
+  const health = assessDropPointHealth(
+    graph,
+    dropPointState.point,
+    dropPointLanding.status === "ready" ? dropPointLanding.pieceId : null,
+  );
+  const ready = health.status === "ready";
+  simulationControls.setTrackHealth(health.status);
+  simulationControls.setSimulationReady(ready);
+  if (!ready && spawner.isContinuous()) {
+    spawner.setContinuous(false);
+    simulationControls.setStreamEnabled(false);
+  }
 }
 
 syncScene();
@@ -248,19 +270,25 @@ const placement = createPlacementController({
   sync: syncScene,
   onChange: () => {
     storage.scheduleAutosave(graph);
-    refreshTrackHealth();
+    dropPointGuide?.refresh();
+    refreshDropPointHealth();
   },
   nextId: () => `piece-${++customIdCounter}`,
   onEnd: () => tray.setActive(null),
 });
 
-const dropPointState = createDropPointState();
 const dropPointStack = createCommandStack<DropPointState>();
 dropPointGuide = createDropPointGuide({
   scene: handle.scene,
   world,
   state: dropPointState,
   trackBodies: staticBodyToPiece,
+  onLandingChange: (result) => {
+    if (!dropPointPlacement.active) {
+      dropPointLanding = result;
+      refreshDropPointHealth();
+    }
+  },
 });
 const dropPointPlacement = createDropPointController({
   camera: handle.camera,
@@ -300,13 +328,22 @@ function resetSimulationState(): void {
   simulationControls.setGoalCount(0);
   simulationControls.setTimerMs(0);
   simulationControls.setStreamEnabled(false);
+  refreshDropPointHealth();
 }
 
 const aboutDialog = createAboutDialog(document.body, APP_VERSION);
 const simulationControls = createSimulationControls(document.body, {
-  onDrop: () => applyGateSpawnResult(createGateSpawnerDrop(spawner, graph)),
+  onDrop: () =>
+    applyDropPointSpawnResult(
+      createDropPointSpawnerDrop(spawner, dropPointState.point, dropPointLanding),
+    ),
   onToggleStream: () => {
-    if (resolveSpawnAnchor(graph).status === "missing-start") {
+    const health = assessDropPointHealth(
+      graph,
+      dropPointState.point,
+      dropPointLanding.status === "ready" ? dropPointLanding.pieceId : null,
+    );
+    if (health.status !== "ready") {
       spawner.setContinuous(false);
       return false;
     }
@@ -321,7 +358,8 @@ simulationControls.setStreamEnabled(spawner.isContinuous());
 simulationControls.setGoalCount(goalTracker.count());
 simulationControls.setTimerMs(spawner.state().timerMs);
 simulationControls.setCameraMode(cameraController.mode());
-refreshTrackHealth();
+dropPointGuide?.refresh();
+refreshDropPointHealth();
 
 async function refreshSaveSlots(): Promise<void> {
   saveSlots.setSlots(await storage.list());
@@ -338,7 +376,8 @@ const saveSlots = createSaveSlotControls(document.body, {
     placement.cancel();
     resetSimulationState();
     replaceGraph(loaded);
-    refreshTrackHealth();
+    dropPointGuide?.refresh();
+    refreshDropPointHealth();
     storage.scheduleAutosave(graph);
   },
   onDelete: async (name) => {

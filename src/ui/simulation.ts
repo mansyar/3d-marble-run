@@ -1,6 +1,6 @@
 import type { CameraMode } from "../render/camera";
 import { formatRunTime } from "../sim/timer";
-import type { TrackHealthStatus } from "../track/health";
+import type { DropPointHealthStatus } from "../track/health";
 import { getTrackStatusMessage } from "./trackStatus";
 
 export interface SimulationControlCallbacks {
@@ -13,9 +13,10 @@ export interface SimulationControlCallbacks {
 
 export interface SimulationControls {
   setStreamEnabled(enabled: boolean): void;
+  setSimulationReady(enabled: boolean): void;
   setGoalCount(count: number): void;
   setTimerMs(elapsedMs: number): void;
-  setTrackHealth(status: TrackHealthStatus): void;
+  setTrackHealth(status: DropPointHealthStatus): void;
   setCameraMode(mode: CameraMode): void;
   showGoalPop(): void;
 }
@@ -31,11 +32,13 @@ export function createSimulationControls(
   const dropButton = document.createElement("button");
   dropButton.type = "button";
   dropButton.textContent = "Drop marble";
+  dropButton.disabled = true;
   dropButton.addEventListener("click", callbacks.onDrop);
 
   const streamButton = document.createElement("button");
   streamButton.type = "button";
   streamButton.textContent = "Stream: Off";
+  streamButton.disabled = true;
   streamButton.addEventListener("click", () => {
     setStreamLabel(callbacks.onToggleStream());
   });
@@ -99,7 +102,12 @@ export function createSimulationControls(
     timer.textContent = `Time: ${formatRunTime(elapsedMs)}`;
   }
 
-  function setTrackHealth(status: TrackHealthStatus): void {
+  function setSimulationReady(enabled: boolean): void {
+    dropButton.disabled = !enabled;
+    streamButton.disabled = !enabled;
+  }
+
+  function setTrackHealth(status: DropPointHealthStatus): void {
     trackStatus.dataset.status = status;
     trackStatus.textContent = getTrackStatusMessage(status);
   }
@@ -119,6 +127,7 @@ export function createSimulationControls(
 
   return {
     setStreamEnabled: setStreamLabel,
+    setSimulationReady,
     setGoalCount,
     setTimerMs,
     setTrackHealth,

@@ -109,8 +109,7 @@ export function createDropPointGuide(deps: DropPointGuideDeps): DropPointGuide {
       return render(currentPoint());
     },
     refresh() {
-      preview = undefined;
-      return render(deps.state.point);
+      return render(currentPoint());
     },
     dispose() {
       deps.scene.remove(marker, guide);

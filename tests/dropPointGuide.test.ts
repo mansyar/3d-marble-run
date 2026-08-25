@@ -50,5 +50,8 @@ describe("drop point guide", () => {
     expect(result.status).toBe("no-landing");
     expect(scene.children[0].visible).toBe(true);
     expect(scene.children[1].visible).toBe(false);
+
+    guide.refresh();
+    expect(scene.children[0].position.x).toBe(10);
   });
 });

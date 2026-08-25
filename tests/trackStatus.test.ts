@@ -3,8 +3,9 @@ import { getTrackStatusMessage } from "../src/ui/trackStatus";
 
 describe("track status guidance", () => {
   it.each([
-    ["missing-start", "Add a Start gate to drop marbles."],
-    ["no-connected-goal", "Connect a Goal cup to the Start gate for a finish."],
+    ["missing-drop-point", "Place a Drop point to drop marbles."],
+    ["no-landing", "Move the Drop point above a track piece."],
+    ["no-connected-goal", "Connect a Goal cup to the Drop point for a finish."],
     ["ready", "Run ready! Drop a marble."],
   ] as const)("explains the %s state", (status, message) => {
     expect(getTrackStatusMessage(status)).toBe(message);
