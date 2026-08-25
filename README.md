@@ -19,13 +19,25 @@ CI=true pnpm biome check .
 pnpm build
 ```
 
+## Continuous integration
+
+Pushes to `master` run `.github/workflows/ci.yml`, which installs from the
+frozen lockfile and runs tests, Biome, TypeScript, and the production build.
+Master pushes are CI-only: they do not deploy Pages, publish GHCR images, or
+trigger Coolify.
+
 ## GitHub Pages deployment
 
-The repository includes `.github/workflows/deploy-pages.yml`. To publish it:
+The repository includes the reusable `.github/workflows/deploy-pages.yml`.
+Valid version tags publish Pages through the quality-gated `Release` workflow.
+For an emergency override, run **Deploy to GitHub Pages** manually from the
+repository's default branch; manual dispatch bypasses the release workflow's
+tag quality gate. It does not run automatically on `master` pushes.
+
+To enable Pages:
 
 1. Push this repository to GitHub.
 2. In **Settings → Pages**, choose **GitHub Actions** as the source.
-3. Push to `master` or run **Deploy to GitHub Pages** from the Actions tab.
 
 The workflow builds with the repository-name base path and publishes `dist/`.
 The resulting URL is `https://<owner>.github.io/<repository>/`.
@@ -43,9 +55,10 @@ pnpm preview
 ## Container image
 
 The `Publish container image` workflow builds the production site with Nginx
-and publishes it to GitHub Container Registry on pushes to `master` or a
-manual workflow run. Valid version tags are published by the `Release`
-workflow after its quality gate succeeds.
+and publishes it to GitHub Container Registry for valid version tags through
+the quality-gated `Release` workflow. It can also be run manually from the
+repository's default branch as an emergency override; manual dispatch bypasses
+the release workflow's tag quality gate. It does not run on `master` pushes.
 
 Pull and run the latest image:
 
@@ -90,6 +103,7 @@ Each valid release produces:
 - Pages: `https://<owner>.github.io/<repository>/`
 - GitHub Release: `vX.Y.Z` with generated notes
 - GHCR: `ghcr.io/mansyar/3d-marble-run:X.Y.Z`, `:latest`, and `:sha-<commit>`
+- Optional Coolify redeploy after the successful GHCR publication when enabled
 
 Pull an immutable release or the moving latest image with:
 
@@ -109,7 +123,9 @@ resulting package may need its visibility or access configured in **Packages**.
 ### Coolify deployment trigger
 
 The container workflow can trigger a Coolify redeploy after a successful GHCR
-publish on `master` (or a manual workflow run). Configure Coolify to pull
+publish for a validated tagged release or an eligible manual run from the
+repository's default branch. Master pushes are CI-only and cannot trigger
+Coolify. Configure Coolify to pull
 `ghcr.io/mansyar/3d-marble-run:latest`, then add these GitHub repository
 settings:
 
@@ -119,7 +135,8 @@ settings:
    Coolify bearer token.
 3. Create an Actions variable named `COOLIFY_DEPLOY_ENABLED` with the value
    `true`.
-4. Push to `master` or run **Publish container image** manually.
+4. Push a valid version tag, or run **Publish container image** manually from
+   the default branch.
 
 The webhook URL stays out of the repository and is never printed by the
 workflow. Leave the variable unset or set it to `false` to publish images
