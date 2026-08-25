@@ -94,3 +94,13 @@
   - User confirmed the live Pages URL on desktop and mobile/narrow viewport,
     including editor loading, piece editing, marble interaction, About dialog,
     touch-sized controls, and canvas interaction.
+
+## Review Fixes
+
+- [x] Task: Apply review suggestions (`c448a6c`)
+  - [x] Correct the release runbook examples for the shipped version.
+  - [x] Pass only the Coolify secrets to the reusable container workflow.
+  - Verification: 92 tests, Biome, TypeScript, production build, matching
+    `v0.1.1` validation, expected `v0.1.0` rejection, and `git diff --check`
+    passed. Build measured 3,422.17 kB raw / 1,240.30 kB gzip.
+  - Commit: `c448a6c`; Git note attached.
