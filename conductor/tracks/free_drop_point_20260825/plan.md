@@ -5,11 +5,12 @@ and input-glue tasks use the phase manual-verification checkpoint.
 
 ## Phase 1: Drop point domain, landing results, and route health
 
-- [ ] Task: Define the Drop point model and fixed-height rules
-  - [ ] Write failing tests for nullable point state, fixed Y=4 normalization,
-    X/Z placement validation, and one-point replacement behavior.
-  - [ ] Implement the pure Drop point model and validation helpers.
-  - [ ] Run targeted tests and changed-logic coverage.
+- [x] Task: Define the Drop point model and fixed-height rules `[7b111fe]`
+  - [x] Write failing tests for nullable point state, fixed Y=4 normalization,
+    X/Z placement validation, and one-point replacement behavior. `[b9b26b4]`
+  - [x] Implement the pure Drop point model and validation helpers. `[7b111fe]`
+  - [x] Run targeted tests and changed-logic coverage. Drop point coverage is
+    100%; Biome and TypeScript also pass.
 
 - [ ] Task: Define landing-raycast results and readiness states
   - [ ] Write failing tests for first valid upward-facing surface, ignored wall
