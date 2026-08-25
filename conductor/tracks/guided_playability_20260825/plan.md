@@ -122,6 +122,8 @@ One commit per task.
     no page scrolling. Eight seconds of streaming scored seven goals without
     runtime errors.
 - [~] Task: Update user-facing documentation and record the final checkpoint
-  - [ ] Document the start gate and custom-track spawning behavior.
-  - [ ] Add implementation notes and verification results to `plan.md`.
-  - [ ] Complete the phase checkpoint according to `workflow.md`.
+  - [x] Document the start gate and custom-track spawning behavior. `[6282163]`
+  - [x] Add implementation notes and verification results to `plan.md`.
+  - [~] Complete the phase checkpoint according to `workflow.md`.
+  - Notes: README and product definition now describe the six-piece tray,
+    single gate entry point, advisory guidance, and local persistence.
