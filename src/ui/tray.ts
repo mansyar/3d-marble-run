@@ -1,6 +1,15 @@
 import { PIECE_COLORS } from "../pieces/materials";
 import { PIECE_TYPE_IDS, type PieceTypeId } from "../pieces/registry";
 
+const PIECE_LABELS: Record<PieceTypeId, string> = {
+  straight: "Straight",
+  curve: "Curve",
+  ramp: "Ramp",
+  funnel: "Funnel",
+  "goal-cup": "Goal cup",
+  "start-gate": "Start gate",
+};
+
 /**
  * Bottom tray HUD — one big tappable swatch per piece type.
  * Pure DOM; emits selection events upward.
@@ -20,14 +29,15 @@ export function createTray(
     btn.className = "tray-btn";
     btn.type = "button";
     btn.dataset.typeId = typeId;
-    btn.setAttribute("aria-label", `Place ${typeId}`);
+    const labelText = PIECE_LABELS[typeId];
+    btn.setAttribute("aria-label", `Place ${labelText}`);
     const swatch = document.createElement("span");
     swatch.className = "tray-swatch";
     swatch.style.background = `#${PIECE_COLORS[typeId].toString(16).padStart(6, "0")}`;
     btn.appendChild(swatch);
     const label = document.createElement("span");
     label.className = "tray-label";
-    label.textContent = typeId;
+    label.textContent = labelText;
     btn.appendChild(label);
     btn.addEventListener("click", () => {
       const alreadyActive = btn.classList.contains("active");
