@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 import type { Placement } from "../src/pieces/registry";
+import type { DropPoint } from "../src/track/dropPoint";
 import { addPiece, connect, createTrackGraph, getPiece } from "../src/track/graph";
-import { deserializeTrack, serializeTrack } from "../src/track/serialization";
+import {
+  deserializeTrack,
+  deserializeTrackDocument,
+  serializeTrack,
+  TRACK_FORMAT_VERSION,
+} from "../src/track/serialization";
 
 const P0: Placement = { position: [0, 0, 0], yawDeg: 0 };
 const P1: Placement = { position: [0.5, 0.25, 2], yawDeg: 90 };
@@ -35,12 +41,14 @@ describe("track serialization", () => {
       version: number;
       nextId: number;
       pieces: unknown[];
+      dropPoint: unknown;
     };
 
-    expect(payload.version).toBe(1);
+    expect(payload.version).toBe(TRACK_FORMAT_VERSION);
     expect(payload.nextId).toBe(2);
     expect(Array.isArray(payload.pieces)).toBe(true);
     expect(payload.pieces).toHaveLength(1);
+    expect(payload.dropPoint).toBeNull();
   });
 
   it("keeps the restored graph independent and id allocation monotonic", () => {
@@ -73,9 +81,57 @@ describe("track serialization", () => {
       ],
     };
 
-    expect(deserializeTrack(JSON.stringify(payload)).pieces.get("piece-1")?.typeId).toBe(
-      "straight",
-    );
+    const restored = deserializeTrackDocument(JSON.stringify(payload));
+
+    expect(restored.graph.pieces.get("piece-1")?.typeId).toBe("straight");
+    expect(restored.dropPoint).toBeNull();
+  });
+
+  it("round-trips a v2 Drop point and produces stable output", () => {
+    const graph = createTrackGraph();
+    addPiece(graph, "ramp", P0);
+    const dropPoint: DropPoint = { position: [1.5, 4, -2] };
+
+    const serialized = serializeTrack(graph, dropPoint);
+    const restored = deserializeTrackDocument(serialized);
+
+    expect(JSON.parse(serialized)).toMatchObject({
+      version: 2,
+      dropPoint,
+    });
+    expect(restored.graph).toEqual(graph);
+    expect(restored.dropPoint).toEqual(dropPoint);
+    expect(serializeTrack(restored.graph, restored.dropPoint)).toBe(serialized);
+  });
+
+  it("round-trips a v2 save with a null Drop point", () => {
+    const graph = createTrackGraph();
+    addPiece(graph, "goal-cup", P1);
+
+    const restored = deserializeTrackDocument(serializeTrack(graph, null));
+
+    expect(restored.graph).toEqual(graph);
+    expect(restored.dropPoint).toBeNull();
+  });
+
+  it("rejects malformed, invalid, and duplicate Drop point data", () => {
+    const base = {
+      version: 2,
+      nextId: 1,
+      pieces: [],
+    };
+    const malformed = [
+      base,
+      { ...base, dropPoint: { position: [0, 3, 0] } },
+      { ...base, dropPoint: { position: [21, 4, 0] } },
+      { ...base, dropPoint: { position: [0, 4, 0], extra: true } },
+      { ...base, dropPoint: null, dropPoints: [{ position: [0, 4, 0] }] },
+    ];
+
+    for (const payload of malformed) {
+      expect(() => deserializeTrackDocument(JSON.stringify(payload))).toThrow();
+    }
+    expect(() => serializeTrack(createTrackGraph(), { position: [0, 3, 0] })).toThrow();
   });
 
   it("rejects malformed pieces, duplicate start gates, and asymmetric connections", () => {
