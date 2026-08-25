@@ -107,15 +107,21 @@ One commit per task.
   - Notes: Targeted coverage passed 41 tests at 89.42% statements / 92.84%
     lines overall; changed graph, health, serialization, playability, starter,
     and storage paths are covered above the project target.
-- [~] Task: Complete automated and manual verification
-  - [ ] Run tests, Biome, TypeScript, production build, and base-path build.
-  - [ ] Verify desktop and touch placement, spawning, status feedback,
+- [x] Task: Complete automated and manual verification `[6f1e733]`
+  - [x] Run tests, Biome, TypeScript, production build, and base-path build.
+  - [x] Verify desktop and touch placement, spawning, status feedback,
     deletion, undo/redo, and loading.
-  - [ ] Verify reduced-motion behavior, touch targets, no page scrolling, and
+  - [x] Verify reduced-motion behavior, touch targets, no page scrolling, and
     15–20-marble responsiveness.
-  - [ ] Confirm output remains within the existing 3,500 kB JS / 1,250 kB gzip
+  - [x] Confirm output remains within the existing 3,500 kB JS / 1,250 kB gzip
     budget.
-- [ ] Task: Update user-facing documentation and record the final checkpoint
+  - Notes: Full suite passed 109 tests; Biome and TypeScript passed; standard
+    and `/marblescape/` builds passed at 3,425.28 kB JS / 1,241.28 kB gzip.
+    Desktop and real-touch iPhone 15 emulation covered placement, spawning,
+    stream load, status, undo/redo, saves, reduced motion, touch targets, and
+    no page scrolling. Eight seconds of streaming scored seven goals without
+    runtime errors.
+- [~] Task: Update user-facing documentation and record the final checkpoint
   - [ ] Document the start gate and custom-track spawning behavior.
   - [ ] Add implementation notes and verification results to `plan.md`.
   - [ ] Complete the phase checkpoint according to `workflow.md`.
