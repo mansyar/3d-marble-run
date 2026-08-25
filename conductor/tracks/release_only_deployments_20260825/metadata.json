@@ -1,0 +1,8 @@
+{
+  "id": "release_only_deployments_20260825",
+  "type": "CHORE",
+  "status": "new",
+  "created": "2026-08-25",
+  "updated": "2026-08-25",
+  "description": "Release-only deployment policy and master-branch CI"
+}

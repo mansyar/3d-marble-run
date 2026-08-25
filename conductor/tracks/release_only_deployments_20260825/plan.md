@@ -1,0 +1,57 @@
+# Implementation Plan: Release-Only Deployment Policy & Master CI
+
+## Phase 1 · Master CI-only validation
+
+- [ ] Task: Add the master-push CI-only workflow
+  - [ ] Create a workflow triggered by pushes to `master` only.
+  - [ ] Run pnpm 11/Node 22 setup with a frozen lockfile install.
+  - [ ] Run Vitest, Biome, TypeScript, and the production build.
+  - [ ] Keep deployment, package publication, and deployment secrets out of the
+    CI-only workflow.
+- [ ] Task: Validate the CI-only workflow contract
+  - [ ] Review trigger, permissions, steps, and failure behavior.
+  - [ ] Run local tests, Biome, TypeScript, build, and diff checks.
+  - [ ] Run workflow syntax validation when `actionlint` is available, otherwise
+    record the manual YAML review and remote GitHub result.
+- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+
+## Phase 2 · Release-only publication policy
+
+- [ ] Task: Remove automatic master publication and guard manual dispatch
+  - [ ] Remove the master push trigger from the Pages reusable workflow.
+  - [ ] Remove the master push trigger from the container reusable workflow.
+  - [ ] Preserve `workflow_call` and manual dispatch entry points.
+  - [ ] Restrict manual publication jobs to the repository default branch.
+  - [ ] Preserve release-tag calls, Pages base-path handling, GHCR metadata,
+    permissions, and existing authentication behavior.
+- [ ] Task: Route optional Coolify deployment through eligible outputs
+  - [ ] Keep Coolify disabled unless its existing opt-in setting and credentials
+    are present.
+  - [ ] Trigger it after successful GHCR publication for validated release calls
+    and eligible manual default-branch runs.
+  - [ ] Ensure master pushes cannot trigger Coolify.
+  - [ ] Preserve the existing webhook, bearer token, and retry behavior.
+- [ ] Task: Verify release orchestration and publication ordering
+  - [ ] Confirm `release.yml` remains tag-only and validates before publication.
+  - [ ] Confirm GitHub Release, Pages, GHCR, and Coolify depend on `quality` as
+    specified and no standalone tag publisher remains.
+  - [ ] Confirm malformed or mismatched tags cannot reach publication jobs.
+  - [ ] Confirm exact version, `latest`, SHA, and OCI image metadata behavior.
+- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+
+## Phase 3 · Documentation & final verification
+
+- [ ] Task: Document the release-only deployment policy
+  - [ ] Explain that master pushes run CI only and do not publish artifacts.
+  - [ ] Document valid tag release outputs and quality-gate ordering.
+  - [ ] Document default-branch-only manual emergency dispatches.
+  - [ ] Document release-triggered optional Coolify behavior and existing
+    configuration requirements.
+- [ ] Task: Perform local and remote release-policy verification
+  - [ ] Run matching and mismatched release-tag validation checks.
+  - [ ] Run the complete local tests, Biome, TypeScript, production build, and
+    preview checks.
+  - [ ] Verify a master push runs CI without Pages/GHCR publication.
+  - [ ] Verify a valid release tag runs quality and then the configured outputs.
+  - [ ] Record any GitHub Actions annotations or follow-up maintenance items.
+- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
