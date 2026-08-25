@@ -44,11 +44,13 @@ One commit per task.
   - Notes: Added Red-phase coverage for gate-driven spawn resolution,
     boundary classification, lost-marble identification, goal non-counting,
     and active-spawner cleanup.
-- [ ] Task: Replace the fixed spawn position with gate-driven spawning
-  - [ ] Resolve the active gate from the graph.
+- [~] Task: Replace the fixed spawn position with gate-driven spawning
+  - [x] Resolve the active gate from the graph. `[bd9cb31]`
   - [ ] Make manual drops and streams use the gate anchor.
   - [ ] Prevent invisible spawns when no gate exists.
   - [ ] Disable/stop streaming safely when the gate is deleted.
+  - Notes: Added the pure gate-anchor resolver and missing-start
+    classification; main-loop wiring remains in progress.
 - [ ] Task: Implement lost-marble cleanup
   - [ ] Add documented playable-world bounds.
   - [ ] Remove out-of-bounds meshes, bodies, and spawner entries.
