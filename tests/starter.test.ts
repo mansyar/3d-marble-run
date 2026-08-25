@@ -64,6 +64,7 @@ describe("starter track", () => {
       trackBodies.set(spawned.body.handle, piece.id);
     }
 
+    world.step();
     const landing = resolveLanding(world, document.dropPoint, trackBodies);
     expect(landing.status).toBe("ready");
     const body = world.createRigidBody(
@@ -86,7 +87,7 @@ describe("starter track", () => {
     }
 
     expect(entries).toHaveLength(1);
-    expect(entries[0]?.goalPieceId).toBe("piece-6");
+    expect(entries[0]?.goalPieceId).toBe("piece-5");
   });
 });
 

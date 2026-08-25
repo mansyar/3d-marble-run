@@ -1,21 +1,14 @@
+import { createDropPoint } from "./dropPoint";
 import type { TrackGraph } from "./graph";
 import { addPiece, connect, createTrackGraph } from "./graph";
+import type { TrackDocument } from "./serialization";
 
 // Keep the drop point inside the ramp instead of directly over its capped end.
 const STARTER_Z_OFFSET = -0.17;
 
-/**
- * Build the first-run contraption: a start gate feeds a descending ramp,
- * straight, and quarter-turn into a funnel and goal cup.
- */
-export function createStarterGraph(): TrackGraph {
+/** Build the first-run contraption and its overhead Drop point. */
+export function createStarterDocument(): TrackDocument {
   const graph = createTrackGraph();
-  const gate = addPiece(graph, "start-gate", {
-    // Settle the chute just inside the ramp's high end so the first marble
-    // clears the endpoint seam and rolls into the starter route.
-    position: [0, 1.6, STARTER_Z_OFFSET + 0.17],
-    yawDeg: 0,
-  });
   const ramp = addPiece(graph, "ramp", {
     position: [0, 1.1, 1 + STARTER_Z_OFFSET],
     yawDeg: 180,
@@ -37,10 +30,16 @@ export function createStarterGraph(): TrackGraph {
     yawDeg: 0,
   });
 
-  connect(graph, gate, "spout", ramp, "b");
   connect(graph, ramp, "a", straight, "a");
   connect(graph, straight, "b", curve, "a");
   connect(graph, curve, "b", funnel, "mouth");
   connect(graph, funnel, "spout", cup, "inlet");
-  return graph;
+  const dropPoint = createDropPoint([0, 4, 0]);
+  if (!dropPoint) throw new Error("Invalid starter Drop point");
+  return { graph, dropPoint };
+}
+
+/** Build only the starter graph for callers that do not need its settings. */
+export function createStarterGraph(): TrackGraph {
+  return createStarterDocument().graph;
 }

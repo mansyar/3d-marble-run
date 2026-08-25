@@ -23,7 +23,8 @@ import { findOutOfBoundsMarbleIds } from "./sim/playability";
 import { createSpawner, type Spawner } from "./sim/spawner";
 import type { TrackGraph } from "./track/graph";
 import { assessDropPointHealth } from "./track/health";
-import { createStarterGraph } from "./track/starter";
+import type { TrackDocument } from "./track/serialization";
+import { createStarterDocument } from "./track/starter";
 import { loadInitialTrack } from "./track/startup";
 import { createTrackStorage } from "./track/storage";
 import { createAboutDialog } from "./ui/about";
@@ -45,14 +46,15 @@ const world = await createPhysics();
 const stepper = createStepper(FIXED_DT_MS, MAX_SUB_STEPS);
 const spawner: Spawner = createSpawner({ maxMarbles: 20, streamIntervalMs: 500 });
 const storage = createTrackStorage();
-let graph: TrackGraph;
+let initialDocument: TrackDocument;
 try {
-  graph = await loadInitialTrack(storage);
+  initialDocument = await loadInitialTrack(storage);
 } catch {
-  graph = createStarterGraph();
+  initialDocument = createStarterDocument();
 }
+const graph = initialDocument.graph;
 const goalTracker = createGoalTracker();
-const dropPointState = createDropPointState();
+const dropPointState = createDropPointState(initialDocument.dropPoint);
 let dropPointLanding: LandingResult = {
   status: "no-landing",
   position: null,
@@ -60,6 +62,10 @@ let dropPointLanding: LandingResult = {
   distance: null,
   pieceId: null,
 };
+
+function currentTrackDocument(): TrackDocument {
+  return { graph, dropPoint: dropPointState.point };
+}
 
 interface LiveMarble {
   mesh: ReturnType<typeof createMarbleMesh>;
@@ -270,7 +276,7 @@ const placement = createPlacementController({
     }),
   sync: syncScene,
   onChange: () => {
-    storage.scheduleAutosave(graph);
+    storage.scheduleAutosave(currentTrackDocument());
     if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
     refreshDropPointHealth();
   },
@@ -299,6 +305,7 @@ const dropPointPlacement = createDropPointController({
   stack: dropPointStack,
   onMove: (position) => dropPointGuide?.setPreview(position),
   onChange: () => {
+    storage.scheduleAutosave(currentTrackDocument());
     if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
     refreshDropPointHealth();
   },
@@ -375,18 +382,21 @@ async function refreshSaveSlots(): Promise<void> {
 
 const saveSlots = createSaveSlotControls(document.body, {
   onSave: async (name) => {
-    await storage.save(name, graph);
+    await storage.save(name, currentTrackDocument());
     await refreshSaveSlots();
   },
   onLoad: async (name) => {
     const loaded = await storage.load(name);
     if (!loaded) throw new Error("Save slot not found");
     placement.cancel();
+    dropPointPlacement.cancel();
     resetSimulationState();
-    replaceGraph(loaded);
+    dropPointState.point = loaded.dropPoint;
+    dropPointStack.clear();
+    replaceGraph(loaded.graph);
     if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
     refreshDropPointHealth();
-    storage.scheduleAutosave(graph);
+    storage.scheduleAutosave(currentTrackDocument());
   },
   onDelete: async (name) => {
     await storage.remove(name);
@@ -396,5 +406,5 @@ const saveSlots = createSaveSlotControls(document.body, {
 
 void refreshSaveSlots().catch(() => saveSlots.setStatus("Save unavailable"));
 window.addEventListener("pagehide", () => {
-  void storage.flushAutosave(graph).catch(() => undefined);
+  void storage.flushAutosave(currentTrackDocument()).catch(() => undefined);
 });

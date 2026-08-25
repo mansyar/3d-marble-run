@@ -1,6 +1,6 @@
 import { type DBSchema, type IDBPDatabase, openDB } from "idb";
-import type { TrackGraph } from "./graph";
-import { deserializeTrack, serializeTrack } from "./serialization";
+import type { TrackDocument } from "./serialization";
+import { deserializeTrackDocument, serializeTrack } from "./serialization";
 
 export const AUTOSAVE_SLOT = "__autosave__";
 
@@ -29,12 +29,12 @@ export interface TrackStorageOptions {
 }
 
 export interface TrackStorage {
-  save(name: string, graph: TrackGraph): Promise<void>;
-  load(name: string): Promise<TrackGraph | null>;
+  save(name: string, document: TrackDocument): Promise<void>;
+  load(name: string): Promise<TrackDocument | null>;
   remove(name: string): Promise<void>;
   list(): Promise<SaveSlotInfo[]>;
-  scheduleAutosave(graph: TrackGraph): void;
-  flushAutosave(graph: TrackGraph): Promise<void>;
+  scheduleAutosave(document: TrackDocument): void;
+  flushAutosave(document: TrackDocument): Promise<void>;
   dispose(): void;
 }
 
@@ -66,23 +66,23 @@ export function createTrackStorage(options: TrackStorageOptions = {}): TrackStor
     return trimmedName;
   }
 
-  async function write(name: string, graph: TrackGraph): Promise<void> {
+  async function write(name: string, document: TrackDocument): Promise<void> {
     const db = await getDatabase();
     await db.put("slots", {
       name,
-      payload: serializeTrack(graph),
+      payload: serializeTrack(document.graph, document.dropPoint),
       updatedAt: Date.now(),
     });
   }
 
-  async function save(name: string, graph: TrackGraph): Promise<void> {
-    await write(normalizeName(name, false), graph);
+  async function save(name: string, document: TrackDocument): Promise<void> {
+    await write(normalizeName(name, false), document);
   }
 
-  async function load(name: string): Promise<TrackGraph | null> {
+  async function load(name: string): Promise<TrackDocument | null> {
     const db = await getDatabase();
     const slot = await db.get("slots", normalizeName(name, true));
-    return slot ? deserializeTrack(slot.payload) : null;
+    return slot ? deserializeTrackDocument(slot.payload) : null;
   }
 
   async function remove(name: string): Promise<void> {
@@ -99,20 +99,20 @@ export function createTrackStorage(options: TrackStorageOptions = {}): TrackStor
       .map(({ name, updatedAt }) => ({ name, updatedAt }));
   }
 
-  function scheduleAutosave(graph: TrackGraph): void {
+  function scheduleAutosave(document: TrackDocument): void {
     if (autosaveTimer !== null) clearTimeout(autosaveTimer);
     autosaveTimer = setTimeout(() => {
       autosaveTimer = null;
-      void write(AUTOSAVE_SLOT, graph).catch(reportError);
+      void write(AUTOSAVE_SLOT, document).catch(reportError);
     }, debounceMs);
   }
 
-  async function flushAutosave(graph: TrackGraph): Promise<void> {
+  async function flushAutosave(document: TrackDocument): Promise<void> {
     if (autosaveTimer !== null) {
       clearTimeout(autosaveTimer);
       autosaveTimer = null;
     }
-    await write(AUTOSAVE_SLOT, graph);
+    await write(AUTOSAVE_SLOT, document);
   }
 
   function dispose(): void {
