@@ -8,6 +8,7 @@ import {
   getPiece,
   movePiece,
   type PlacedPiece,
+  removePiece as removeGraphPiece,
   restorePiece,
   type TrackGraph,
 } from "../track/graph";
@@ -48,6 +49,8 @@ export interface PlacementDeps {
   onEnd?: () => void;
   /** Called after a graph edit so persistence can debounce an autosave. */
   onChange?: () => void;
+  /** Disables physical-piece pointer handling while another build tool is active. */
+  isEnabled?: () => boolean;
   nextId: () => string;
 }
 
@@ -75,6 +78,10 @@ export function createPlacementController(deps: PlacementDeps): {
   let ghost: Ghost | null = null;
   let moving: MoveState | null = null;
   let lastStatus: SnapClassification["status"] = "free";
+
+  function isEnabled(): boolean {
+    return deps.isEnabled?.() ?? true;
+  }
 
   // Rotate pill — visible only while placing (works for touch users).
   const rotateBtn = document.createElement("button");
@@ -259,6 +266,7 @@ export function createPlacementController(deps: PlacementDeps): {
 
   function restoreMoving(): void {
     if (!moving) return;
+    removeGraphPiece(graph, moving.id);
     restorePiece(graph, moving.beforeSnapshot);
     deps.spawn(moving.id, moving.typeId, moving.before);
     moving = null;
@@ -282,18 +290,19 @@ export function createPlacementController(deps: PlacementDeps): {
   }
 
   function onPointerMove(ev: PointerEvent): void {
-    if (!ghost) return;
+    if (!isEnabled() || !ghost) return;
     cursorPos = pointOnTable(ev.clientX, ev.clientY);
     refreshGhost();
   }
 
   function onPointerUp(ev: PointerEvent): void {
-    if (!ghost) return;
+    if (!isEnabled() || !ghost) return;
     if (ev.button === 2) return; // right-click cancels via contextmenu handler
     place();
   }
 
   function onPointerDown(ev: PointerEvent): void {
+    if (!isEnabled()) return;
     if (!ghost) {
       const piece = pieceAt(ev.clientX, ev.clientY);
       if (!piece) return;
@@ -305,6 +314,7 @@ export function createPlacementController(deps: PlacementDeps): {
   }
 
   function onKeyDown(ev: KeyboardEvent): void {
+    if (!isEnabled()) return;
     const key = ev.key.toLowerCase();
     const modifier = ev.ctrlKey || ev.metaKey;
     if (modifier && key === "z") {
@@ -338,14 +348,14 @@ export function createPlacementController(deps: PlacementDeps): {
   }
 
   function onWheel(ev: WheelEvent): void {
-    if (!ghost) return;
+    if (!isEnabled() || !ghost) return;
     ev.preventDefault();
     yawDeg += ev.deltaY > 0 ? ROTATE_STEP_DEG : -ROTATE_STEP_DEG;
     refreshGhost();
   }
 
   function onContextMenu(ev: MouseEvent): void {
-    if (ghost) ev.preventDefault();
+    if (isEnabled() && ghost) ev.preventDefault();
   }
 
   domElement.addEventListener("pointermove", onPointerMove);

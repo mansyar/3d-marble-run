@@ -253,6 +253,7 @@ handle.scene.add(previewMarble);
 // --- HUD wiring -------------------------------------------------------------
 
 let tray!: ReturnType<typeof createTray>;
+let dropPointModeActive = false;
 
 const placement = createPlacementController({
   scene: handle.scene,
@@ -270,9 +271,10 @@ const placement = createPlacementController({
   sync: syncScene,
   onChange: () => {
     storage.scheduleAutosave(graph);
-    dropPointGuide?.refresh();
+    if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
     refreshDropPointHealth();
   },
+  isEnabled: () => !dropPointModeActive,
   nextId: () => `piece-${++customIdCounter}`,
   onEnd: () => tray.setActive(null),
 });
@@ -296,20 +298,26 @@ const dropPointPlacement = createDropPointController({
   state: dropPointState,
   stack: dropPointStack,
   onMove: (position) => dropPointGuide?.setPreview(position),
-  onChange: () => dropPointGuide?.refresh(),
+  onChange: () => {
+    if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
+    refreshDropPointHealth();
+  },
   onEnd: () => tray.setActive(null),
 });
 
 tray = createTray(document.body, (selection) => {
   if (selection === "drop-point") {
+    dropPointModeActive = true;
     placement.cancel();
     dropPointPlacement.begin();
     tray.setActive(selection);
   } else if (selection) {
+    dropPointModeActive = false;
     dropPointPlacement.cancel();
     placement.begin(selection);
     tray.setActive(selection);
   } else {
+    dropPointModeActive = false;
     dropPointPlacement.cancel();
     placement.cancel();
   }
@@ -358,7 +366,7 @@ simulationControls.setStreamEnabled(spawner.isContinuous());
 simulationControls.setGoalCount(goalTracker.count());
 simulationControls.setTimerMs(spawner.state().timerMs);
 simulationControls.setCameraMode(cameraController.mode());
-dropPointGuide?.refresh();
+if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
 refreshDropPointHealth();
 
 async function refreshSaveSlots(): Promise<void> {
@@ -376,7 +384,7 @@ const saveSlots = createSaveSlotControls(document.body, {
     placement.cancel();
     resetSimulationState();
     replaceGraph(loaded);
-    dropPointGuide?.refresh();
+    if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
     refreshDropPointHealth();
     storage.scheduleAutosave(graph);
   },
