@@ -1,0 +1,1 @@
+Implemented and tested ordered first-run coach-mark state with optional local persistence. The helper ignores malformed storage, refuses out-of-order completion, and fails silently when browser storage is unavailable. Focused Vitest tests, strict TypeScript, and Biome passed.
