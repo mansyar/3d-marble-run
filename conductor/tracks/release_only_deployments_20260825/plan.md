@@ -26,27 +26,33 @@
 
 ## Phase 2 · Release-only publication policy
 
-- [ ] Task: Remove automatic master publication and guard manual dispatch
-  - [ ] Remove the master push trigger from the Pages reusable workflow.
-  - [ ] Remove the master push trigger from the container reusable workflow.
-  - [ ] Preserve `workflow_call` and manual dispatch entry points.
-  - [ ] Restrict manual publication jobs to the repository default branch.
-  - [ ] Preserve release-tag calls, Pages base-path handling, GHCR metadata,
+- [x] Task: Remove automatic master publication and guard manual dispatch
+  - [x] Remove the master push trigger from the Pages reusable workflow.
+  - [x] Remove the master push trigger from the container reusable workflow.
+  - [x] Preserve `workflow_call` and manual dispatch entry points.
+  - [x] Restrict manual publication jobs to the repository default branch.
+  - [x] Preserve release-tag calls, Pages base-path handling, GHCR metadata,
     permissions, and existing authentication behavior.
-- [ ] Task: Route optional Coolify deployment through eligible outputs
-  - [ ] Keep Coolify disabled unless its existing opt-in setting and credentials
+  - Commit: `4f64506` (`ci(release): Make publication release-only`); Git note attached.
+- [x] Task: Route optional Coolify deployment through eligible outputs
+  - [x] Keep Coolify disabled unless its existing opt-in setting and credentials
     are present.
-  - [ ] Trigger it after successful GHCR publication for validated release calls
+  - [x] Trigger it after successful GHCR publication for validated release calls
     and eligible manual default-branch runs.
-  - [ ] Ensure master pushes cannot trigger Coolify.
-  - [ ] Preserve the existing webhook, bearer token, and retry behavior.
-- [ ] Task: Verify release orchestration and publication ordering
-  - [ ] Confirm `release.yml` remains tag-only and validates before publication.
-  - [ ] Confirm GitHub Release, Pages, GHCR, and Coolify depend on `quality` as
+  - [x] Ensure master pushes cannot trigger Coolify.
+  - [x] Preserve the existing webhook, bearer token, and retry behavior.
+  - Commit: `6503e8b` (`ci(release): Trigger Coolify after releases`); Git note attached.
+- [x] Task: Verify release orchestration and publication ordering
+  - [x] Confirm `release.yml` remains tag-only and validates before publication.
+  - [x] Confirm GitHub Release, Pages, GHCR, and Coolify depend on `quality` as
     specified and no standalone tag publisher remains.
-  - [ ] Confirm malformed or mismatched tags cannot reach publication jobs.
-  - [ ] Confirm exact version, `latest`, SHA, and OCI image metadata behavior.
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+  - [x] Confirm malformed or mismatched tags cannot reach publication jobs.
+  - [x] Confirm exact version, `latest`, SHA, and OCI image metadata behavior.
+  - Verification: 92 tests, Biome, TypeScript, production build, matching
+    `v0.1.0` acceptance, expected `v0.1.1` rejection, and `git diff --check`
+    passed. Build measured 3,422.17 kB raw / 1,240.30 kB gzip; actionlint was
+    unavailable and workflow semantics were manually reviewed.
+- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
 
 ## Phase 3 · Documentation & final verification
 
