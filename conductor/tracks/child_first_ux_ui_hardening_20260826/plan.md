@@ -31,9 +31,14 @@ a verification checkpoint before proceeding.
     automation and viewport verification remain scheduled for the phase
     checkpoint.
 
-- [ ] Task: Clarify the simulation reset label
-  - [ ] Rename the visible control to **Reset run** while preserving its current
+- [x] Task: Clarify the simulation reset label *(23658cf)*
+  - [x] Rename the visible control to **Reset run** while preserving its current
     simulation-only behavior.
+  - Notes: Updated the visible label only; the existing reset callback still
+    clears active marbles, goals, timer, and stream while preserving the build.
+  - Verify: `pnpm exec tsc --noEmit` and `git diff --check` passed; full phase
+    automation and viewport verification remain scheduled for the phase
+    checkpoint.
 
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
   - [ ] Run relevant automated tests, Biome, strict TypeScript, and the
