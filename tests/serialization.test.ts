@@ -134,6 +134,89 @@ describe("track serialization", () => {
     expect(() => serializeTrack(createTrackGraph(), { position: [0, 3, 0] })).toThrow();
   });
 
+  it("migrates a connected v1 Start gate into a Drop point", () => {
+    const payload = {
+      version: 1,
+      nextId: 4,
+      pieces: [
+        {
+          id: "piece-1",
+          typeId: "start-gate",
+          placement: { position: [2, 1, 3], yawDeg: 90 },
+          connections: { spout: { pieceId: "piece-2", portId: "b" } },
+        },
+        {
+          id: "piece-2",
+          typeId: "ramp",
+          placement: P0,
+          connections: {
+            a: { pieceId: "piece-3", portId: "a" },
+            b: { pieceId: "piece-1", portId: "spout" },
+          },
+        },
+        {
+          id: "piece-3",
+          typeId: "straight",
+          placement: P1,
+          connections: { a: { pieceId: "piece-2", portId: "a" }, b: null },
+        },
+      ],
+    };
+
+    const migrated = deserializeTrackDocument(JSON.stringify(payload));
+
+    expect(migrated.dropPoint).toEqual({ position: [2, 4, 3] });
+    expect(migrated.graph.pieces.has("piece-1")).toBe(false);
+    expect(migrated.graph.nextId).toBe(4);
+    expect(migrated.graph.pieces.get("piece-2")?.connections).toEqual({
+      a: { pieceId: "piece-3", portId: "a" },
+      b: null,
+    });
+    expect(migrated.graph.pieces.get("piece-3")?.connections.a).toEqual({
+      pieceId: "piece-2",
+      portId: "a",
+    });
+  });
+
+  it("migrates an unconnected v1 Start gate and rejects invalid legacy data", () => {
+    const unconnected = {
+      version: 1,
+      nextId: 2,
+      pieces: [
+        { id: "piece-1", typeId: "start-gate", placement: P0, connections: { spout: null } },
+      ],
+    };
+    const invalidPosition = {
+      ...unconnected,
+      pieces: [
+        {
+          id: "piece-1",
+          typeId: "start-gate",
+          placement: { position: [21, 0, 0], yawDeg: 0 },
+          connections: { spout: null },
+        },
+      ],
+    };
+    const invalidConnection = {
+      ...unconnected,
+      pieces: [
+        {
+          id: "piece-1",
+          typeId: "start-gate",
+          placement: P0,
+          connections: { spout: { pieceId: "piece-99", portId: "a" } },
+        },
+      ],
+    };
+
+    const migrated = deserializeTrackDocument(JSON.stringify(unconnected));
+
+    expect(migrated.dropPoint).toEqual({ position: [0, 4, 0] });
+    expect(migrated.graph.pieces.size).toBe(0);
+    expect(() => deserializeTrackDocument(JSON.stringify(invalidPosition))).toThrow();
+    expect(() => deserializeTrackDocument(JSON.stringify(invalidConnection))).toThrow();
+  });
+
   it("rejects malformed pieces, duplicate start gates, and asymmetric connections", () => {
     const unknownType = {
       version: 1,
