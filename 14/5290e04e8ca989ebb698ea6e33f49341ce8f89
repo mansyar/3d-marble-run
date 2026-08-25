@@ -1,1 +1,3 @@
 Phase 1 manual verification exposed the native hidden attribute being overridden by the #save-slots display rule. Added an explicit hidden-state rule so the Saved tracks drawer is collapsed by default while preserving its accessible open, Escape-close, and focus-return behavior.
+
+Phase 1 checkpoint completed 2026-08-26. Automated checks passed: 24 Vitest files and 142 tests, Biome on 77 files, strict TypeScript, and production build at 3,433.58 kB JavaScript / 1,243.68 kB gzip. Manual checks passed at 360x800, 390x844, and 1280x720: collapsed Saved tracks drawer, accessible open/Escape-close/focus return, no HUD overlap, Reset run label, and no horizontal overflow. User explicitly confirmed the checkpoint.
