@@ -11,6 +11,7 @@ export const PIECE_COLORS: Record<PieceTypeId, number> = {
   ramp: 0x2a9d8f, // green
   funnel: 0x3a86ff, // blue
   "goal-cup": 0xffc300, // reward gold
+  "start-gate": 0x8338ec, // playful violet
 };
 
 export function makePieceMaterial(typeId: PieceTypeId): MeshStandardMaterial {
