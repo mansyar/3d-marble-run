@@ -3,12 +3,13 @@ import { Scene } from "three";
 import { describe, expect, it, vi } from "vitest";
 import { spawnStaticPiece } from "../src/pieces/builders";
 import { MARBLE_RADIUS } from "../src/pieces/marble";
+import { DROP_SPAWN_OFFSET } from "../src/sim/dropPointSpawner";
 import { createGoalTracker, type GoalEntry } from "../src/sim/goals";
+import { resolveLanding } from "../src/sim/landing";
 import { createPhysics } from "../src/sim/physics";
-import { resolveSpawnAnchor } from "../src/sim/playability";
 import type { TrackGraph } from "../src/track/graph";
-import { assessTrackHealth } from "../src/track/health";
-import { createStarterGraph } from "../src/track/starter";
+import { assessDropPointHealth } from "../src/track/health";
+import { createStarterDocument } from "../src/track/starter";
 import { loadInitialTrack } from "../src/track/startup";
 
 function connectedRefs(graph: TrackGraph): number {
@@ -22,24 +23,23 @@ function connectedRefs(graph: TrackGraph): number {
 }
 
 describe("starter track", () => {
-  it("creates a six-piece connected starter contraption with a ready route", () => {
-    const graph = createStarterGraph();
+  it("creates a five-piece connected starter contraption with a ready Drop point", () => {
+    const document = createStarterDocument();
+    const graph = document.graph;
 
     expect([...graph.pieces.values()].map((piece) => piece.typeId).sort()).toEqual([
       "curve",
       "funnel",
       "goal-cup",
       "ramp",
-      "start-gate",
       "straight",
     ]);
-    expect(graph.nextId).toBe(7);
-    expect(connectedRefs(graph)).toBe(10);
-    expect(assessTrackHealth(graph).status).toBe("ready");
-    expect(resolveSpawnAnchor(graph)).toEqual({
-      status: "ready",
-      position: [0, 2.75, 0],
+    expect(graph.nextId).toBe(6);
+    expect(connectedRefs(graph)).toBe(8);
+    expect(document.dropPoint).toEqual({
+      position: [0, 4, 0],
     });
+    expect(assessDropPointHealth(graph, document.dropPoint, "piece-1").status).toBe("ready");
 
     for (const piece of graph.pieces.values()) {
       for (const connection of Object.values(piece.connections)) {
@@ -54,16 +54,25 @@ describe("starter track", () => {
   });
 
   it("lets a marble traverse the starter path into the goal cup", async () => {
-    const graph = createStarterGraph();
+    const document = createStarterDocument();
+    const graph = document.graph;
     const world = await createPhysics();
     const scene = new Scene();
+    const trackBodies = new Map<number, string>();
     for (const piece of graph.pieces.values()) {
-      spawnStaticPiece(scene, world, piece.typeId, piece.placement);
+      const spawned = spawnStaticPiece(scene, world, piece.typeId, piece.placement);
+      trackBodies.set(spawned.body.handle, piece.id);
     }
 
-    const spawn = resolveSpawnAnchor(graph);
-    if (spawn.status !== "ready") throw new Error("Expected starter spawn anchor");
-    const body = world.createRigidBody(RigidBodyDesc.dynamic().setTranslation(...spawn.position));
+    const landing = resolveLanding(world, document.dropPoint, trackBodies);
+    expect(landing.status).toBe("ready");
+    const body = world.createRigidBody(
+      RigidBodyDesc.dynamic().setTranslation(
+        document.dropPoint?.position[0] ?? 0,
+        (document.dropPoint?.position[1] ?? 4) + DROP_SPAWN_OFFSET,
+        document.dropPoint?.position[2] ?? 0,
+      ),
+    );
     world.createCollider(ColliderDesc.ball(MARBLE_RADIUS), body);
     const goals = createGoalTracker();
     let entries: GoalEntry[] = [];
@@ -83,15 +92,15 @@ describe("starter track", () => {
 
 describe("startup track loading", () => {
   it("loads the autosave without replacing it with the starter", async () => {
-    const saved = createStarterGraph();
+    const saved = createStarterDocument();
     const storage = {
       load: vi.fn(async () => saved),
       flushAutosave: vi.fn(async () => undefined),
     };
 
-    const graph = await loadInitialTrack(storage);
+    const document = await loadInitialTrack(storage);
 
-    expect(graph).toBe(saved);
+    expect(document).toBe(saved);
     expect(storage.flushAutosave).not.toHaveBeenCalled();
   });
 
@@ -101,10 +110,13 @@ describe("startup track loading", () => {
       flushAutosave: vi.fn(async () => undefined),
     };
 
-    const graph = await loadInitialTrack(storage);
+    const document = await loadInitialTrack(storage);
 
-    expect(graph.pieces.size).toBe(6);
-    expect(assessTrackHealth(graph).status).toBe("ready");
-    expect(storage.flushAutosave).toHaveBeenCalledWith(graph);
+    expect(document.graph.pieces.size).toBe(5);
+    expect(document.dropPoint).toEqual({ position: [0, 4, 0] });
+    expect(assessDropPointHealth(document.graph, document.dropPoint, "piece-1").status).toBe(
+      "ready",
+    );
+    expect(storage.flushAutosave).toHaveBeenCalledWith(document);
   });
 });

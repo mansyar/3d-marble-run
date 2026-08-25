@@ -1,8 +1,8 @@
 import "fake-indexeddb/auto";
 import { describe, expect, it } from "vitest";
+import { createDropPoint } from "../src/track/dropPoint";
 import { addPiece, createTrackGraph } from "../src/track/graph";
-import { assessTrackHealth } from "../src/track/health";
-import { createStarterGraph } from "../src/track/starter";
+import { createStarterDocument } from "../src/track/starter";
 import { AUTOSAVE_SLOT, createTrackStorage } from "../src/track/storage";
 
 let databaseNumber = 0;
@@ -20,12 +20,13 @@ describe("track storage", () => {
     const storage = newStorage();
     const graph = createTrackGraph();
     addPiece(graph, "straight", { position: [1, 0, 2], yawDeg: 45 });
+    const document = { graph, dropPoint: createDropPoint([1, 4, 2]) };
 
-    await storage.save("alpha", graph);
-    await storage.save("beta", graph);
+    await storage.save("alpha", document);
+    await storage.save("beta", document);
 
     expect((await storage.list()).map((slot) => slot.name).sort()).toEqual(["alpha", "beta"]);
-    expect(await storage.load("alpha")).toEqual(graph);
+    expect(await storage.load("alpha")).toEqual(document);
     expect(await storage.load("missing")).toBeNull();
 
     await storage.remove("alpha");
@@ -37,15 +38,16 @@ describe("track storage", () => {
     const storage = newStorage();
     const graph = createTrackGraph();
     addPiece(graph, "goal-cup", { position: [0, 0, 3], yawDeg: 0 });
+    const document = { graph, dropPoint: null };
 
-    storage.scheduleAutosave(graph);
+    storage.scheduleAutosave(document);
     await new Promise((resolve) => setTimeout(resolve, 20));
-    expect(await storage.load(AUTOSAVE_SLOT)).toEqual(graph);
+    expect(await storage.load(AUTOSAVE_SLOT)).toEqual(document);
 
     addPiece(graph, "ramp", { position: [2, 0, 1], yawDeg: 90 });
-    storage.scheduleAutosave(graph);
-    await storage.flushAutosave(graph);
-    expect(await storage.load(AUTOSAVE_SLOT)).toEqual(graph);
+    storage.scheduleAutosave(document);
+    await storage.flushAutosave(document);
+    expect(await storage.load(AUTOSAVE_SLOT)).toEqual(document);
     storage.dispose();
   });
 
@@ -53,30 +55,31 @@ describe("track storage", () => {
     const storage = newStorage();
     const graph = createTrackGraph();
     addPiece(graph, "straight", { position: [0, 0, 0], yawDeg: 0 });
+    const document = { graph, dropPoint: null };
 
-    await storage.save(" alpha ", graph);
-    expect(await storage.load(" alpha ")).toEqual(graph);
-    await expect(storage.save(AUTOSAVE_SLOT, graph)).rejects.toThrow();
+    await storage.save(" alpha ", document);
+    expect(await storage.load(" alpha ")).toEqual(document);
+    await expect(storage.save(AUTOSAVE_SLOT, document)).rejects.toThrow();
     await expect(storage.remove(` ${AUTOSAVE_SLOT} `)).rejects.toThrow();
     await storage.remove(" alpha ");
     expect(await storage.list()).toEqual([]);
     storage.dispose();
   });
 
-  it("preserves a connected start gate in named and autosave slots", async () => {
+  it("preserves the Drop point in named and autosave slots", async () => {
     const storage = newStorage();
-    const graph = createStarterGraph();
+    const document = createStarterDocument();
 
-    await storage.save("starter", graph);
-    storage.scheduleAutosave(graph);
-    await storage.flushAutosave(graph);
+    await storage.save("starter", document);
+    storage.scheduleAutosave(document);
+    await storage.flushAutosave(document);
 
     for (const loaded of [await storage.load("starter"), await storage.load(AUTOSAVE_SLOT)]) {
-      expect(loaded?.pieces.size).toBe(6);
+      expect(loaded?.graph.pieces.size).toBe(5);
       expect(
-        [...(loaded?.pieces.values() ?? [])].filter((piece) => piece.typeId === "start-gate"),
-      ).toHaveLength(1);
-      expect(loaded && assessTrackHealth(loaded).status).toBe("ready");
+        [...(loaded?.graph.pieces.values() ?? [])].some((piece) => piece.typeId === "start-gate"),
+      ).toBe(false);
+      expect(loaded?.dropPoint).toEqual({ position: [0, 4, 0] });
     }
     storage.dispose();
   });
