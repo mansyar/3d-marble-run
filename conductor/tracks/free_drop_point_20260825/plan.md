@@ -125,13 +125,18 @@ and input-glue tasks use the phase manual-verification checkpoint.
   - [x] Keep out-of-scope boundaries and offline guarantees explicit. The
     documentation retains offline-only persistence and the approved exclusions.
 
-- [~] Task: Run final regression and manual verification
-  - [~] Run `CI=true pnpm vitest run`.
-  - [ ] Run `CI=true pnpm biome check .`.
-  - [ ] Run `CI=true pnpm vitest run --coverage`.
-  - [ ] Run `pnpm build` and `pnpm build -- --base=/marblescape/`.
-  - [ ] Verify desktop and 360px/mobile touch flows, guide updates, invalid
+- [x] Task: Run final regression and manual verification `[73f4d2e]`
+  - [x] Run `CI=true pnpm vitest run`. 23 test files / 139 tests passed.
+  - [x] Run `CI=true pnpm biome check .` and `pnpm exec tsc --noEmit`.
+  - [x] Run `CI=true pnpm vitest run --coverage`: 92.19% statements, 86.73%
+    branches, 96.27% functions, and 94.64% lines.
+  - [x] Run `pnpm build` and `pnpm build -- --base=/marblescape/`: both passed
+    at 3,433.63 kB JavaScript / 1,243.71 kB gzip.
+  - [x] Verify desktop and 360px/mobile touch flows, guide updates, invalid
     landing guidance, starter goals, save/load, undo/redo, and streaming.
+    Desktop streaming reached `Goals: 18` in eight seconds; invalid Drop point
+    deletion disabled Drop/Stream with friendly guidance; mobile had no
+    overflow and retained six 52.3px × 66px tools.
 
-- [ ] Verification checkpoint: final automated and desktop/mobile verification
+- [~] Verification checkpoint: final automated and desktop/mobile verification
   with explicit user acceptance and a Git verification note.
