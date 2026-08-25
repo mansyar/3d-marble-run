@@ -258,6 +258,10 @@ handle.scene.add(previewMarble);
 
 // --- HUD wiring -------------------------------------------------------------
 
+const topHud = document.createElement("div");
+topHud.id = "top-hud";
+document.body.appendChild(topHud);
+
 let tray!: ReturnType<typeof createTray>;
 let dropPointModeActive = false;
 
@@ -348,7 +352,7 @@ function resetSimulationState(): void {
 }
 
 const aboutDialog = createAboutDialog(document.body, APP_VERSION);
-const simulationControls = createSimulationControls(document.body, {
+const simulationControls = createSimulationControls(topHud, {
   onDrop: () =>
     applyDropPointSpawnResult(
       createDropPointSpawnerDrop(spawner, dropPointState.point, dropPointLanding),
@@ -381,7 +385,7 @@ async function refreshSaveSlots(): Promise<void> {
   saveSlots.setSlots(await storage.list());
 }
 
-const saveSlots = createSaveSlotControls(document.body, {
+const saveSlots = createSaveSlotControls(topHud, {
   onSave: async (name) => {
     await storage.save(name, currentTrackDocument());
     await refreshSaveSlots();

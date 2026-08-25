@@ -20,22 +20,40 @@ canvas.camera-orbiting {
   cursor: grabbing;
 }
 
+/* --- Top HUD layout -------------------------------------------------------- */
+
+#top-hud {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  left: max(12px, env(safe-area-inset-left));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  box-sizing: border-box;
+  z-index: 10;
+  pointer-events: none;
+}
+
+#top-hud > * {
+  pointer-events: auto;
+}
+
 /* --- Simulation controls --------------------------------------------------- */
 
 #simulation-controls {
-  position: fixed;
-  top: max(12px, env(safe-area-inset-top));
-  left: max(12px, env(safe-area-inset-left));
+  position: relative;
   display: flex;
   flex-wrap: wrap;
-  max-width: min(520px, calc(100vw - 24px));
+  max-width: min(520px, 100%);
   gap: 8px;
   padding: 8px;
+  box-sizing: border-box;
   background: rgb(255 255 255 / 0.82);
   backdrop-filter: blur(6px);
   border-radius: 16px;
   box-shadow: 0 4px 16px rgb(61 52 40 / 0.18);
-  z-index: 10;
 }
 
 #simulation-controls button {
@@ -166,19 +184,17 @@ canvas.camera-orbiting {
 /* --- Named save slots ------------------------------------------------------ */
 
 #save-slots {
-  position: fixed;
-  top: max(12px, env(safe-area-inset-top));
-  right: max(12px, env(safe-area-inset-right));
+  position: relative;
   display: grid;
   grid-template-columns: minmax(96px, 1fr) auto;
   gap: 6px;
-  width: min(290px, calc(100vw - 24px));
+  width: min(290px, 100%);
   padding: 8px;
+  box-sizing: border-box;
   background: rgb(255 255 255 / 0.82);
   backdrop-filter: blur(6px);
   border-radius: 16px;
   box-shadow: 0 4px 16px rgb(61 52 40 / 0.18);
-  z-index: 10;
 }
 
 #save-slots input,
@@ -228,11 +244,13 @@ canvas.camera-orbiting {
   text-overflow: ellipsis;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 900px) {
+  #top-hud {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   #save-slots {
-    top: calc(max(12px, env(safe-area-inset-top)) + 120px);
-    left: max(12px, env(safe-area-inset-left));
-    right: auto;
+    justify-self: start;
   }
 }
 
