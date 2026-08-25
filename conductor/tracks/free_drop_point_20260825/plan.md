@@ -82,16 +82,17 @@ and input-glue tasks use the phase manual-verification checkpoint.
   - [x] Verify version-1 gate-less saves remain loadable with no Drop point;
     full tests, coverage, Biome, TypeScript, and build pass.
 
-- [~] Task: Migrate version-1 Start-gate saves
-  - [~] Write failing tests for gate-less v1 saves, connected gate migration,
+- [x] Task: Migrate version-1 Start-gate saves `[16cf1dc]`
+  - [x] Write failing tests for gate-less v1 saves, connected gate migration,
     discarded gate edges, preserved physical connections, and invalid legacy
-    data.
-  - [ ] Implement migration before scene restoration and keep legacy gate data
-    out of new active graphs.
-  - [ ] Verify named and autosave slot compatibility.
+    data. `[754f561]`
+  - [x] Implement migration before scene restoration and keep legacy gate data
+    out of new active graphs. `[16cf1dc]`
+  - [x] Verify migration preserves physical connections and rejects invalid
+    legacy references; full tests, coverage, Biome, TypeScript, and build pass.
 
-- [ ] Task: Update starter and startup/load integration
-  - [ ] Write failing tests for the five-piece starter, Drop point placement,
+- [~] Task: Update starter and startup/load integration
+  - [~] Write failing tests for the five-piece starter, Drop point placement,
     ready health, first Drop traversal, and first-launch persistence.
   - [ ] Implement starter creation, startup defaults, load replacement, reset,
     and persistence callbacks for the separate Drop point setting.
