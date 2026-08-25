@@ -55,8 +55,8 @@ a verification checkpoint before proceeding.
 
 ## Phase 2: First-run child guidance
 
-- [ ] Task: Add tested coach-mark state behavior
-  - [ ] Write Vitest tests first for step order, dismissal, completion, and
+- [~] Task: Add tested coach-mark state behavior
+  - [~] Write Vitest tests first for step order, dismissal, completion, and
     locally remembered dismissal.
   - [ ] Implement the smallest pure state and persistence helper needed for the
     coach marks.
