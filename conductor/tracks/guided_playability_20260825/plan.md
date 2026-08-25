@@ -14,10 +14,13 @@ One commit per task.
     gate-to-goal connectivity.
   - Notes: Added Red-phase Vitest coverage for the start-gate registry,
     singleton graph rule, port transforms, and track-health states.
-- [ ] Task: Implement start-gate registry and track-health logic
-  - [ ] Add the new piece type and port definition.
-  - [ ] Add a pure track-health/reachability module.
-  - [ ] Preserve existing graph, connection, undo, and delete semantics.
+- [x] Task: Implement start-gate registry and track-health logic `[c8c9174]`
+  - [x] Add the new piece type and port definition.
+  - [x] Add a pure track-health/reachability module.
+  - [x] Preserve existing graph, connection, undo, and delete semantics.
+  - Notes: Added the start-gate material and procedural chute builder as
+    required type plumbing. Added singleton enforcement for new and restored
+    pieces, plus BFS-based advisory connectivity status.
 - [ ] Task: Add procedural start-gate geometry and tray integration
   - [ ] Build the gate mesh and Rapier collider.
   - [ ] Add its material/color and tray label.
