@@ -3,7 +3,7 @@
 Progress notes are appended under completed tasks per `workflow.md`.
 One commit per task.
 
-## Phase 1 · Start Gate & Track-Health Domain
+## Phase 1 · Start Gate & Track-Health Domain [checkpoint: 1b005e5]
 
 - [x] Task: Write failing tests for start-gate registry and graph rules `[ccccf70]`
   - [x] Define the `start-gate` piece, its `spout` port, world-port transform,
@@ -29,11 +29,15 @@ One commit per task.
     the registry implementation; this task finalized the friendly tray labels
     and accessible action names. Existing registry-driven placement behavior
     remains unchanged.
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`) `[1b005e5]`
+  - Notes: Automated tests, Biome, TypeScript, coverage, and build passed.
+    Desktop verification confirmed the starter route reaches a goal. Mobile
+    verification confirmed all six tray buttons fit and Start gate placement
+    activates its Turn control. User accepted the checkpoint.
 
 ## Phase 2 · Gate-Driven Simulation & Lost-Marble Cleanup
 
-- [ ] Task: Write failing tests for spawn resolution and playable bounds
+- [~] Task: Write failing tests for spawn resolution and playable bounds
   - [ ] Verify the gate’s world-space spawn anchor under placement and yaw.
   - [ ] Verify missing-gate and invalid-boundary classifications.
   - [ ] Verify cleanup state does not count a goal or leave an active marble.
