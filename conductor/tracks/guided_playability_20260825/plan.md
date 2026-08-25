@@ -129,3 +129,14 @@ One commit per task.
     single gate entry point, advisory guidance, and local persistence. Final
     automated and real-touch verification was accepted by the user; see the
     verification note on `6282163`.
+
+## Post-review fixes
+
+- [x] Task: Address formal review findings `[6a7e97d]`
+  - [x] Reject a second Start gate at the placement boundary without throwing
+    or mutating the graph.
+  - [x] Keep the Stream HUD synchronized when gate-aware scheduling stops after
+    gate deletion.
+  - Notes: Added placement preflight coverage and propagated an explicit
+    stream-stop signal through manual and continuous gate-aware spawn results.
+    Targeted tests, Biome, and TypeScript passed; final verification follows.
