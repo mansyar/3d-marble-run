@@ -71,12 +71,14 @@ One commit per task.
 
 ## Phase 3 · Starter Track & Save Compatibility
 
-- [~] Task: Write failing tests for start-gate serialization compatibility
-  - [ ] Round-trip graphs containing a start gate and connections.
-  - [ ] Confirm existing v1 payloads without a start gate still load.
-  - [ ] Reject malformed or conflicting start-gate data.
-  - [ ] Verify starter topology includes a valid gate-to-goal route.
-- [ ] Task: Implement persistence and startup compatibility
+- [x] Task: Write failing tests for start-gate serialization compatibility `[e867c62]`
+  - [x] Round-trip graphs containing a start gate and connections.
+  - [x] Confirm existing v1 payloads without a start gate still load.
+  - [x] Reject malformed or conflicting start-gate data.
+  - [x] Verify starter topology includes a valid gate-to-goal route.
+  - Notes: Added Red coverage for save compatibility, singleton validation,
+    gate-derived starter spawning, and first-launch persistence.
+- [~] Task: Implement persistence and startup compatibility
   - [ ] Extend serialization validation for `start-gate`.
   - [ ] Preserve v1 save loading without silently modifying user layouts.
   - [ ] Add the start gate to the first-launch starter graph.
