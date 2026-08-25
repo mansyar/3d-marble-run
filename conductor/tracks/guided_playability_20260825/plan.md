@@ -69,7 +69,7 @@ One commit per task.
     passed. User accepted the checkpoint. See the verification note on
     `cb1ad23`.
 
-## Phase 3 · Starter Track & Save Compatibility
+## Phase 3 · Starter Track & Save Compatibility `[6f1e733]`
 
 - [x] Task: Write failing tests for start-gate serialization compatibility `[e867c62]`
   - [x] Round-trip graphs containing a start gate and connections.
@@ -92,11 +92,14 @@ One commit per task.
   - [x] Confirm the first launch remains immediately playable. `[d0f0af3]`
   - Notes: Existing graph replacement rebuilds every registered piece and the
     starter now resolves a gate anchor that traverses into the goal cup.
-- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`) `[6f1e733]`
+  - Notes: Full automated verification and desktop/mobile browser checks
+    passed. User accepted the checkpoint. See the verification note on
+    `6f1e733`.
 
 ## Phase 4 · Regression, Accessibility & Budget Verification
 
-- [ ] Task: Audit changed logic coverage and invariants
+- [~] Task: Audit changed logic coverage and invariants
   - [ ] Run targeted coverage for graph health, serialization, spawn
     resolution, and cleanup.
   - [ ] Confirm changed logic meets the project’s approximately 80% target.
