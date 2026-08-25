@@ -60,16 +60,20 @@
 
 ## Phase 3 · Documentation & final verification
 
-- [ ] Task: Document the release-only deployment policy
-  - [ ] Explain that master pushes run CI only and do not publish artifacts.
-  - [ ] Document valid tag release outputs and quality-gate ordering.
-  - [ ] Document default-branch-only manual emergency dispatches.
-  - [ ] Document release-triggered optional Coolify behavior and existing
+- [x] Task: Document the release-only deployment policy
+  - [x] Explain that master pushes run CI only and do not publish artifacts.
+  - [x] Document valid tag release outputs and quality-gate ordering.
+  - [x] Document default-branch-only manual emergency dispatches.
+  - [x] Document release-triggered optional Coolify behavior and existing
     configuration requirements.
-- [ ] Task: Perform local and remote release-policy verification
-  - [ ] Run matching and mismatched release-tag validation checks.
-  - [ ] Run the complete local tests, Biome, TypeScript, production build, and
+  - Commit: `8cd30aa` (`docs(release): Document release-only deployment policy`); Git note attached.
+- [~] Task: Perform local and remote release-policy verification
+  - [x] Run matching and mismatched release-tag validation checks.
+  - [x] Run the complete local tests, Biome, TypeScript, production build, and
     preview checks.
+    - Verification: matching `v0.1.0` passed; mismatched `v0.1.1` was rejected;
+      92 tests, Biome, TypeScript, build, `git diff --check`, and preview HTTP
+      smoke check passed. Build measured 3,422.17 kB raw / 1,240.30 kB gzip.
   - [ ] Verify a master push runs CI without Pages/GHCR publication.
   - [ ] Verify a valid release tag runs quality and then the configured outputs.
   - [ ] Record any GitHub Actions annotations or follow-up maintenance items.
