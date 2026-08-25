@@ -57,9 +57,9 @@ describe("release tag validation", () => {
   });
 
   it("validates a matching tag from the command line", () => {
-    expect(execFileSync(process.execPath, [scriptPath, matchingTag], { encoding: "utf8" })).toContain(
-      `matches package.json version ${packageVersion}`,
-    );
+    expect(
+      execFileSync(process.execPath, [scriptPath, matchingTag], { encoding: "utf8" }),
+    ).toContain(`matches package.json version ${packageVersion}`);
   });
 
   it("returns a failure status for a mismatched command-line tag", () => {
