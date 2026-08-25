@@ -5,13 +5,15 @@ One commit per task.
 
 ## Phase 1 · Start Gate & Track-Health Domain
 
-- [ ] Task: Write failing tests for start-gate registry and graph rules
-  - [ ] Define the `start-gate` piece, its `spout` port, world-port transform,
+- [x] Task: Write failing tests for start-gate registry and graph rules `[ccccf70]`
+  - [x] Define the `start-gate` piece, its `spout` port, world-port transform,
     and compatibility with run pieces.
-  - [ ] Verify only one start gate can exist in a graph.
-  - [ ] Verify a second placement is rejected without mutating the graph.
-  - [ ] Verify graph status for missing gate, disconnected gate, and
+  - [x] Verify only one start gate can exist in a graph.
+  - [x] Verify a second placement is rejected without mutating the graph.
+  - [x] Verify graph status for missing gate, disconnected gate, and
     gate-to-goal connectivity.
+  - Notes: Added Red-phase Vitest coverage for the start-gate registry,
+    singleton graph rule, port transforms, and track-health states.
 - [ ] Task: Implement start-gate registry and track-health logic
   - [ ] Add the new piece type and port definition.
   - [ ] Add a pure track-health/reachability module.
