@@ -39,8 +39,12 @@ describe("playability helpers", () => {
     const marble = spawner.drop().spawned[0];
     const lostPosition = [PLAYABLE_BOUNDS.max[0] + 1, 0, 0] as [number, number, number];
 
-    expect(findOutOfBoundsMarbleIds([{ id: marble.id, position: lostPosition }])).toEqual([marble.id]);
-    expect(tracker.update(graph.pieces.values(), [{ id: marble.id, position: lostPosition }])).toEqual([]);
+    expect(findOutOfBoundsMarbleIds([{ id: marble.id, position: lostPosition }])).toEqual([
+      marble.id,
+    ]);
+    expect(
+      tracker.update(graph.pieces.values(), [{ id: marble.id, position: lostPosition }]),
+    ).toEqual([]);
     expect(spawner.remove(marble.id)).toBe(true);
     expect(spawner.state().activeIds).toEqual([]);
   });
