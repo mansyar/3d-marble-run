@@ -132,11 +132,12 @@ One commit per task.
 
 ## Post-review fixes
 
-- [x] Task: Address formal review findings `[6a7e97d]`
+- [x] Task: Address formal review findings `[6a7e97d, 884a957]`
   - [x] Reject a second Start gate at the placement boundary without throwing
     or mutating the graph.
   - [x] Keep the Stream HUD synchronized when gate-aware scheduling stops after
     gate deletion.
   - Notes: Added placement preflight coverage and propagated an explicit
     stream-stop signal through manual and continuous gate-aware spawn results.
-    Targeted tests, Biome, and TypeScript passed; final verification follows.
+    The pure placement predicate remains separately covered so the changed
+    logic stays above the project coverage target; final verification follows.
