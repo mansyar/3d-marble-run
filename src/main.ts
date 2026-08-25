@@ -1,5 +1,7 @@
 import "./style.css";
 import { ColliderDesc, RigidBodyDesc, type World } from "@dimforge/rapier3d-compat";
+import { createDropPointController } from "./build/dropPointController";
+import { createDropPointState, type DropPointState } from "./build/dropPointPlacement";
 import { createPlacementController } from "./build/placement";
 import { createCommandStack } from "./core/commandStack";
 import { createStepper } from "./core/stepper";
@@ -221,10 +223,7 @@ handle.scene.add(previewMarble);
 
 // --- HUD wiring -------------------------------------------------------------
 
-const tray = createTray(document.body, (typeId) => {
-  if (typeId) placement.begin(typeId);
-  else placement.cancel();
-});
+let tray!: ReturnType<typeof createTray>;
 
 const placement = createPlacementController({
   scene: handle.scene,
@@ -246,6 +245,31 @@ const placement = createPlacementController({
   },
   nextId: () => `piece-${++customIdCounter}`,
   onEnd: () => tray.setActive(null),
+});
+
+const dropPointState = createDropPointState();
+const dropPointStack = createCommandStack<DropPointState>();
+const dropPointPlacement = createDropPointController({
+  camera: handle.camera,
+  domElement: handle.renderer.domElement,
+  state: dropPointState,
+  stack: dropPointStack,
+  onEnd: () => tray.setActive(null),
+});
+
+tray = createTray(document.body, (selection) => {
+  if (selection === "drop-point") {
+    placement.cancel();
+    dropPointPlacement.begin();
+    tray.setActive(selection);
+  } else if (selection) {
+    dropPointPlacement.cancel();
+    placement.begin(selection);
+    tray.setActive(selection);
+  } else {
+    dropPointPlacement.cancel();
+    placement.cancel();
+  }
 });
 
 cameraController = createFreeOrbitCamera({
