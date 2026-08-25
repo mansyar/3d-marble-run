@@ -142,3 +142,19 @@ and input-glue tasks use the phase manual-verification checkpoint.
   with explicit user acceptance and a Git verification note. `[73f4d2e]` User
   accepted the final checkpoint after the completed regression and manual
   verification report.
+
+## Post-review fixes
+
+- [x] Isolate Drop point undo/redo shortcuts from physical-piece editing
+  `[44dd378]`
+  - [x] Add Red coverage for inactive, selected, and active Drop point shortcut
+    ownership. `[57170cc]`
+  - [x] Gate the Drop point controller's global shortcuts by the active tool and
+    clean up the replacement parameter naming. `[44dd378]`
+  - [x] Verify 24 test files / 142 tests, Biome, TypeScript, and coverage at
+    92.2% statements / 94.66% lines; production build passed at 3,433.71 kB
+    JavaScript / 1,243.74 kB gzip.
+
+- [x] Verification checkpoint: post-review fixes `[44dd378]`
+  - [x] Confirmed the review findings are resolved and the working tree is
+    clean after plan tracking.
