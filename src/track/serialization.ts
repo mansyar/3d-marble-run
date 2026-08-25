@@ -1,7 +1,19 @@
 import { canConnect, PIECE_TYPE_IDS, type PieceTypeId, type Placement } from "../pieces/registry";
+import {
+  createDropPoint,
+  DROP_POINT_HEIGHT,
+  type DropPoint,
+  isValidDropPointPosition,
+} from "./dropPoint";
 import type { ConnectionRef, PlacedPiece, TrackGraph } from "./graph";
 
-export const TRACK_FORMAT_VERSION = 1;
+export const TRACK_FORMAT_VERSION = 2;
+export const LEGACY_TRACK_FORMAT_VERSION = 1;
+
+export interface TrackDocument {
+  graph: TrackGraph;
+  dropPoint: DropPoint | null;
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -45,6 +57,23 @@ function isConnectionRef(value: unknown): value is ConnectionRef {
     typeof value.portId === "string" &&
     value.portId.length > 0
   );
+}
+
+function parseDropPoint(value: unknown): DropPoint | null {
+  if (value === null) return null;
+  if (
+    !isRecord(value) ||
+    Object.keys(value).length !== 1 ||
+    !Object.hasOwn(value, "position") ||
+    !isVec3(value.position) ||
+    value.position[1] !== DROP_POINT_HEIGHT ||
+    !isValidDropPointPosition(value.position)
+  ) {
+    throw new Error("Malformed Drop point in track save");
+  }
+  const dropPoint = createDropPoint(value.position);
+  if (!dropPoint) throw new Error("Malformed Drop point in track save");
+  return dropPoint;
 }
 
 function parseConnections(
@@ -114,24 +143,22 @@ function validateConnections(graph: TrackGraph): void {
   }
 }
 
-/** Convert the in-memory graph to a stable, JSON-friendly save payload. */
-export function serializeTrack(graph: TrackGraph): string {
+/** Convert the graph and optional Drop point to a stable save payload. */
+export function serializeTrack(graph: TrackGraph, dropPoint: DropPoint | null = null): string {
+  const normalizedDropPoint = parseDropPoint(dropPoint);
   const payload = {
     version: TRACK_FORMAT_VERSION,
     nextId: graph.nextId,
     pieces: [...graph.pieces.values()].map((piece) => structuredClone(piece)),
+    dropPoint: normalizedDropPoint,
   };
   return JSON.stringify(payload);
 }
 
-/** Restore an independent graph from a versioned save payload. */
-export function deserializeTrack(serialized: string): TrackGraph {
-  const payload: unknown = JSON.parse(serialized);
-  const nextId = isRecord(payload) ? payload.nextId : undefined;
-  const pieces = isRecord(payload) ? payload.pieces : undefined;
+function parseGraph(payload: Record<string, unknown>): TrackGraph {
+  const nextId = payload.nextId;
+  const pieces = payload.pieces;
   if (
-    !isRecord(payload) ||
-    payload.version !== TRACK_FORMAT_VERSION ||
     typeof nextId !== "number" ||
     !Number.isSafeInteger(nextId) ||
     nextId < 1 ||
@@ -156,4 +183,29 @@ export function deserializeTrack(serialized: string): TrackGraph {
   }
   validateConnections(graph);
   return graph;
+}
+
+/** Restore a graph and Drop point from a versioned save payload. */
+export function deserializeTrackDocument(serialized: string): TrackDocument {
+  const payload: unknown = JSON.parse(serialized);
+  if (!isRecord(payload)) throw new Error("Unsupported or malformed track save");
+  if (payload.version !== TRACK_FORMAT_VERSION && payload.version !== LEGACY_TRACK_FORMAT_VERSION) {
+    throw new Error("Unsupported or malformed track save");
+  }
+  const graph = parseGraph(payload);
+  if (payload.version === LEGACY_TRACK_FORMAT_VERSION) {
+    if (Object.hasOwn(payload, "dropPoint") || Object.hasOwn(payload, "dropPoints")) {
+      throw new Error("Malformed Drop point in track save");
+    }
+    return { graph, dropPoint: null };
+  }
+  if (!Object.hasOwn(payload, "dropPoint") || Object.hasOwn(payload, "dropPoints")) {
+    throw new Error("Malformed Drop point in track save");
+  }
+  return { graph, dropPoint: parseDropPoint(payload.dropPoint) };
+}
+
+/** Restore an independent graph from a versioned save payload. */
+export function deserializeTrack(serialized: string): TrackGraph {
+  return deserializeTrackDocument(serialized).graph;
 }
