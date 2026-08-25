@@ -17,6 +17,14 @@ workflow; no new logic-bearing module is planned.
   - [x] Keep the marker, raycast, spawning, health, persistence, and placement
     behavior unchanged. `[cb4df0e]`
 
-- [~] Verification checkpoint: Run the test suite, Biome, TypeScript, and
+- [x] Verification checkpoint `[cb4df0e]`: Run the test suite, Biome, TypeScript, and
   production builds; manually verify desktop and 360px/mobile views,
   valid/invalid landing visibility, movement updates, and no runtime errors.
+  - Automated: 24 test files / 142 tests passed; coverage was 92.34%
+    statements, 86.79% branches, 96.29% functions, and 94.75% lines. Biome,
+    TypeScript, standard build, and `/marblescape/` build passed at 3,432.40
+    kB JavaScript / 1,243.40 kB gzip.
+  - Manual: Desktop showed the full-height thin teal dotted guide and violet
+    marker; invalid landing retained the marker, hid the guide, and disabled
+    Drop/Stream. The 360px mobile view had no document overflow. User accepted
+    the checkpoint; browser output contained no application errors.
