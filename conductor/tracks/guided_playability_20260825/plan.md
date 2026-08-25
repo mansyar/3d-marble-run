@@ -78,16 +78,21 @@ One commit per task.
   - [x] Verify starter topology includes a valid gate-to-goal route.
   - Notes: Added Red coverage for save compatibility, singleton validation,
     gate-derived starter spawning, and first-launch persistence.
-- [~] Task: Implement persistence and startup compatibility
-  - [ ] Extend serialization validation for `start-gate`.
-  - [ ] Preserve v1 save loading without silently modifying user layouts.
-  - [ ] Add the start gate to the first-launch starter graph.
-  - [ ] Ensure named saves and autosave preserve it.
-- [ ] Task: Integrate full-load and starter UX
-  - [ ] Rebuild the start-gate scene/body during graph replacement.
-  - [ ] Refresh track status after autosave loads and named-slot loads.
-  - [ ] Confirm the first launch remains immediately playable.
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [x] Task: Implement persistence and startup compatibility `[d0f0af3, 6f1e733]`
+  - [x] Extend serialization validation for `start-gate`. `[d0f0af3]`
+  - [x] Preserve v1 save loading without silently modifying user layouts. `[d0f0af3]`
+  - [x] Add the start gate to the first-launch starter graph. `[d0f0af3]`
+  - [x] Ensure named saves and autosave preserve it. `[6f1e733]`
+  - Notes: Serialization remains version 1, accepts gate-less legacy saves,
+    rejects duplicate gates, and persists the connected starter gate through
+    both save-slot paths.
+- [x] Task: Integrate full-load and starter UX `[d0f0af3, 354f4ca, cb1ad23]`
+  - [x] Rebuild the start-gate scene/body during graph replacement. `[354f4ca]`
+  - [x] Refresh track status after autosave loads and named-slot loads. `[cb1ad23]`
+  - [x] Confirm the first launch remains immediately playable. `[d0f0af3]`
+  - Notes: Existing graph replacement rebuilds every registered piece and the
+    starter now resolves a gate anchor that traverses into the goal cup.
+- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
 
 ## Phase 4 · Regression, Accessibility & Budget Verification
 
