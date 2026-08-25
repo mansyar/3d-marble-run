@@ -303,6 +303,7 @@ const dropPointPlacement = createDropPointController({
   domElement: handle.renderer.domElement,
   state: dropPointState,
   stack: dropPointStack,
+  isEnabled: () => dropPointModeActive,
   onMove: (position) => dropPointGuide?.setPreview(position),
   onChange: () => {
     storage.scheduleAutosave(currentTrackDocument());

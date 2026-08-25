@@ -28,8 +28,10 @@ export function createDropPoint(position: Vec3 | null): DropPoint | null {
 
 /** Replace the single active point without mutating either input value. */
 export function replaceDropPoint(
-  _current: DropPoint | null,
+  currentPoint: DropPoint | null,
   position: Vec3 | null,
 ): DropPoint | null {
+  // Replacement always normalizes a fresh value; the prior point is not mutated.
+  void currentPoint;
   return createDropPoint(position);
 }

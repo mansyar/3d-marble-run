@@ -1,6 +1,7 @@
 import { type PerspectiveCamera, Plane, Raycaster, Vector2, Vector3 } from "three";
 import type { CommandStack } from "../core/commandStack";
 import type { Vec3 } from "../pieces/registry";
+import { shouldHandleDropPointShortcut } from "./dropPointKeyboard";
 import { createDropPointEditor, type DropPointState } from "./dropPointPlacement";
 
 export interface DropPointControllerDeps {
@@ -8,6 +9,7 @@ export interface DropPointControllerDeps {
   domElement: HTMLElement;
   state: DropPointState;
   stack: CommandStack<DropPointState>;
+  isEnabled?: () => boolean;
   onChange?: () => void;
   onMove?: (position: Vec3 | null) => void;
   onEnd?: () => void;
@@ -80,6 +82,7 @@ export function createDropPointController(deps: DropPointControllerDeps): {
   function onKeyDown(ev: KeyboardEvent): void {
     const key = ev.key.toLowerCase();
     const modifier = ev.ctrlKey || ev.metaKey;
+    if (!shouldHandleDropPointShortcut(active, deps.isEnabled?.() ?? true)) return;
     if (modifier && key === "z") {
       ev.preventDefault();
       if (active) end();
