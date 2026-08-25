@@ -1,0 +1,1 @@
+Task: Replace the fixed spawn position with gate-driven spawning (Red coverage)\nSummary: Added failing coverage for missing-gate no-op drops, gate-positioned manual spawns, and stream shutdown after gate deletion.\nFiles: tests/gateSpawner.test.ts\nWhy: Establish a pure contract for preventing invisible scheduler state before wiring the application loop.
