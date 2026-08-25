@@ -51,14 +51,16 @@ and input-glue tasks use the phase manual-verification checkpoint.
     visual/input behavior is included in the Phase 2 checkpoint after runtime
     status integration; the guide itself is independent of motion preferences.
 
-- [~] Task: Replace gate spawning with Drop point spawning
-  - [~] Write failing scheduler tests for positioned drops, no-landing guards,
+- [x] Task: Replace gate spawning with Drop point spawning `[a782c2b]`
+  - [x] Write failing scheduler tests for positioned drops, no-landing guards,
     continuous streaming, and automatic stream stop/state propagation.
-  - [ ] Implement the Drop point spawn adapter and wire manual/continuous
-    runtime paths without regressing cleanup, goals, timer, or reset.
-  - [ ] Disable Drop/Stream and synchronize HUD state when readiness is invalid.
+    `[29222d8]`
+  - [x] Implement the Drop point spawn adapter and wire manual/continuous
+    runtime paths without regressing cleanup, goals, timer, or reset. `[a782c2b]`
+  - [x] Disable Drop/Stream and synchronize HUD state when readiness is invalid.
+    `[a782c2b]`
 
-- [ ] Verification checkpoint: desktop and mobile placement/guide/runtime
+- [~] Verification checkpoint: desktop and mobile placement/guide/runtime
   verification, full automated tests, coverage, Biome, TypeScript, and build.
 
 ## Phase 3: Version-2 persistence, v1 migration, and starter integration
