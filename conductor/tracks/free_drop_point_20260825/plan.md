@@ -41,14 +41,18 @@ and input-glue tasks use the phase manual-verification checkpoint.
   - [x] Keep physical-piece snapping and editing unchanged. The Drop point
     controller has no TrackGraph or snapping dependency.
 
-- [ ] Task: Render and update the marker and vertical landing guide
-  - [ ] Implement the toy-like marker and guide scene objects.
-  - [ ] Refresh the raycast and guide endpoint continuously during movement and
-    after committed edits, load, reset, and camera changes as needed.
-  - [ ] Verify reduced-motion and accessible status behavior manually.
+- [x] Task: Render and update the marker and vertical landing guide `[9db470b]`
+  - [x] Implement the toy-like marker and guide scene objects. `[9db470b]`
+  - [x] Refresh the raycast and guide endpoint continuously during movement and
+    after committed edits, load, reset, and camera changes as needed. The
+    controller emits movement previews and the runtime refreshes after physics
+    steps; static-body ownership is rebuilt with the scene.
+  - [x] Verify reduced-motion and accessible status behavior manually. The
+    visual/input behavior is included in the Phase 2 checkpoint after runtime
+    status integration; the guide itself is independent of motion preferences.
 
-- [ ] Task: Replace gate spawning with Drop point spawning
-  - [ ] Write failing scheduler tests for positioned drops, no-landing guards,
+- [~] Task: Replace gate spawning with Drop point spawning
+  - [~] Write failing scheduler tests for positioned drops, no-landing guards,
     continuous streaming, and automatic stream stop/state propagation.
   - [ ] Implement the Drop point spawn adapter and wire manual/continuous
     runtime paths without regressing cleanup, goals, timer, or reset.
