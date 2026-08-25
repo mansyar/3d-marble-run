@@ -3,6 +3,11 @@ name: Publish container image
 on:
   workflow_dispatch:
   workflow_call:
+    secrets:
+      COOLIFY_DEPLOY_WEBHOOK:
+        required: false
+      COOLIFY_DEPLOY_TOKEN:
+        required: false
 
 permissions:
   contents: read

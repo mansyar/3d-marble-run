@@ -76,4 +76,6 @@ jobs:
       contents: read
       packages: write
     uses: ./.github/workflows/publish-container.yml
-    secrets: inherit
+    secrets:
+      COOLIFY_DEPLOY_WEBHOOK: ${{ secrets.COOLIFY_DEPLOY_WEBHOOK }}
+      COOLIFY_DEPLOY_TOKEN: ${{ secrets.COOLIFY_DEPLOY_TOKEN }}

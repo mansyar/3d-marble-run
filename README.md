@@ -94,8 +94,10 @@ The release check rejects prereleases, malformed tags, and mismatches before
 any output is published. To rehearse it locally:
 
 ```bash
-pnpm check:release v0.1.0 # succeeds while package.json is 0.1.0
-pnpm check:release v0.1.1 # fails until package.json is 0.1.1
+# Replace v0.1.1 with the exact v${package.json.version} for your checkout.
+pnpm check:release v0.1.1
+# Use any different stable tag to verify rejection.
+pnpm check:release v0.1.0
 ```
 
 Each valid release produces:
@@ -108,9 +110,10 @@ Each valid release produces:
 Pull an immutable release or the moving latest image with:
 
 ```bash
-docker pull ghcr.io/mansyar/3d-marble-run:0.1.0
+# Replace 0.1.1 with the immutable release you want to run.
+docker pull ghcr.io/mansyar/3d-marble-run:0.1.1
 docker pull ghcr.io/mansyar/3d-marble-run:latest
-docker run --rm -p 8080:80 ghcr.io/mansyar/3d-marble-run:0.1.0
+docker run --rm -p 8080:80 ghcr.io/mansyar/3d-marble-run:0.1.1
 ```
 
 Before the first release, enable **Settings → Pages → GitHub Actions**, allow
