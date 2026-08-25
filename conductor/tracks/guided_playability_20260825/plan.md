@@ -21,10 +21,14 @@ One commit per task.
   - Notes: Added the start-gate material and procedural chute builder as
     required type plumbing. Added singleton enforcement for new and restored
     pieces, plus BFS-based advisory connectivity status.
-- [ ] Task: Add procedural start-gate geometry and tray integration
-  - [ ] Build the gate mesh and Rapier collider.
-  - [ ] Add its material/color and tray label.
-  - [ ] Ensure ghost placement, rotation, snapping, and touch controls work.
+- [x] Task: Add procedural start-gate geometry and tray integration `[db44a07]`
+  - [x] Build the gate mesh and Rapier collider.
+  - [x] Add its material/color and tray label.
+  - [x] Ensure ghost placement, rotation, snapping, and touch controls work.
+  - Notes: The procedural gate, collider, and violet material were added with
+    the registry implementation; this task finalized the friendly tray labels
+    and accessible action names. Existing registry-driven placement behavior
+    remains unchanged.
 - [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
 
 ## Phase 2 · Gate-Driven Simulation & Lost-Marble Cleanup
