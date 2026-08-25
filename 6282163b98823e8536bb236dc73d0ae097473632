@@ -1,1 +1,9 @@
 Task: Document the start gate and custom-track spawning behavior\nSummary: Updated README and the product definition for the six-piece tray, single Start gate entry point, gate-derived manual/stream spawning, advisory health guidance, starter route, lost-marble cleanup, and global goal counter.\nFiles: README.md, conductor/product.md\nWhy: Keep user-facing and project source-of-truth documentation aligned with the completed playability track.
+
+Final Phase 4 verification report
+
+Automated: Full suite passed 16 files and 109 tests. Biome, TypeScript, standard production build, and /marblescape/ base-path build passed. Overall coverage was 94.1% statements / 96.3% lines; targeted changed-logic coverage was 89.42% statements / 92.84% lines. Build output was 3,425.28 kB JavaScript / 1,241.28 kB gzip, within budget.
+
+Manual: Real-touch iPhone 15 emulation verified placement, Turn, undo/redo, save/load, stream behavior, reduced-motion preference, touch targets, and no scrolling. Eight seconds of streaming scored seven goals. Browser output contained only the known favicon 404 and Three.js/WebGL warnings; no application runtime errors.
+
+User accepted the final checkpoint and authorized completion.
