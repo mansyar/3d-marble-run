@@ -35,7 +35,7 @@ One commit per task.
     verification confirmed all six tray buttons fit and Start gate placement
     activates its Turn control. User accepted the checkpoint.
 
-## Phase 2 · Gate-Driven Simulation & Lost-Marble Cleanup
+## Phase 2 · Gate-Driven Simulation & Lost-Marble Cleanup `[cb1ad23]`
 
 - [x] Task: Write failing tests for spawn resolution and playable bounds `[9f736da]`
   - [x] Verify the gate’s world-space spawn anchor under placement and yaw.
@@ -64,11 +64,14 @@ One commit per task.
   - [x] Keep all editing actions available regardless of status.
   - Notes: Added an accessible live HUD output with concise guidance and
     refreshed it through placement changes, startup, and load replacement.
-- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`) `[cb1ad23]`
+  - Notes: Full automated verification and desktop/mobile browser checks
+    passed. User accepted the checkpoint. See the verification note on
+    `cb1ad23`.
 
 ## Phase 3 · Starter Track & Save Compatibility
 
-- [ ] Task: Write failing tests for start-gate serialization compatibility
+- [~] Task: Write failing tests for start-gate serialization compatibility
   - [ ] Round-trip graphs containing a start gate and connections.
   - [ ] Confirm existing v1 payloads without a start gate still load.
   - [ ] Reject malformed or conflicting start-gate data.
