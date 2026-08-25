@@ -1,6 +1,8 @@
 import "fake-indexeddb/auto";
 import { describe, expect, it } from "vitest";
 import { addPiece, createTrackGraph } from "../src/track/graph";
+import { assessTrackHealth } from "../src/track/health";
+import { createStarterGraph } from "../src/track/starter";
 import { AUTOSAVE_SLOT, createTrackStorage } from "../src/track/storage";
 
 let databaseNumber = 0;
@@ -58,6 +60,24 @@ describe("track storage", () => {
     await expect(storage.remove(` ${AUTOSAVE_SLOT} `)).rejects.toThrow();
     await storage.remove(" alpha ");
     expect(await storage.list()).toEqual([]);
+    storage.dispose();
+  });
+
+  it("preserves a connected start gate in named and autosave slots", async () => {
+    const storage = newStorage();
+    const graph = createStarterGraph();
+
+    await storage.save("starter", graph);
+    storage.scheduleAutosave(graph);
+    await storage.flushAutosave(graph);
+
+    for (const loaded of [await storage.load("starter"), await storage.load(AUTOSAVE_SLOT)]) {
+      expect(loaded?.pieces.size).toBe(6);
+      expect(
+        [...(loaded?.pieces.values() ?? [])].filter((piece) => piece.typeId === "start-gate"),
+      ).toHaveLength(1);
+      expect(loaded && assessTrackHealth(loaded).status).toBe("ready");
+    }
     storage.dispose();
   });
 });
