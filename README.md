@@ -6,15 +6,26 @@ locally in the browser.
 
 ## Build and play
 
-The tray contains six pieces: straight, curve, ramp, funnel, goal cup, and
-Start gate. The Start gate is the track's single marble entry point; manual
-drops and streams begin there. A fresh launch includes a connected gate-to-goal
-starter route, while custom layouts remain editable at any time.
+The tray contains five physical pieces: straight, curve, ramp, funnel, and goal
+cup, plus a dedicated Drop point tool. The Drop point is a separate overhead
+marble entry point: place it freely above the table, then use its vertical guide
+to find the first track surface below. A fresh launch includes a connected
+five-piece starter route with a ready Drop point, while custom layouts remain
+editable at any time.
 
-The Track status helper explains what is needed: add a Start gate, connect a
-goal cup, or drop a marble when the route is ready. Disconnected pieces are not
-blocked, so experimentation stays forgiving. Marbles that leave the playable
-world are cleaned up automatically, and all saves remain local to the browser.
+The Track status helper explains what is needed: place a Drop point, move it
+above a track piece, connect a goal cup, or drop a marble when the route is
+ready. Drop and Stream stay disabled until a valid landing and goal route exist;
+disconnected pieces are not blocked, so experimentation stays forgiving.
+Marbles that leave the playable world are cleaned up automatically, and all
+saves remain local to the browser.
+
+### Legacy saves
+
+Version-1 saves remain readable. A saved physical Start gate is migrated to a
+Drop point using its X/Z position at the fixed overhead height, then the gate
+and its graph connection are removed. Gate-less version-1 saves load without a
+Drop point and can be edited normally.
 
 ## Development
 
