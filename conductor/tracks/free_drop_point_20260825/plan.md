@@ -60,13 +60,22 @@ and input-glue tasks use the phase manual-verification checkpoint.
   - [x] Disable Drop/Stream and synchronize HUD state when readiness is invalid.
     `[a782c2b]`
 
-- [~] Verification checkpoint: desktop and mobile placement/guide/runtime
+- [x] Verification checkpoint: desktop and mobile placement/guide/runtime
   verification, full automated tests, coverage, Biome, TypeScript, and build.
+  `[4a93fc1]` Full verification passed with 23 test files / 134 tests, 93.8%
+  statements / 96.2% lines, Biome, TypeScript, standard and `/marblescape/`
+  builds at 3,432.52 kB JavaScript / 1,243.49 kB gzip. Desktop placement
+  reached `Run ready! Drop a marble.` and a Drop marble reached `Goals: 1`;
+  mobile 360px verification showed all six tray tools at 52.3px × 66px with
+  no document overflow. Browser output contained only the known favicon 404
+  and Three.js/WebGL warnings. User accepted the checkpoint.
+  Checkpoint hardening also isolated physical-piece pointer handling while
+  Drop point mode is active and synchronized landing health after placement.
 
 ## Phase 3: Version-2 persistence, v1 migration, and starter integration
 
-- [ ] Task: Add version-2 Drop point serialization
-  - [ ] Write failing tests for v2 round trips, null points, malformed points,
+- [~] Task: Add version-2 Drop point serialization
+  - [~] Write failing tests for v2 round trips, null points, malformed points,
     duplicate point data, and stable save output.
   - [ ] Implement v2 serialization/deserialization with strict validation.
 
