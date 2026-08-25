@@ -16,8 +16,7 @@ a verification checkpoint before proceeding.
     panels side by side on desktop and stacks them below 900px, removing the
     brittle mobile pixel offset.
   - Verify: `pnpm exec tsc --noEmit` and `git diff --check` passed; full phase
-    automation and viewport verification remain scheduled for the phase
-    checkpoint.
+    automation and viewport verification passed at the Phase 1 checkpoint.
 
 - [x] Task: Collapse named saves behind a Saved tracks control *(6ff3ba3)*
   - [x] Preserve the existing save, load, delete, and status behavior.
@@ -26,10 +25,11 @@ a verification checkpoint before proceeding.
   - [x] Ensure the save surface cannot obscure gameplay guidance.
   - Notes: Converted the always-visible save panel into an inline drawer under a
     Saved tracks trigger. Escape, outside touch, close-button, and focus-return
-    behavior are handled without changing storage callbacks.
+    behavior are handled without changing storage callbacks. A manual browser
+    check found the native `hidden` attribute was overridden by the panel's
+    display rule; `145290e` adds the explicit collapsed-state selector.
   - Verify: `pnpm exec tsc --noEmit` and `git diff --check` passed; full phase
-    automation and viewport verification remain scheduled for the phase
-    checkpoint.
+    automation and viewport verification passed at the Phase 1 checkpoint.
 
 - [x] Task: Clarify the simulation reset label *(23658cf)*
   - [x] Rename the visible control to **Reset run** while preserving its current
@@ -37,16 +37,21 @@ a verification checkpoint before proceeding.
   - Notes: Updated the visible label only; the existing reset callback still
     clears active marbles, goals, timer, and stream while preserving the build.
   - Verify: `pnpm exec tsc --noEmit` and `git diff --check` passed; full phase
-    automation and viewport verification remain scheduled for the phase
-    checkpoint.
+    automation and viewport verification passed at the Phase 1 checkpoint.
 
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-  - [ ] Run relevant automated tests, Biome, strict TypeScript, and the
-    production build.
-  - [ ] Manually verify save flows, focus behavior, keyboard/touch closing, and
-    non-overlapping layouts at 360px, 390px, tablet, and desktop.
-  - [ ] Record the checkpoint SHA, Git note, user confirmation, and plan update
-    commit.
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) *(145290e)*
+  - [x] Run relevant automated tests, Biome, strict TypeScript, and the
+    production build. `$env:CI="true"; pnpm vitest run && pnpm biome check .
+    && pnpm exec tsc --noEmit && pnpm build` passed: 24 files, 142 tests;
+    Biome checked 77 files; TypeScript passed; build output was 3,433.58 kB
+    JavaScript and 1,243.68 kB gzip.
+  - [x] Manually verify save flows, focus behavior, keyboard/touch closing, and
+    non-overlapping layouts at 360px, 390px, tablet, and desktop. Verified
+    collapsed-by-default saves, drawer expansion, focus into the slot name,
+    Escape close with focus return, visible `Reset run`, no overlap, and no
+    horizontal overflow at 360px/390px; desktop HUD and tray remain separated.
+  - [x] Record checkpoint SHA `145290e`, append the verification report as a
+    Git note, obtain explicit user confirmation, and commit this plan update.
 
 ## Phase 2: First-run child guidance
 
