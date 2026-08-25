@@ -52,7 +52,11 @@
     `v0.1.0` acceptance, expected `v0.1.1` rejection, and `git diff --check`
     passed. Build measured 3,422.17 kB raw / 1,240.30 kB gzip; actionlint was
     unavailable and workflow semantics were manually reviewed.
-- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`) [checkpoint: 6503e8b]
+  - Automated verification and workflow review are recorded in the full Git
+    note appended to `6503e8b`.
+  - User confirmed desktop and mobile/narrow-viewport preview smoke tests.
+  - Remote CI and release execution remain post-push verification.
 
 ## Phase 3 · Documentation & final verification
 
