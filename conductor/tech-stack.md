@@ -12,6 +12,7 @@ Web-first, zero-backend, fully offline. Every runtime asset is procedurally gene
 | **Physics** | Rapier3D (`@dimforge/rapier3d-compat`) | Rust→WASM engine; stable rolling-sphere contacts and stacked bodies — the make-or-break requirement for marbles |
 | **Storage** | IndexedDB (via tiny `idb` wrapper) | Async local auto-save + named slots; no backend, survives refreshes |
 | **UI layer** | Vanilla TS + DOM overlay over canvas | Minimal HUD doesn't justify a framework's bundle cost; CSS handles styling |
+| **Audio** | Web Audio API (native) | Procedural one-shot SFX synthesized in code (oscillators/envelopes) — no samples, no assets, ~zero bundle cost; v2-deferred per product.md, shipped with the Procedural Audio track |
 | **Testing** | Vitest | Fast TS-native unit tests for pure logic: track graph, snapping rules, save serialization, spawner state machine |
 | **Hosting** | Any static host (GitHub Pages / Netlify / Cloudflare Pages) | Zero server logic required |
 

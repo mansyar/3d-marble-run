@@ -49,6 +49,8 @@ export interface PlacementDeps {
   onEnd?: () => void;
   /** Called only after a new or moved piece is successfully placed. */
   onPlace?: () => void;
+  /** Called only after the active moving piece is deleted. */
+  onDelete?: () => void;
   /** Called after a graph edit so persistence can debounce an autosave. */
   onChange?: () => void;
   /** Disables physical-piece pointer handling while another build tool is active. */
@@ -292,6 +294,7 @@ export function createPlacementController(deps: PlacementDeps): {
     deleteBtn.hidden = true;
     history.execute(graph, new DeleteCommand(state.id, state.beforeSnapshot));
     deps.onChange?.();
+    deps.onDelete?.();
     deps.onEnd?.();
   }
 

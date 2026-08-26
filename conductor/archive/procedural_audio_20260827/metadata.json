@@ -1,0 +1,8 @@
+{
+  "id": "procedural_audio_20260827",
+  "type": "FEATURE",
+  "status": "new",
+  "created": "2026-08-27",
+  "updated": "2026-08-27",
+  "description": "Add fully procedural Web Audio sound feedback (piece snap/delete, marble drop/landing, goal pop) with a persisted HUD mute toggle"
+}

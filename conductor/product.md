@@ -46,7 +46,7 @@ Explicitly out of scope — do not build these:
 - Challenge modes, objectives, level progression
 - Marble cosmetics, unlockables, progression systems
 - Settings beyond essentials (quality toggle, reset)
-- Audio (candidate for v2), native app packaging
+- Audio beyond the shipped procedural one-shot SFX (music, ambient loops, volume controls), native app packaging
 
 ## Legacy save migration
 
