@@ -5,13 +5,16 @@ One commit per task.
 
 ## Phase 1 · Shared History Model
 
-- [~] Task: Write failing tests for chronological editor history
-  - [ ] Add a focused history fixture with independent piece and Drop point
+- [x] Task: Write failing tests for chronological editor history *(4fca238)*
+  - [x] Add a focused history fixture with independent piece and Drop point
     state.
-  - [ ] Verify mixed edits undo in strict reverse chronological order.
-  - [ ] Verify Redo restores the same sequence.
-  - [ ] Verify a new edit after Undo clears the Redo branch.
-  - [ ] Verify empty Undo/Redo and explicit history clearing are safe no-ops.
+  - [x] Verify mixed edits undo in strict reverse chronological order.
+  - [x] Verify Redo restores the same sequence.
+  - [x] Verify a new edit after Undo clears the Redo branch.
+  - [x] Verify empty Undo/Redo and explicit history clearing are safe no-ops.
+  - Notes: Added `tests/editorHistory.test.ts` with independent piece and Drop
+    point state fixtures. The targeted Vitest run is intentionally red until
+    `src/core/editorHistory.ts` is implemented; targeted Biome passes.
 
 - [ ] Task: Implement the shared editor history abstraction
   - [ ] Add a small domain-aware adapter over the existing generic command-stack
