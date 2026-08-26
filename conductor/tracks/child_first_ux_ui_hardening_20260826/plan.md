@@ -155,13 +155,19 @@ a verification checkpoint before proceeding.
     movement and resize events are not overridden. Playwright checks at 390px
     and 1280px confirmed the route/goal visibility and preserved desktop layout.
 
-- [~] Task: Perform child-facing copy and accessibility polish
-  - [ ] Review primary labels and guidance for short, direct, child-friendly
+- [x] Task: Perform child-facing copy and accessibility polish *(e6ca2ec)*
+  - [x] Review primary labels and guidance for short, direct, child-friendly
     wording.
-  - [ ] Verify focus order, live status announcements, contrast, touch targets,
+  - [x] Verify focus order, live status announcements, contrast, touch targets,
     and reduced-motion behavior.
-  - [ ] Fix the missing favicon or document any remaining non-blocking browser
+  - [x] Fix the missing favicon or document any remaining non-blocking browser
     diagnostics.
+  - Notes: Shortened track guidance, renamed stream/camera labels to Auto drop
+    and Explore/Follow, added descriptive state labels and initial aria-pressed
+    values, added a coach-dismiss focus ring, and added an inline offline SVG
+    favicon. Browser checks at 360px, 390px, and 1280px confirmed no overflow,
+    accessible names, reduced-motion animation suppression, and no favicon
+    request; only the existing Three.js warning remained.
 
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
   - [ ] Run the full test suite, Biome, strict TypeScript, standard build,
