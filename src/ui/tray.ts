@@ -15,7 +15,7 @@ const DROP_POINT_LABEL = "Drop point";
 const DROP_POINT_COLOR = 0x8338ec;
 
 /**
- * Bottom tray HUD — one big tappable swatch per piece type.
+ * Bottom tray HUD — one big tappable shape preview per piece type.
  * Pure DOM; emits selection events upward.
  */
 
@@ -34,10 +34,12 @@ export function createTray(
     btn.type = "button";
     btn.dataset.typeId = selection;
     btn.setAttribute("aria-label", `Place ${labelText}`);
-    const swatch = document.createElement("span");
-    swatch.className = "tray-swatch";
-    swatch.style.background = `#${color.toString(16).padStart(6, "0")}`;
-    btn.appendChild(swatch);
+    btn.setAttribute("aria-pressed", "false");
+    const preview = document.createElement("span");
+    preview.className = `tray-preview tray-preview-${selection}`;
+    preview.setAttribute("aria-hidden", "true");
+    preview.style.setProperty("--tray-color", `#${color.toString(16).padStart(6, "0")}`);
+    btn.appendChild(preview);
     const label = document.createElement("span");
     label.className = "tray-label";
     label.textContent = labelText;
@@ -60,6 +62,7 @@ export function createTray(
   function setActive(typeId: TraySelection | null): void {
     for (const [id, btn] of buttons) {
       btn.classList.toggle("active", id === typeId);
+      btn.setAttribute("aria-pressed", String(id === typeId));
     }
     tray.classList.toggle("placing", typeId !== null);
   }
