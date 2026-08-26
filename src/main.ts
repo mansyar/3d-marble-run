@@ -468,6 +468,7 @@ const saveSlots = createSaveSlotControls(topHud, {
     dropPointState.point = loaded.dropPoint;
     dropPointStack.clear();
     replaceGraph(loaded.graph);
+    refreshEditHistory();
     if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
     refreshDropPointHealth();
     storage.scheduleAutosave(currentTrackDocument());
