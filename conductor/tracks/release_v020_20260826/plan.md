@@ -35,13 +35,15 @@ About-modal version from `package.json` — only a post-bump build can display
     1,244.96 kB gzip** — identical to baseline (Δ 0.00/0.00), new asset hash
     `index-MBj7VghY.js` carries baked-in 0.2.0. Headroom 62.3 / 5.0 kB.
     No code change; note anchored to preceding plan commit.
-- [ ] Task: Desktop feature-journey smoke test (1280×720, production preview)
+- [x] Task: Desktop feature-journey smoke test (1280×720, production preview)
   - [ ] Piece place/move/delete + connector snapping · Drop point tool +
         landing guide · mixed-edit undo/redo chronology & redo invalidation ·
         autosave + named slot reload · goal counter/timer · orbit/chase cams ·
         About modal shows v0.2.0
-- [ ] Task: Touch smoke test (~393×659 emulated)
-  - [ ] Same core journeys; ≥44px targets; no page scroll or console errors
+- [x] Task: Touch smoke test (~393×659 emulated)
+  - [x] Same core journeys; ≥44px targets; no page scroll or console errors
+  - Notes: PASSED per user confirmation — core journeys OK, targets ≥44px,
+    no drag-scroll, console clean. Shared note anchor c8f6691.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 3 · Release Tag, Pipeline & Live Verification
