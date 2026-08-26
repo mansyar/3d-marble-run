@@ -1,0 +1,35 @@
+# Configures GitHub's auto-generated release notes (Repository > Releases > Generate notes).
+#
+# NOTE: applicability depends on PRs + labels. This repo ships commits directly to
+#       master (no PRs), so generated notes stay minimal (compare-link only). When a
+#       cut needs feature context in a PR-less flow, write the body manually — as done
+#       for v0.2.0. If the repo adopts pull requests, these categories apply.
+changelog:
+  exclude:
+    authors:
+      - dependabot
+  categories:
+    - title: "🚀 Features"
+      labels:
+        - "*feature*"
+        - enhancement
+        - feature
+    - title: "🐞 Bug Fixes"
+      labels:
+        - "*bug*"
+        - bug
+        - fix
+    - title: "🧹 Chores"
+      labels:
+        - "*chore*"
+        - chore
+        - ci
+        - tooling
+    - title: "📦 Dependencies"
+      labels:
+        - "*dependency*"
+        - dependencies
+        - dependabot
+    - title: "Other Changes"
+      labels:
+        - "*"
