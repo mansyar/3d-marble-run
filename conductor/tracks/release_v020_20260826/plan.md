@@ -28,9 +28,13 @@ About-modal version from `package.json` — only a post-bump build can display
   - Notes: `pnpm version minor` produced commit 0fd2632; pkg version 0.2.0;
     local tag `v0.2.0` confirmed; `git ls-remote origin v0.2.0` empty →
     unpushed as planned.
-- [ ] Task: Rebuild production bundle & recheck payload budget
-  - [ ] `pnpm build`; assert ≤3,500 kB minified / ≤1,250 kB gzip; note deltas
+- [x] Task: Rebuild production bundle & recheck payload budget (a5fd37d)
+  - [x] `pnpm build`; assert ≤3,500 kB minified / ≤1,250 kB gzip; note deltas
         vs baseline
+  - Notes: post-bump build green (tsc strict + vite). **3,437.74 kB /
+    1,244.96 kB gzip** — identical to baseline (Δ 0.00/0.00), new asset hash
+    `index-MBj7VghY.js` carries baked-in 0.2.0. Headroom 62.3 / 5.0 kB.
+    No code change; note anchored to preceding plan commit.
 - [ ] Task: Desktop feature-journey smoke test (1280×720, production preview)
   - [ ] Piece place/move/delete + connector snapping · Drop point tool +
         landing guide · mixed-edit undo/redo chronology & redo invalidation ·
