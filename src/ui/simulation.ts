@@ -40,7 +40,8 @@ export function createSimulationControls(
 
   const streamButton = document.createElement("button");
   streamButton.type = "button";
-  streamButton.textContent = "Stream: Off";
+  streamButton.textContent = "Auto drop: Off";
+  streamButton.setAttribute("aria-pressed", "false");
   streamButton.disabled = true;
   streamButton.addEventListener("click", () => {
     setStreamLabel(callbacks.onToggleStream());
@@ -67,7 +68,8 @@ export function createSimulationControls(
 
   const cameraButton = document.createElement("button");
   cameraButton.type = "button";
-  cameraButton.textContent = "Camera: Free";
+  cameraButton.textContent = "View: Explore";
+  cameraButton.setAttribute("aria-pressed", "false");
   cameraButton.addEventListener("click", () => {
     setCameraLabel(callbacks.onToggleCamera());
   });
@@ -109,8 +111,12 @@ export function createSimulationControls(
   root.appendChild(panel);
 
   function setStreamLabel(enabled: boolean): void {
-    streamButton.textContent = enabled ? "Stream: On" : "Stream: Off";
+    streamButton.textContent = enabled ? "Auto drop: On" : "Auto drop: Off";
     streamButton.setAttribute("aria-pressed", String(enabled));
+    streamButton.setAttribute(
+      "aria-label",
+      enabled ? "Stop automatic marble drops" : "Start automatic marble drops",
+    );
   }
 
   function setGoalCount(count: number): void {
@@ -132,8 +138,13 @@ export function createSimulationControls(
   }
 
   function setCameraLabel(mode: CameraMode): void {
-    cameraButton.textContent = `Camera: ${mode === "free" ? "Free" : "Chase"}`;
+    const isFree = mode === "free";
+    cameraButton.textContent = `View: ${isFree ? "Explore" : "Follow"}`;
     cameraButton.setAttribute("aria-pressed", String(mode === "chase"));
+    cameraButton.setAttribute(
+      "aria-label",
+      isFree ? "Switch to follow view" : "Switch to explore view",
+    );
   }
 
   function setEditHistory(canUndo: boolean, canRedo: boolean): void {
@@ -148,6 +159,9 @@ export function createSimulationControls(
     root.appendChild(pop);
     window.setTimeout(() => pop.remove(), 900);
   }
+
+  setStreamLabel(false);
+  setCameraLabel("free");
 
   return {
     setStreamEnabled: setStreamLabel,

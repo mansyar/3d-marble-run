@@ -152,7 +152,8 @@ canvas.camera-orbiting {
 #save-slots button:focus-visible,
 .tray-btn:focus-visible,
 .rotate-pill:focus-visible,
-.delete-pill:focus-visible {
+.delete-pill:focus-visible,
+.coach-mark-dismiss:focus-visible {
   outline: 3px solid #005a70;
   outline-offset: 2px;
 }
