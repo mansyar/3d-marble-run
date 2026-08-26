@@ -46,7 +46,7 @@ About-modal version from `package.json` — only a post-bump build can display
     no drag-scroll, console clean. Shared note anchor c8f6691.
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
-## Phase 3 · Release Tag, Pipeline & Live Verification
+## Phase 3 · Release Tag, Pipeline & Live Verification [checkpoint: 55fee06]
 
 - [x] Task: Push release tag and monitor pipeline
   - [x] Push `master`, then tag `v0.2.0`; watch release workflow end-to-end
@@ -65,4 +65,8 @@ About-modal version from `package.json` — only a post-bump build can display
     carries 0.2.0, user confirmed About modal. Release body amended once
     (user-approved) to cover the four tracks. GHCR tags `0.2.0`, `latest`,
     `sha-0fd2632` verified.
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - Notes: checkpoint suite 156/156 + tag parity green; user confirmed live
+    About modal v0.2.0; report on 55fee06. README runbook re-checked against
+    actual flow — accurate, no drift (push done as two commands vs documented
+    `--follow-tags` one-liner; functionally equivalent).
