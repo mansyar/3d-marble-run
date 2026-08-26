@@ -1,3 +1,5 @@
 Task: Cover changed logic and commit Phase 2 (covers plan tasks: marbleImpact tests+impl).
 
 Summary: src/sim/marbleImpact.ts — pure velocity-sample state machine (FALLING_VY -0.5 / LANDED_VY -0.2); airborne->landed transition fires each marble's landing once per lifetime; terminal 'landed' state prevents bounce re-fires; remove()/reset() clear tracking. Tests: marbleImpact.test.ts (8 cases, 100% stmts/branch/funcs/lines). Full suite green (tests/marbleImpact 8/8), Biome clean. Files: src/sim/marbleImpact.ts, tests/marbleImpact.test.ts.
+
+Phase 2 verification report: 'CI=true pnpm vitest run' -> 30 files / 180 tests passed. marbleImpact 100% coverage. Manual: pnpm dev boots, no console errors, no behavior change (detector inert until Phase 4). User confirmed 2026-08-27.
