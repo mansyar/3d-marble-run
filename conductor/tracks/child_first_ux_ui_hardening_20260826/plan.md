@@ -194,6 +194,20 @@ a verification checkpoint before proceeding.
   - Notes: Final checkpoint SHA is `e6ca2ec`; the verification report was
     appended to its Git note, and the user confirmed completion on 2026-08-26.
 
+## Post-completion correction
+
+- [x] Task: Keep the Curve tray preview clear of its label *(9be410a)*
+  - [x] Fit the Curve silhouette within its 32x24 preview box.
+  - [x] Preserve the recognizable shape, label, accessible name, and touch
+    sizing.
+  - Notes: Reduced the Curve silhouette's border footprint and removed the
+    rotated overflow that caused it to collide with the Curve label. This
+    correction was made from user-reported visual feedback after completion.
+  - Verify: Browser checks at 390x844 and 1280x720 confirmed the preview stays
+    above the label with no application errors; 25 Vitest files and 146 tests
+    passed, Biome checked 80 files, strict TypeScript passed, and diff checks
+    passed. Only the known Three.js shadow-map warning remained.
+
 ## Constraints
 
 - No external runtime assets, network dependencies, audio, broad settings
