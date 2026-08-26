@@ -67,7 +67,7 @@ One commit per task.
     scene state after shared history changes. Full tests, Biome, and TypeScript
     checks pass.
 
-- [ ] Task: Complete regression and manual verification
+- [~] Task: Complete regression and manual verification
   - [ ] Run targeted coverage for changed history logic and confirm the
     approximately 80% target.
   - [ ] Run the full Vitest suite, Biome, TypeScript, and production build.
