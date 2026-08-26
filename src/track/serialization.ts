@@ -5,7 +5,7 @@ import {
   type DropPoint,
   isValidDropPointPosition,
 } from "./dropPoint";
-import { type ConnectionRef, type PlacedPiece, removePiece, type TrackGraph } from "./graph";
+import type { ConnectionRef, PlacedPiece, TrackGraph } from "./graph";
 
 export const TRACK_FORMAT_VERSION = 2;
 export const LEGACY_TRACK_FORMAT_VERSION = 1;
@@ -37,8 +37,7 @@ function isPieceTypeId(value: unknown): value is PieceTypeId {
     value === "curve" ||
     value === "ramp" ||
     value === "funnel" ||
-    value === "goal-cup" ||
-    value === "start-gate"
+    value === "goal-cup"
   );
 }
 
@@ -172,12 +171,6 @@ function parseGraph(payload: Record<string, unknown>): TrackGraph {
   for (const rawPiece of pieces) {
     const piece = parsePiece(rawPiece);
     if (ids.has(piece.id)) throw new Error("Duplicate piece id in track save");
-    if (
-      piece.typeId === "start-gate" &&
-      [...graph.pieces.values()].some((item) => item.typeId === "start-gate")
-    ) {
-      throw new Error("Multiple start gates in track save");
-    }
     ids.add(piece.id);
     graph.pieces.set(piece.id, piece);
   }
@@ -185,13 +178,56 @@ function parseGraph(payload: Record<string, unknown>): TrackGraph {
   return graph;
 }
 
-function migrateLegacyDropPoint(graph: TrackGraph): DropPoint | null {
-  const startGate = [...graph.pieces.values()].find((piece) => piece.typeId === "start-gate");
-  if (!startGate) return null;
-  const dropPoint = createDropPoint(startGate.placement.position);
+/**
+ * Convert a legacy v1 graph's start gate into a free Drop point.
+ *
+ * Runs on the raw payload BEFORE `parseGraph`, so removing `start-gate` from
+ * the live piece registry does not break loading of old v1 saves. Mutates
+ * `payload.pieces` to strip the gate (and any references other pieces held
+ * toward it), then returns the derived Drop point, or null when none exists.
+ */
+function migrateLegacyStartGate(payload: Record<string, unknown>): DropPoint | null {
+  const pieces = payload.pieces;
+  if (!Array.isArray(pieces)) return null;
+
+  let gate: Record<string, unknown> | undefined;
+  for (const item of pieces) {
+    if (!isRecord(item) || item.typeId !== "start-gate") continue;
+    if (gate) throw new Error("Multiple start gates in track save");
+    gate = item;
+  }
+  if (!gate) return null;
+
+  const placement = gate.placement;
+  if (!isRecord(placement) || !isVec3(placement.position) || !isFiniteNumber(placement.yawDeg)) {
+    throw new Error("Malformed placement in track save");
+  }
+  const dropPoint = createDropPoint(placement.position);
   if (!dropPoint) throw new Error("Invalid legacy Start gate position");
-  removePiece(graph, startGate.id);
-  validateConnections(graph);
+
+  const gateId = typeof gate.id === "string" ? gate.id : "";
+  const otherIds = new Set<string>();
+  for (const item of pieces) {
+    if (isRecord(item) && typeof item.id === "string" && item.id !== gateId) otherIds.add(item.id);
+  }
+  if (isRecord(gate.connections)) {
+    for (const ref of Object.values(gate.connections)) {
+      if (!ref) continue;
+      if (!isRecord(ref) || typeof ref.pieceId !== "string") {
+        throw new Error("Invalid connection in track save");
+      }
+      if (!otherIds.has(ref.pieceId)) throw new Error("Invalid connection in track save");
+    }
+  }
+
+  const cleaned = pieces.filter((item) => !(isRecord(item) && item.id === gateId));
+  for (const item of cleaned) {
+    if (!isRecord(item) || !isRecord(item.connections)) continue;
+    for (const [portId, ref] of Object.entries(item.connections)) {
+      if (isRecord(ref) && ref.pieceId === gateId) item.connections[portId] = null;
+    }
+  }
+  payload.pieces = cleaned;
   return dropPoint;
 }
 
@@ -202,13 +238,14 @@ export function deserializeTrackDocument(serialized: string): TrackDocument {
   if (payload.version !== TRACK_FORMAT_VERSION && payload.version !== LEGACY_TRACK_FORMAT_VERSION) {
     throw new Error("Unsupported or malformed track save");
   }
-  const graph = parseGraph(payload);
   if (payload.version === LEGACY_TRACK_FORMAT_VERSION) {
     if (Object.hasOwn(payload, "dropPoint") || Object.hasOwn(payload, "dropPoints")) {
       throw new Error("Malformed Drop point in track save");
     }
-    return { graph, dropPoint: migrateLegacyDropPoint(graph) };
+    const dropPoint = migrateLegacyStartGate(payload);
+    return { graph: parseGraph(payload), dropPoint };
   }
+  const graph = parseGraph(payload);
   if (!Object.hasOwn(payload, "dropPoint") || Object.hasOwn(payload, "dropPoints")) {
     throw new Error("Malformed Drop point in track save");
   }

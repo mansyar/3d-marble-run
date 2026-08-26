@@ -26,7 +26,7 @@ export interface PieceTypeDef {
   ports: PortDef[];
 }
 
-export type PieceTypeId = "straight" | "curve" | "ramp" | "funnel" | "goal-cup" | "start-gate";
+export type PieceTypeId = "straight" | "curve" | "ramp" | "funnel" | "goal-cup";
 
 /** Where a piece sits in the world. v1 restricts rotation to Y-axis yaw. */
 export interface Placement {
@@ -42,7 +42,6 @@ export const CURVE_RADIUS = 1;
 export const RAMP_RISE = 0.5;
 export const FUNNEL_HEIGHT = 1;
 export const CUP_INLET_HEIGHT = 0.6;
-export const START_GATE_HEIGHT = 1;
 
 const p = (id: string, kind: PortKind, position: Vec3, direction: Vec3): PortDef => ({
   id,
@@ -93,11 +92,6 @@ const GOAL_CUP: PieceTypeDef = {
   ports: [p("inlet", "cup", [0, CUP_INLET_HEIGHT, 0], [0, 1, 0])],
 };
 
-const START_GATE: PieceTypeDef = {
-  id: "start-gate",
-  ports: [p("spout", "spout", [0, 0, 0], [0, -1, 0])],
-};
-
 /** All available piece types, keyed by id. */
 export const PIECE_TYPE_IDS: Record<PieceTypeId, PieceTypeDef> = {
   straight: STRAIGHT,
@@ -105,7 +99,6 @@ export const PIECE_TYPE_IDS: Record<PieceTypeId, PieceTypeDef> = {
   ramp: RAMP,
   funnel: FUNNEL,
   "goal-cup": GOAL_CUP,
-  "start-gate": START_GATE,
 };
 
 const COMPATIBLE_PAIRS = new Set(["mouth|run", "run|run", "run|spout", "spout|cup"]);

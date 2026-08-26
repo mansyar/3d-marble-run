@@ -7,7 +7,6 @@ const PIECE_LABELS: Record<PieceTypeId, string> = {
   ramp: "Ramp",
   funnel: "Funnel",
   "goal-cup": "Goal cup",
-  "start-gate": "Start gate",
 };
 
 export type TraySelection = PieceTypeId | "drop-point";
@@ -54,7 +53,6 @@ export function createTray(
   }
 
   for (const typeId of Object.keys(PIECE_TYPE_IDS) as PieceTypeId[]) {
-    if (typeId === "start-gate") continue;
     addButton(typeId, PIECE_LABELS[typeId], PIECE_COLORS[typeId]);
   }
   addButton("drop-point", DROP_POINT_LABEL, DROP_POINT_COLOR);

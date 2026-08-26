@@ -51,12 +51,6 @@ export function addPiece(
 ): string {
   const id = explicitId ?? `piece-${g.nextId}`;
   if (!id || g.pieces.has(id)) throw new Error(`Duplicate piece id: ${id}`);
-  if (
-    typeId === "start-gate" &&
-    [...g.pieces.values()].some((piece) => piece.typeId === "start-gate")
-  ) {
-    throw new Error("Only one start gate may exist in a track");
-  }
   if (!explicitId) g.nextId += 1;
   advanceNextId(g, id);
   g.pieces.set(id, {
@@ -141,13 +135,6 @@ export function disconnect(g: TrackGraph, id: string, portId: string): void {
 export function restorePiece(g: TrackGraph, snapshot: PlacedPiece): void {
   const clone: PlacedPiece = structuredClone(snapshot);
   if (g.pieces.has(clone.id)) throw new Error(`Piece already exists: ${clone.id}`);
-  if (
-    clone.typeId === "start-gate" &&
-    [...g.pieces.values()].some((piece) => piece.typeId === "start-gate")
-  ) {
-    throw new Error("Only one start gate may exist in a track");
-  }
-
   const piecePorts = PIECE_TYPE_IDS[clone.typeId].ports;
   if (
     Object.keys(clone.connections).length !== piecePorts.length ||

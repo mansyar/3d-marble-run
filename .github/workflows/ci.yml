@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     branches: [master]
+  pull_request:
 
 permissions:
   contents: read
@@ -13,7 +14,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Validate master
+    name: Validate push or PR
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
