@@ -2,43 +2,24 @@
 
 ## Phase 1 · Audio Engine & Preferences (logic)
 
-### [ ] Task: Write failing tests for the procedural audio engine
-- [ ] Define `SoundEvent` taxonomy (`snap`, `delete`, `drop`, `landing`, `goal`).
-- [ ] Test that `play(event)` schedules synthesis (one voice per event) and never throws before unlock.
-- [ ] Test lazy unlock: no `AudioContext` created before `unlock()`, and unlock is idempotent.
-- [ ] Test per-event cooldown: rapid repeats of the same event are coalesced; different events are independent.
-- [ ] Test mute: `setMuted(true)` suppresses/clears scheduled notes, `setMuted(false)` restores.
-- [ ] Run: `CI=true pnpm vitest run tests/audioEngine.test.ts` — confirm RED.
+### [x] Task: Write failing tests for the procedural audio engine `a05438a`
+- Engine tests: 9 cases — unlock gate, idempotent unlock, per-event cooldowns (injectable clock), cross-event independence, mute semantics, default state. Confirmed RED (module missing) before implementation.
 
-### [ ] Task: Implement `src/audio/engine.ts`
-- [ ] Synthesize the five one-shots purely with oscillators/noise + gain envelopes; bounded gain; short duration.
-- [ ] Lazy `AudioContext` + `unlock()` (idempotent) and no-op playback before unlock.
-- [ ] Per-event cooldown timers (snap ~60ms, drop ~150ms, landing/goal ~100ms).
-- [ ] Master gain + `setMuted()` that stops scheduled notes immediately.
-- [ ] Document public API with JSDoc where non-obvious.
-- [ ] Run: `CI=true pnpm vitest run tests/audioEngine.test.ts` — GREEN.
+### [x] Task: Implement `src/audio/engine.ts` `a05438a`
+- Split into `engine.ts` (pure scheduling: cooldowns, unlock, mute; injectable `SoundPlayer` + clock) and `synth.ts` (WebAudio one-shots, lazy `AudioContext`). GREEN 9/9.
 
-### [ ] Task: Write failing tests for the persisted mute preference
-- [ ] Default is ON (unmuted) with no stored value.
-- [ ] `setMuted(true)` round-trips through storage; restored on a new instance.
-- [ ] Corrupt/missing storage falls back to default without throwing.
-- [ ] Run: `CI=true pnpm vitest run tests/audioPreferences.test.ts` — confirm RED.
+### [x] Task: Write failing tests for the persisted mute preference `a05438a`
+- Preference tests: default unmuted, round-trip, corrupt value, null storage, throwing read/write, default backend. Confirmed RED before implementation.
 
-### [ ] Task: Implement `src/audio/preferences.ts`
-- [ ] Namespaced localStorage key (same pattern as coach-mark state); injectable storage for tests; safe read/write.
-- [ ] `isMuted()` / `setMuted(bool)` API.
-- [ ] Run: `CI=true pnpm vitest run tests/audioPreferences.test.ts` — GREEN.
+### [x] Task: Implement `src/audio/preferences.ts` `a05438a`
+- Mirrors coach-mark state pattern; key `marblescape.sound-muted`; safe read/write. GREEN 7/7.
 
-### [ ] Task: Document the Audio layer in `tech-stack.md`
-- [ ] Add a row for the Audio layer (Web Audio API, procedural SFX, no assets) with rationale before implementation proceeds.
-- [ ] No tech-stack deviation elsewhere; document nothing else.
+### [x] Task: Document the Audio layer in `tech-stack.md` `a05438a`
+- Added Web Audio API row (procedural SFX, zero assets, ~zero bundle cost); no other stack changes.
 
-### [ ] Task: Cover changed logic and commit Phase 1
-- [ ] Coverage: `CI=true pnpm vitest run --coverage` scoped to `src/audio/` — ≥80%.
-- [ ] `CI=true pnpm biome check .` — clean.
-- [ ] Commit: `feat(audio): Add procedural audio engine and persisted mute preference`.
-- [ ] Attach `git notes add` summary to the commit.
-- [ ] Update `plan.md`: mark tasks `[~]`→`[x]` with commit hashes and notes.
+### [x] Task: Cover changed logic and commit Phase 1 `a05438a`
+- Coverage: engine 90.9% / preferences 81.8% statements (≥80%). Full suite 172/172 green; Biome clean.
+- Commit `feat(audio): Add procedural audio engine and persisted mute preference`; git note attached.
 
 ### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 - [ ] Run full suite once; propose manual verification (dev server, first-gesture sound, toggle state).
