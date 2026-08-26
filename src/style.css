@@ -28,7 +28,7 @@ canvas.camera-orbiting {
   right: max(12px, env(safe-area-inset-right));
   left: max(12px, env(safe-area-inset-left));
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: start;
   gap: 12px;
   box-sizing: border-box;
@@ -122,7 +122,8 @@ canvas.camera-orbiting {
 }
 
 #simulation-controls button,
-#save-slot-toggle {
+#save-slot-toggle,
+.sound-toggle {
   min-height: 44px;
   padding: 8px 12px;
   border: 1px solid #cdbda8;
@@ -135,7 +136,8 @@ canvas.camera-orbiting {
 }
 
 #simulation-controls button:active,
-#save-slot-toggle:active {
+#save-slot-toggle:active,
+.sound-toggle:active {
   background: #f2e8d8;
 }
 
@@ -146,6 +148,7 @@ canvas.camera-orbiting {
 
 #simulation-controls button:focus-visible,
 #save-slot-toggle:focus-visible,
+.sound-toggle:focus-visible,
 #about-dialog button:focus-visible,
 #save-slots input:focus-visible,
 #save-slots select:focus-visible,
@@ -348,6 +351,10 @@ canvas.camera-orbiting {
   }
 
   #save-slot-region {
+    justify-self: start;
+  }
+
+  .sound-toggle {
     justify-self: start;
   }
 

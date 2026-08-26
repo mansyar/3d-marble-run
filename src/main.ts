@@ -1,5 +1,8 @@
 import "./style.css";
 import { ColliderDesc, RigidBodyDesc, type World } from "@dimforge/rapier3d-compat";
+import { createAudioEngine } from "./audio/engine";
+import { createSoundPreferences } from "./audio/preferences";
+import { createWebAudioSynth } from "./audio/synth";
 import { createDropPointController } from "./build/dropPointController";
 import { createDropPointState } from "./build/dropPointPlacement";
 import { createPlacementController } from "./build/placement";
@@ -31,6 +34,7 @@ import { createAboutDialog } from "./ui/about";
 import { createCoachMarks } from "./ui/coachMarks";
 import { createSaveSlotControls } from "./ui/save-slots";
 import { createSimulationControls } from "./ui/simulation";
+import { createSoundToggle } from "./ui/soundToggle";
 import { createTray } from "./ui/tray";
 import { APP_VERSION } from "./version";
 
@@ -269,6 +273,11 @@ const topHud = document.createElement("div");
 topHud.id = "top-hud";
 document.body.appendChild(topHud);
 const coachMarks = createCoachMarks(document.body);
+
+const soundPreferences = createSoundPreferences();
+const sound = createAudioEngine(createWebAudioSynth());
+sound.setMuted(soundPreferences.isMuted());
+createSoundToggle(topHud, { preferences: soundPreferences, engine: sound });
 
 let tray!: ReturnType<typeof createTray>;
 let dropPointModeActive = false;
