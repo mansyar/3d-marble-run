@@ -200,6 +200,15 @@ const staticBodyToPiece = new Map<number, string>();
 // Seed counter above graph-internal ids ("piece-N") to avoid collisions.
 let customIdCounter = 1000;
 
+function seedCustomIdCounter(nextGraph: TrackGraph): void {
+  for (const id of nextGraph.pieces.keys()) {
+    const numericId = Number(id.split("-")[1]);
+    if (Number.isInteger(numericId)) customIdCounter = Math.max(customIdCounter, numericId);
+  }
+}
+
+seedCustomIdCounter(graph);
+
 function spawnPiece(id: string, typeId: PieceTypeId, placement: Placement): void {
   const live = spawnStaticPiece(handle.scene, world, typeId, placement);
   spawned.set(id, live);
@@ -228,10 +237,7 @@ function replaceGraph(next: TrackGraph): void {
   for (const piece of next.pieces.values()) {
     graph.pieces.set(piece.id, structuredClone(piece));
   }
-  for (const id of graph.pieces.keys()) {
-    const numericId = Number(id.split("-")[1]);
-    if (Number.isInteger(numericId)) customIdCounter = Math.max(customIdCounter, numericId);
-  }
+  seedCustomIdCounter(graph);
   stack.clear();
   syncScene();
 }
@@ -266,6 +272,10 @@ const coachMarks = createCoachMarks(document.body);
 
 let tray!: ReturnType<typeof createTray>;
 let dropPointModeActive = false;
+type EditHistoryDomain = "pieces" | "drop-point";
+type EditHistoryAction = "undo" | "redo";
+let lastEditDomain: EditHistoryDomain | null = null;
+let refreshEditHistory: () => void = () => {};
 
 const placement = createPlacementController({
   scene: handle.scene,
@@ -282,14 +292,19 @@ const placement = createPlacementController({
     }),
   sync: syncScene,
   onChange: () => {
+    lastEditDomain = "pieces";
     storage.scheduleAutosave(currentTrackDocument());
     if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
     refreshDropPointHealth();
+    refreshEditHistory();
   },
   onPlace: () => coachMarks.complete("place-piece"),
   isEnabled: () => !dropPointModeActive,
   nextId: () => `piece-${++customIdCounter}`,
-  onEnd: () => tray.setActive(null),
+  onEnd: () => {
+    tray.setActive(null);
+    refreshEditHistory();
+  },
 });
 
 const dropPointStack = createCommandStack<DropPointState>();
@@ -313,13 +328,49 @@ const dropPointPlacement = createDropPointController({
   isEnabled: () => dropPointModeActive,
   onMove: (position) => dropPointGuide?.setPreview(position),
   onChange: () => {
+    lastEditDomain = "drop-point";
     storage.scheduleAutosave(currentTrackDocument());
     if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
     refreshDropPointHealth();
+    refreshEditHistory();
   },
   onPlace: () => coachMarks.complete("place-piece"),
-  onEnd: () => tray.setActive(null),
+  onEnd: () => {
+    tray.setActive(null);
+    refreshEditHistory();
+  },
 });
+
+function canEditHistory(action: EditHistoryAction, domain: EditHistoryDomain): boolean {
+  const historyStack = domain === "pieces" ? stack : dropPointStack;
+  return action === "undo" ? historyStack.canUndo() : historyStack.canRedo();
+}
+
+function selectEditHistoryDomain(action: EditHistoryAction): EditHistoryDomain | null {
+  if (lastEditDomain && canEditHistory(action, lastEditDomain)) return lastEditDomain;
+  if (dropPointModeActive && canEditHistory(action, "drop-point")) return "drop-point";
+  if (canEditHistory(action, "pieces")) return "pieces";
+  if (canEditHistory(action, "drop-point")) return "drop-point";
+  return null;
+}
+
+function undoEdit(): void {
+  placement.cancel();
+  dropPointPlacement.cancel();
+  const domain = selectEditHistoryDomain("undo");
+  if (domain === "pieces") placement.undo();
+  else if (domain === "drop-point") dropPointPlacement.undo();
+  refreshEditHistory();
+}
+
+function redoEdit(): void {
+  placement.cancel();
+  dropPointPlacement.cancel();
+  const domain = selectEditHistoryDomain("redo");
+  if (domain === "pieces") placement.redo();
+  else if (domain === "drop-point") dropPointPlacement.redo();
+  refreshEditHistory();
+}
 
 tray = createTray(document.body, (selection) => {
   if (selection) coachMarks.complete("choose-piece");
@@ -378,13 +429,23 @@ const simulationControls = createSimulationControls(topHud, {
   },
   onToggleCamera: () => cameraController?.toggleMode() ?? "free",
   onReset: resetSimulationState,
+  onUndo: undoEdit,
+  onRedo: redoEdit,
   onAbout: aboutDialog.open,
 });
+
+refreshEditHistory = () => {
+  simulationControls.setEditHistory(
+    selectEditHistoryDomain("undo") !== null,
+    selectEditHistoryDomain("redo") !== null,
+  );
+};
 
 simulationControls.setStreamEnabled(spawner.isContinuous());
 simulationControls.setGoalCount(goalTracker.count());
 simulationControls.setTimerMs(spawner.state().timerMs);
 simulationControls.setCameraMode(cameraController.mode());
+refreshEditHistory();
 if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
 refreshDropPointHealth();
 

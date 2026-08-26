@@ -71,6 +71,8 @@ interface MoveState {
 export function createPlacementController(deps: PlacementDeps): {
   begin: (typeId: PieceTypeId) => void;
   cancel: () => void;
+  undo: () => boolean;
+  redo: () => boolean;
   readonly activeTypeId: PieceTypeId | null;
 } {
   const { scene, camera, domElement, graph, stack } = deps;
@@ -293,6 +295,26 @@ export function createPlacementController(deps: PlacementDeps): {
     deps.onEnd?.();
   }
 
+  function undo(): boolean {
+    cancel();
+    const changed = stack.undo(graph);
+    if (changed) {
+      deps.sync();
+      deps.onChange?.();
+    }
+    return changed;
+  }
+
+  function redo(): boolean {
+    cancel();
+    const changed = stack.redo(graph);
+    if (changed) {
+      deps.sync();
+      deps.onChange?.();
+    }
+    return changed;
+  }
+
   function onPointerMove(ev: PointerEvent): void {
     if (!isEnabled() || !ghost) return;
     cursorPos = pointOnTable(ev.clientX, ev.clientY);
@@ -323,20 +345,13 @@ export function createPlacementController(deps: PlacementDeps): {
     const modifier = ev.ctrlKey || ev.metaKey;
     if (modifier && key === "z") {
       ev.preventDefault();
-      cancel();
-      if (ev.shiftKey ? stack.redo(graph) : stack.undo(graph)) {
-        deps.sync();
-        deps.onChange?.();
-      }
+      if (ev.shiftKey) redo();
+      else undo();
       return;
     }
     if (modifier && key === "y") {
       ev.preventDefault();
-      cancel();
-      if (stack.redo(graph)) {
-        deps.sync();
-        deps.onChange?.();
-      }
+      redo();
       return;
     }
     if (!ghost) return;
@@ -402,6 +417,8 @@ export function createPlacementController(deps: PlacementDeps): {
   return {
     begin,
     cancel,
+    undo,
+    redo,
     get activeTypeId() {
       return activeTypeId;
     },

@@ -139,6 +139,11 @@ canvas.camera-orbiting {
   background: #f2e8d8;
 }
 
+#simulation-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 #simulation-controls button:focus-visible,
 #save-slot-toggle:focus-visible,
 #about-dialog button:focus-visible,

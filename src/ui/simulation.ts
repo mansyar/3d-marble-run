@@ -8,6 +8,8 @@ export interface SimulationControlCallbacks {
   onToggleStream: () => boolean;
   onToggleCamera: () => CameraMode;
   onReset: () => void;
+  onUndo: () => void;
+  onRedo: () => void;
   onAbout: () => void;
 }
 
@@ -18,6 +20,7 @@ export interface SimulationControls {
   setTimerMs(elapsedMs: number): void;
   setTrackHealth(status: DropPointHealthStatus): void;
   setCameraMode(mode: CameraMode): void;
+  setEditHistory(canUndo: boolean, canRedo: boolean): void;
   showGoalPop(): void;
 }
 
@@ -47,6 +50,20 @@ export function createSimulationControls(
   resetButton.type = "button";
   resetButton.textContent = "Reset run";
   resetButton.addEventListener("click", callbacks.onReset);
+
+  const undoButton = document.createElement("button");
+  undoButton.type = "button";
+  undoButton.textContent = "Undo";
+  undoButton.setAttribute("aria-label", "Undo last change");
+  undoButton.disabled = true;
+  undoButton.addEventListener("click", callbacks.onUndo);
+
+  const redoButton = document.createElement("button");
+  redoButton.type = "button";
+  redoButton.textContent = "Redo";
+  redoButton.setAttribute("aria-label", "Redo last undone change");
+  redoButton.disabled = true;
+  redoButton.addEventListener("click", callbacks.onRedo);
 
   const cameraButton = document.createElement("button");
   cameraButton.type = "button";
@@ -81,6 +98,8 @@ export function createSimulationControls(
     dropButton,
     streamButton,
     resetButton,
+    undoButton,
+    redoButton,
     cameraButton,
     aboutButton,
     goalCount,
@@ -117,6 +136,11 @@ export function createSimulationControls(
     cameraButton.setAttribute("aria-pressed", String(mode === "chase"));
   }
 
+  function setEditHistory(canUndo: boolean, canRedo: boolean): void {
+    undoButton.disabled = !canUndo;
+    redoButton.disabled = !canRedo;
+  }
+
   function showGoalPop(): void {
     const pop = document.createElement("div");
     pop.className = "goal-pop";
@@ -132,6 +156,7 @@ export function createSimulationControls(
     setTimerMs,
     setTrackHealth,
     setCameraMode: setCameraLabel,
+    setEditHistory,
     showGoalPop,
   };
 }
