@@ -80,12 +80,20 @@ a verification checkpoint before proceeding.
     dismissal persistence, no horizontal overflow, no application errors, and
     reduced-motion animation disabled.
 
-- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-  - [ ] Run the coach-mark tests plus the full required automated checks.
-  - [ ] Manually verify first launch, progression, dismissal persistence, touch
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) *(bd56e47)*
+  - [x] Run the coach-mark tests plus the full required automated checks.
+    `$env:CI="true"; pnpm vitest run && pnpm biome check . && pnpm exec tsc
+    --noEmit && pnpm build` passed: 25 files, 146 tests; Biome checked 80
+    files; TypeScript passed; build output was 3,436.14 kB JavaScript and
+    1,244.46 kB gzip.
+  - [x] Manually verify first launch, progression, dismissal persistence, touch
     interaction, keyboard operation, and reduced motion on desktop and mobile.
-  - [ ] Record the checkpoint SHA, Git note, user confirmation, and plan update
-    commit.
+    Verified at 360x800, 390x844, and 1280x720 with no horizontal overflow,
+    responsive HUD spacing, keyboard Enter/Escape parity, and no application
+    errors.
+  - [x] Record the checkpoint SHA, Git note, user confirmation, and plan update
+    commit. User confirmed the Phase 2 checkpoint on 2026-08-26; the report was
+    appended to the `bd56e47` Git note.
 
 ## Phase 3: Visible mistake recovery and tray clarity
 
