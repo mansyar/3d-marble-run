@@ -2,3 +2,8 @@ Task: Desktop feature-journey smoke test (Phase 2, Cut v0.2.0 Release)
 
 Summary: Manual smoke against production preview http://localhost:4173 at 1280x720, post-bump build (index-MBj7VghY.js, v0.2.0 baked in). All 7 checks PASSED per user confirmation: About modal shows v0.2.0; piece place/move/delete with connector snapping; Drop point tool + dotted landing guide; mixed-edit undo/redo chronology + redo-branch invalidation; autosave + named slot reload; goal counter/timer; orbit/chase cams.
 No code changes - verification-only task; note anchored to preceding plan commit.
+
+Task: Touch smoke test ~393x659 emulated (Phase 2, Cut v0.2.0 Release)
+
+Summary: Same core journeys re-run in device-emulated ~393x659 viewport against production preview. PASSED per user confirmation: core journeys work, tap targets >=44px, no accidental page scroll during drags, no console errors.
+No code changes - verification-only task; appended to shared anchor commit.
