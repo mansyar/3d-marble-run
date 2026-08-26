@@ -52,15 +52,20 @@ One commit per task.
     targeted suite is intentionally red until the controllers accept the shared
     `history` dependency; Biome passes.
 
-- [~] Task: Route placement, Drop point editing, and main orchestration through
-  shared history
-  - [ ] Replace the separate piece and Drop point stacks with the shared history
+- [x] Task: Route placement, Drop point editing, and main orchestration through
+  shared history *(eb5d9dc)*
+  - [x] Replace the separate piece and Drop point stacks with the shared history
     service.
-  - [ ] Remove `lastEditDomain` selection logic.
-  - [ ] Preserve mode-gated keyboard shortcuts and existing Undo/Redo buttons.
-  - [ ] Keep autosave, health refresh, scene synchronization, and guide refresh
+  - [x] Remove `lastEditDomain` selection logic.
+  - [x] Preserve mode-gated keyboard shortcuts and existing Undo/Redo buttons.
+  - [x] Keep autosave, health refresh, scene synchronization, and guide refresh
     behavior unchanged.
-  - [ ] Clear the unified history when loading or replacing a track.
+  - [x] Clear the unified history when loading or replacing a track.
+  - Notes: Both editor controllers now route commands and Undo/Redo through one
+    chronological `EditorHistory`. Main orchestration uses the shared
+    availability state, clears it on graph replacement/load, and refreshes live
+    scene state after shared history changes. Full tests, Biome, and TypeScript
+    checks pass.
 
 - [ ] Task: Complete regression and manual verification
   - [ ] Run targeted coverage for changed history logic and confirm the
