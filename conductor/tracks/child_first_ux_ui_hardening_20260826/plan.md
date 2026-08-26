@@ -110,7 +110,7 @@ a verification checkpoint before proceeding.
     state, physical placement recovery, Drop point move recovery, keyboard
     Control+Z/Control+Y parity, and no application errors.
 
-- [ ] Task: Add recognizable tray shape previews
+- [~] Task: Add recognizable tray shape previews
   - [ ] Add lightweight inline or procedural shape cues for every piece.
   - [ ] Preserve labels, color differentiation, active selection, and touch
     sizing.
