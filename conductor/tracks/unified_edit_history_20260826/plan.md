@@ -38,7 +38,7 @@ One commit per task.
     functions, and lines. The user confirmed deferring rendering/input checks
     because Phase 1 has no runtime integration changes.
 
-## Phase 2 · Controller and Application Integration
+## Phase 2 · Controller and Application Integration [checkpoint: 543a09e]
 
 - [x] Task: Write failing integration tests for mixed editor changes *(58d41d1)*
   - [x] Verify actual piece commands and Drop point commands share one timeline.
@@ -88,4 +88,13 @@ One commit per task.
     tablet 768x1024 remained viewport-fit. Only the known Three.js warnings
     appeared.
 
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`) *(543a09e)*
+  - [x] Compare Phase 2 changes with the Phase 1 checkpoint and confirm
+    corresponding tests for changed logic.
+  - [x] Run the checkpoint test suite and confirm all automated gates pass.
+  - [x] Complete approved desktop, touch, and responsive runtime verification.
+  - [x] Attach the full verification report to the target functional commit.
+  - Notes: Phase 2 was verified against the `2219b58` Phase 1 checkpoint. The
+    user approved the desktop, touch, responsive, cancellation, and load-reset
+    results. Verification is recorded on functional commit `543a09e`; the
+    phase checkpoint is `543a09e`.
