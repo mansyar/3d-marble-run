@@ -80,7 +80,7 @@ a verification checkpoint before proceeding.
     dismissal persistence, no horizontal overflow, no application errors, and
     reduced-motion animation disabled.
 
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
   - [ ] Run the coach-mark tests plus the full required automated checks.
   - [ ] Manually verify first launch, progression, dismissal persistence, touch
     interaction, keyboard operation, and reduced motion on desktop and mobile.
