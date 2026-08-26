@@ -1,12 +1,5 @@
 import type { DropPoint } from "./dropPoint";
-import type { PlacedPiece, TrackGraph } from "./graph";
-
-export type TrackHealthStatus = "missing-start" | "no-connected-goal" | "ready";
-
-export interface TrackHealth {
-  status: TrackHealthStatus;
-  reachableGoalIds: string[];
-}
+import type { TrackGraph } from "./graph";
 
 export type DropPointHealthStatus =
   | "missing-drop-point"
@@ -17,11 +10,6 @@ export type DropPointHealthStatus =
 export interface DropPointHealth {
   status: DropPointHealthStatus;
   reachableGoalIds: string[];
-}
-
-/** Return the track's single start gate, when one has been placed. */
-export function getStartGate(graph: TrackGraph): PlacedPiece | undefined {
-  return [...graph.pieces.values()].find((piece) => piece.typeId === "start-gate");
 }
 
 function reachableGoalIds(graph: TrackGraph, rootId: string): string[] {
@@ -60,24 +48,6 @@ export function assessDropPointHealth(
   }
 
   const goalIds = reachableGoalIds(graph, landingPieceId);
-  return {
-    status: goalIds.length > 0 ? "ready" : "no-connected-goal",
-    reachableGoalIds: goalIds,
-  };
-}
-
-/**
- * Assess graph connectivity from the start gate to goal cups.
- *
- * This is intentionally a connection-graph check, not a physics solvability
- * proof. Players may continue experimenting with incomplete layouts.
- */
-export function assessTrackHealth(graph: TrackGraph): TrackHealth {
-  const start = getStartGate(graph);
-  if (!start) return { status: "missing-start", reachableGoalIds: [] };
-
-  const goalIds = reachableGoalIds(graph, start.id);
-
   return {
     status: goalIds.length > 0 ? "ready" : "no-connected-goal",
     reachableGoalIds: goalIds,

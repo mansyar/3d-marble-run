@@ -18,7 +18,6 @@ import {
   type PieceTypeId,
   type Placement,
   RAMP_RISE,
-  START_GATE_HEIGHT,
   STRAIGHT_LENGTH,
   TRACK_WIDTH,
 } from "./registry";
@@ -221,34 +220,12 @@ function buildGoalCup(): BuiltPiece {
   return { group, colliders: [{ kind: "trimesh", ...geometryToTrimesh(cup.geometry) }] };
 }
 
-/** Open vertical chute that releases a marble through its downward spout. */
-function buildStartGate(): BuiltPiece {
-  const group = new Group();
-  const mat = makePieceMaterial("start-gate");
-  const wallGeo = new BoxGeometry(RAIL_T, START_GATE_HEIGHT, TRACK_WIDTH);
-  const colliders: ColliderSpec[] = [];
-
-  for (const side of [-1, 1]) {
-    const wall = shadowed(new Mesh(wallGeo, mat));
-    wall.position.set((side * TRACK_WIDTH) / 2, START_GATE_HEIGHT / 2, 0);
-    group.add(wall);
-    colliders.push({
-      kind: "cuboid",
-      half: [RAIL_T / 2, START_GATE_HEIGHT / 2, TRACK_WIDTH / 2],
-      position: [(side * TRACK_WIDTH) / 2, START_GATE_HEIGHT / 2, 0],
-    });
-  }
-
-  return { group, colliders };
-}
-
 const BUILDERS: Record<PieceTypeId, () => BuiltPiece> = {
   straight: buildStraight,
   curve: buildCurve,
   ramp: buildRamp,
   funnel: buildFunnel,
   "goal-cup": buildGoalCup,
-  "start-gate": buildStartGate,
 };
 
 export function buildPiece(typeId: PieceTypeId): BuiltPiece {

@@ -13,7 +13,6 @@ import {
   type TrackGraph,
 } from "../track/graph";
 import { classifySnap, type SnapClassification } from "../track/snapping";
-import { canPlacePiece } from "./placementRules";
 
 /**
  * Ghost placement flow: pick a piece in the tray, a translucent ghost follows
@@ -201,10 +200,6 @@ export function createPlacementController(deps: PlacementDeps): {
 
   function place(): void {
     if (!ghost || !activeTypeId || !cursorPos || lastStatus === "blocked") return;
-    if (!moving && !canPlacePiece(graph, activeTypeId)) {
-      cancel();
-      return;
-    }
     const query = {
       typeId: activeTypeId,
       placement: { position: [cursorPos.x, 0, cursorPos.z] as [number, number, number], yawDeg },
@@ -394,10 +389,6 @@ export function createPlacementController(deps: PlacementDeps): {
     }
     activeTypeId = null;
     cursorPos = null;
-    if (!canPlacePiece(graph, typeId)) {
-      deps.onEnd?.();
-      return;
-    }
     activeTypeId = typeId;
     yawDeg = 0;
     ghost = makeGhost(typeId);

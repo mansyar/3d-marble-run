@@ -76,9 +76,6 @@ describe("track storage", () => {
 
     for (const loaded of [await storage.load("starter"), await storage.load(AUTOSAVE_SLOT)]) {
       expect(loaded?.graph.pieces.size).toBe(5);
-      expect(
-        [...(loaded?.graph.pieces.values() ?? [])].some((piece) => piece.typeId === "start-gate"),
-      ).toBe(false);
       expect(loaded?.dropPoint).toEqual({ position: [0, 4, 0] });
     }
     storage.dispose();

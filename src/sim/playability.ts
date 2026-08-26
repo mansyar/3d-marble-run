@@ -1,6 +1,4 @@
-import { getWorldPort, START_GATE_HEIGHT, type Vec3 } from "../pieces/registry";
-import type { TrackGraph } from "../track/graph";
-import { getStartGate } from "../track/health";
+import type { Vec3 } from "../pieces/registry";
 
 export interface PlayableBounds {
   readonly min: readonly [number, number, number];
@@ -13,34 +11,12 @@ export const PLAYABLE_BOUNDS: PlayableBounds = {
   max: [20, 20, 20],
 };
 
-export type SpawnResolution =
-  | { status: "missing-start"; position: null }
-  | { status: "ready"; position: Vec3 };
-
 export interface MarblePosition {
   readonly id: number;
   readonly position: Vec3;
 }
 
 export type PlayablePositionStatus = "inside" | "out-of-bounds" | "invalid-boundary";
-
-const SPAWN_CLEARANCE = 0.15;
-
-/** Resolve a marble's initial position from the active start gate placement. */
-export function resolveSpawnAnchor(graph: TrackGraph): SpawnResolution {
-  const gate = getStartGate(graph);
-  if (!gate) return { status: "missing-start", position: null };
-
-  const spout = getWorldPort(gate.placement, gate.typeId, "spout");
-  return {
-    status: "ready",
-    position: [
-      spout.position[0],
-      spout.position[1] + START_GATE_HEIGHT + SPAWN_CLEARANCE,
-      spout.position[2],
-    ],
-  };
-}
 
 function hasValidBounds(bounds: PlayableBounds): boolean {
   return bounds.min.every(

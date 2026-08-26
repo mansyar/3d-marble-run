@@ -23,9 +23,9 @@ function port(typeId: PieceTypeId, portId: string) {
 }
 
 describe("piece registry", () => {
-  it("defines the five v1 piece types plus a start gate", () => {
+  it("defines exactly the five physical piece types", () => {
     expect(Object.keys(PIECE_TYPE_IDS).sort()).toEqual(
-      ["curve", "funnel", "goal-cup", "ramp", "start-gate", "straight"].sort(),
+      ["curve", "funnel", "goal-cup", "ramp", "straight"].sort(),
     );
   });
 
@@ -91,14 +91,6 @@ describe("piece registry", () => {
     expect(def.ports[0].kind).toBe("cup");
     expect(def.ports[0].direction[1]).toBeGreaterThan(0);
   });
-
-  it("start gate has one downward-facing spout", () => {
-    const def = PIECE_TYPE_IDS["start-gate"];
-    expect(def.ports).toHaveLength(1);
-    expect(def.ports[0].id).toBe("spout");
-    expect(def.ports[0].kind).toBe("spout");
-    expect(def.ports[0].direction).toEqual([0, -1, 0]);
-  });
 });
 
 describe("port math", () => {
@@ -123,15 +115,6 @@ describe("port math", () => {
     // straight 'b' faces +Z locally -> after 90° yaw it must face +X
     expect(world.direction[0]).toBeCloseTo(1, 5);
     expect(world.direction[2]).toBeCloseTo(0, 5);
-  });
-
-  it("transforms the start gate spout into world space", () => {
-    const local = port("start-gate", "spout");
-    const world = getWorldPort({ position: [3, 2, -4], yawDeg: 90 }, "start-gate", "spout");
-    expect(world.position[0]).toBeCloseTo(local.position[2] + 3, 5);
-    expect(world.position[1]).toBeCloseTo(local.position[1] + 2, 5);
-    expect(world.position[2]).toBeCloseTo(-local.position[0] - 4, 5);
-    expect(world.direction).toEqual([0, -1, 0]);
   });
 
   it("translates port position without touching its direction", () => {

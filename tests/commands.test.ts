@@ -27,15 +27,6 @@ describe("track graph", () => {
     expect(getPiece(g, b)?.typeId).toBe("straight");
   });
 
-  it("allows only one start gate and leaves the graph unchanged on a duplicate", () => {
-    const g = createTrackGraph();
-    addPiece(g, "start-gate", P0, "start-1");
-
-    expect(() => addPiece(g, "start-gate", P1, "start-2")).toThrow(/only one start gate/i);
-    expect([...g.pieces.keys()]).toEqual(["start-1"]);
-    expect(g.nextId).toBe(1);
-  });
-
   it("connects only compatible and free ports, on both sides symmetrically", () => {
     const g = createTrackGraph();
     const a = addPiece(g, "straight", P0);

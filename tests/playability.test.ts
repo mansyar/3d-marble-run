@@ -4,28 +4,12 @@ import {
   classifyPlayablePosition,
   findOutOfBoundsMarbleIds,
   PLAYABLE_BOUNDS,
-  resolveSpawnAnchor,
 } from "../src/sim/playability";
 import { createSpawner } from "../src/sim/spawner";
 import { addPiece, createTrackGraph } from "../src/track/graph";
 
 describe("playability helpers", () => {
-  it("resolves a start gate spawn anchor above the placed gate", () => {
-    const graph = createTrackGraph();
-    addPiece(graph, "start-gate", { position: [3, 2, -4], yawDeg: 90 });
-
-    expect(resolveSpawnAnchor(graph)).toEqual({
-      status: "ready",
-      position: [3, 3.15, -4],
-    });
-  });
-
-  it("classifies missing gates and invalid playable bounds", () => {
-    expect(resolveSpawnAnchor(createTrackGraph())).toEqual({
-      status: "missing-start",
-      position: null,
-    });
-
+  it("classifies invalid playable bounds", () => {
     expect(classifyPlayablePosition([0, 0, 0], { min: [1, -1, -1], max: [-1, 1, 1] })).toBe(
       "invalid-boundary",
     );
