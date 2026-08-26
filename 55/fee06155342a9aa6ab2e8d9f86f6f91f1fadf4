@@ -5,3 +5,11 @@ Summary: With explicit user authorization, pushed master (b236e41..55fee06) then
 Task: Verify live artifacts (Phase 3, Cut v0.2.0 Release)
 
 Summary: All live artifacts verified. PAGES: https://mansyar.github.io/3d-marble-run/ HTTP 200 serving assets/index-MBj7VghY.js - exact hash match with local v0.2.0 build; served JS contains baked '0.2.0'; user visually confirmed About modal shows v0.2.0 in production under repository base path. RELEASE: v0.2.0 published non-draft at github.com/mansyar/3d-marble-run/releases/tag/v0.2.0; auto-generated body initially contained only the compare link (direct-to-master repo has no PRs for the generator); with user approval body amended via gh release edit with a four-track summary - verified all track names present. GHCR (ghcr.io/mansyar/3d-marble-run): tags 0.2.0, latest, sha-0fd2632 all FOUND via anonymous docker manifest inspect (sha from tag-ref commit 0fd2632, not master head).
+
+PHASE VERIFICATION REPORT - Phase 3: Release Tag, Pipeline & Live Verification (Cut v0.2.0 Release)
+
+Command: CI=true pnpm vitest run --coverage -> exit 0; 27 files / 156 tests passed; 'Release tag v0.2.0 matches package.json version 0.2.0'.
+Pipeline: release run 32948181072 all jobs SUCCESS end-to-end after authorized push of master (b236e41..55fee06) and tag v0.2.0.
+Live artifacts: Pages HTTP 200 with asset hash identical to local build, served JS carries 0.2.0, user confirmed About modal v0.2.0 in production; GitHub Release published (body amended once with user approval to cover four tracks); GHCR tags 0.2.0/latest/sha-0fd2632 verified via docker manifest inspect.
+Manual verification: user performed live-site About check; explicit yes received for phase checkpoint.
+Coverage for phase changes: no application-code changes (docs/bookkeeping only) - exempt.
