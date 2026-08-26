@@ -5,7 +5,7 @@ bump precedes the smoke test because the production build derives the
 About-modal version from `package.json` — only a post-bump build can display
 `v0.2.0` in-app.
 
-## Phase 1 · Baseline Verification
+## Phase 1 · Baseline Verification [checkpoint: 59de226]
 
 - [x] Task: Establish pre-release baseline on `master` (59de226)
   - [x] Confirm clean working tree and parity with `origin/master`
@@ -17,7 +17,7 @@ About-modal version from `package.json` — only a post-bump build can display
     biome initially failed on missing EOF newline in track metadata.json —
     fixed via `biome --write`, re-check clean (85 files). Baseline bundle:
     **3,437.74 kB minified / 1,244.96 kB gzip** (budget ≤3,500 / ≤1,250).
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2 · Version Bump & Release Build Smoke Test
 
