@@ -28,7 +28,15 @@ One commit per task.
     generic command stack. Focused history tests and existing command-stack
     tests pass; targeted Biome passes for changed files.
 
-- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [x] Task: Phase Verification & Checkpoint (Refer to `workflow.md`) *(2219b58)*
+  - [x] Run targeted history tests, existing command-stack tests, Biome, and
+    TypeScript checks.
+  - [x] Confirm changed-logic coverage meets the approximately 80% target.
+  - [x] Propose desktop and mobile runtime verification for the Phase 2
+    integration.
+  - Notes: Targeted history coverage is 100% across statements, branches,
+    functions, and lines. The user confirmed deferring rendering/input checks
+    because Phase 1 has no runtime integration changes.
 
 ## Phase 2 · Controller and Application Integration
 
