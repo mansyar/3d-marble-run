@@ -8,4 +8,4 @@
 - [x] **Track: Unified Edit History & Undo/Redo Reliability** *Link: [./archive/unified_edit_history_20260826/index.md](./archive/unified_edit_history_20260826/index.md)*
 - [x] **Track: Release-Only Deployment Policy & Master CI** *Link: [./archive/release_only_deployments_20260825/index.md](./archive/release_only_deployments_20260825/index.md)*
 - [x] **Track: Tagged Release Pipeline & Application Versioning** *Link: [./archive/release_versioning_20260825/index.md](./archive/release_versioning_20260825/index.md)*
-- [ ] **Track: Cut v0.2.0 Release** *Link: [./tracks/release_v020_20260826/index.md](./tracks/release_v020_20260826/index.md)*
+- [~] **Track: Cut v0.2.0 Release** *Link: [./tracks/release_v020_20260826/index.md](./tracks/release_v020_20260826/index.md)*
