@@ -16,7 +16,7 @@
   - [x] Automated: 31 files / 194 tests green; biome clean; build within budget. Manual: cloud-side Actions run pending PR push (local verification of YAML by inspection). User confirmed Yes.
   - [x] Verification report attached via git notes to `318d721`; checkpoint recorded.
 
-## Phase 2 · Start-Gate Elimination (logic)
+## Phase 2 · Start-Gate Elimination (logic) `[checkpoint: 4ea81c5]`
 
 - [x] Task: Write failing tests for v1 migration pre-parse and registry changes `4ea81c5`
   - [x] Red phase: updated `tests/pieces.test.ts` to expect 5 piece types (start-gate removed from `PIECE_TYPE_IDS` keys / `PieceTypeId` union) — confirmed failing (1 test) against unchanged source.
@@ -39,7 +39,7 @@
 - [x] Task: Cover changed logic and commit Phase 2 `4ea81c5`
   - [x] Full suite green (28 files / 183 tests, down from 31/194 after deleting orphaned start-gate tests); `biome check --write` clean (fixed 2 import-type nits); `pnpm build` strict TS clean.
   - [x] Committed `chore(pieces): Remove legacy start-gate piece type` `4ea81c5` + git note.
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-  - [ ] Automated: full suite green, coverage, Biome, build, bundle size reported.
-  - [ ] Manual: desktop + touch emulation. Tray shows 5 pieces + Drop point, no start-gate; a v1 save still loads; Drop point flow works; no regressions.
-  - [ ] Await explicit user confirmation; attach verification report via git notes; checkpoint recorded.
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `4ea81c5`
+  - [x] Automated: 28 files / 183 tests green; coverage on changed logic (registry 96%, playability 91.7%, graph 94.6%, health 88.5%, serialization 88.3% stmts, all >=80%); biome clean; build within budget (3,442.12 kB / 1,246.56 kB gzip).
+  - [x] Manual: desktop + touch emulation — tray shows 5 pieces + Drop point, no start-gate; Drop point flow, undo/redo, landing guide, track status work; a v1 Start-gate save migrates to a Drop point without error. User confirmed Yes.
+  - [x] Verification report attached via git notes to `4ea81c5`; checkpoint recorded.
