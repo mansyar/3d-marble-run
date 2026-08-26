@@ -97,11 +97,18 @@ a verification checkpoint before proceeding.
 
 ## Phase 3: Visible mistake recovery and tray clarity
 
-- [~] Task: Expose touch Undo and Redo
-  - [ ] Add visible controls with accessible labels and correct disabled states.
-  - [ ] Keep keyboard shortcuts and command-stack behavior unchanged.
-  - [ ] Refresh button state after placement, deletion, move, undo, redo, and
+- [x] Task: Expose touch Undo and Redo *(dab0360)*
+  - [x] Add visible controls with accessible labels and correct disabled states.
+  - [x] Keep keyboard shortcuts and command-stack behavior unchanged.
+  - [x] Refresh button state after placement, deletion, move, undo, redo, and
     cancellation.
+  - Notes: Added touch-sized Undo and Redo controls with disabled-state styling.
+    Actions use the existing physical-piece and Drop point command stacks, and
+    loaded graphs now seed custom placement ids to avoid autosave collisions.
+  - Verify: 25 Vitest files and 146 tests passed; Biome checked 80 files;
+    strict TypeScript passed. Browser checks at 390px verified initial disabled
+    state, physical placement recovery, Drop point move recovery, keyboard
+    Control+Z/Control+Y parity, and no application errors.
 
 - [ ] Task: Add recognizable tray shape previews
   - [ ] Add lightweight inline or procedural shape cues for every piece.
