@@ -10,4 +10,4 @@
 - [x] **Track: Tagged Release Pipeline & Application Versioning** *Link: [./archive/release_versioning_20260825/index.md](./archive/release_versioning_20260825/index.md)*
 - [x] **Track: Cut v0.2.0 Release** *Link: [./archive/release_v020_20260826/index.md](./archive/release_v020_20260826/index.md)*
 - [x] **Track: Procedural Audio** *Link: [./archive/procedural_audio_20260827/index.md](./archive/procedural_audio_20260827/index.md)*
-- [~] **Track: Sound Design Polish** *Link: [./tracks/sound_polish_20260827/index.md](./tracks/sound_polish_20260827/index.md)*
+- [x] **Track: Sound Design Polish** *Link: [./tracks/sound_polish_20260827/index.md](./tracks/sound_polish_20260827/index.md)*
