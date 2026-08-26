@@ -31,6 +31,8 @@ function createPointerSurface(): {
   dispatch: (type: string) => void;
 } {
   const listeners = new Map<string, (event: PointerLike) => void>();
+  // Partial DOM stub: only the pointer-event surface used by the controller is
+  // implemented, so full HTMLElement/DOMRect typing is impractical here.
   const domElement = {
     addEventListener(type: string, listener: (event: PointerLike) => void) {
       listeners.set(type, listener);
@@ -63,6 +65,8 @@ function withFakeWindow<T>(run: (dispatchKey: (event: Partial<KeyboardLike>) => 
   let keydownListener: ((event: KeyboardLike) => void) | undefined;
   globalObject.window = { addEventListener() {} };
   globalObject.window.addEventListener = (...args: unknown[]) => {
+    // The captured listener always originates from this fake's registration,
+    // so the KeyboardLike assertion cannot be violated at runtime.
     keydownListener = args[1] as (event: KeyboardLike) => void;
   };
   try {
