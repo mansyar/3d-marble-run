@@ -5,6 +5,8 @@ export interface FreeOrbitCameraOptions {
   domElement: HTMLElement;
   /** Prevents camera gestures while a piece placement/move owns the pointer. */
   isLocked?: () => boolean;
+  /** Camera target to restore when the user resets the view. */
+  initialTarget?: CameraTarget;
 }
 
 export type CameraMode = "free" | "chase";
@@ -36,8 +38,8 @@ function clamp(value: number, min: number, max: number): number {
 /** Adds bounded orbit, zoom, and pan gestures to the main Three.js camera. */
 export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbitCamera {
   const { camera, domElement, isLocked } = options;
-  const target = new Vector3(0, 0, 0);
-  const initialTarget = target.clone();
+  const target = new Vector3(...(options.initialTarget ?? [0, 0, 0]));
+  const resetTarget = target.clone();
   const spherical = new Spherical().setFromVector3(camera.position.clone().sub(target));
   spherical.radius = clamp(spherical.radius, MIN_RADIUS, MAX_RADIUS);
   spherical.phi = clamp(spherical.phi, MIN_POLAR_ANGLE, MAX_POLAR_ANGLE);
@@ -168,7 +170,7 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
   }
 
   function reset(): void {
-    target.copy(initialTarget);
+    target.copy(resetTarget);
     spherical.copy(initialSpherical);
     applyCamera();
   }

@@ -16,11 +16,16 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 const TABLE_COLOR = 0xc79a63;
 const SKY_COLOR = 0xfbf7ef;
 const MOBILE_VIEWPORT_QUERY = "(max-width: 768px)";
+const DESKTOP_CAMERA_POSITION = [6, 7, 9] as const;
+const DESKTOP_CAMERA_TARGET = [0, 0, 0] as const;
+const MOBILE_CAMERA_POSITION = [6.5, 8, 11.5] as const;
+const MOBILE_CAMERA_TARGET = [0.5, 1, 2.5] as const;
 
 export interface SceneHandle {
   scene: Scene;
   camera: PerspectiveCamera;
   renderer: WebGLRenderer;
+  initialCameraTarget: readonly [number, number, number];
 }
 
 /**
@@ -55,8 +60,14 @@ export function initScene(
     0.1,
     200,
   );
-  camera.position.set(6, 7, 9);
-  camera.lookAt(0, 0, 0);
+  const initialCameraPosition: readonly [number, number, number] = compactViewport
+    ? MOBILE_CAMERA_POSITION
+    : DESKTOP_CAMERA_POSITION;
+  const initialCameraTarget: readonly [number, number, number] = compactViewport
+    ? MOBILE_CAMERA_TARGET
+    : DESKTOP_CAMERA_TARGET;
+  camera.position.set(...initialCameraPosition);
+  camera.lookAt(...initialCameraTarget);
 
   // Bright, soft, even lighting: warm sky bounce plus one soft key light.
   const hemisphere = new HemisphereLight(0xffffff, 0xd8c3a5, 0.9);
@@ -98,5 +109,5 @@ export function initScene(
     renderer.render(scene, camera);
   });
 
-  return { scene, camera, renderer };
+  return { scene, camera, renderer, initialCameraTarget };
 }

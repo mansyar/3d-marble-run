@@ -395,6 +395,7 @@ cameraController = createFreeOrbitCamera({
   camera: handle.camera,
   domElement: handle.renderer.domElement,
   isLocked: () => placement.activeTypeId !== null || dropPointPlacement.active,
+  initialTarget: handle.initialCameraTarget,
 });
 
 function resetSimulationState(): void {
