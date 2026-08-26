@@ -1,7 +1,7 @@
 {
   "id": "start_gate_removal_ci_20260826",
   "type": "chore",
-  "status": "new",
+  "status": "archived",
   "branch": "chore/start-gate-removal-ci-gating",
   "createdAt": "2026-08-26T00:00:00.000Z",
   "updatedAt": "2026-08-26T00:00:00.000Z"
