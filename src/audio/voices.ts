@@ -72,17 +72,17 @@ export function detuneFrequency(freq: number, variation: number, random: number)
   return freq * (1 + variation * random);
 }
 
-/** The five-event sound family. */
+/** The five-event sound family — loudness-balanced so all post-master peaks sit inside ±3 dB. */
 export const VOICES: Record<string, VoiceSpec> = {
   snap: {
     tonal: [
-      { wave: "triangle", startFreq: 520, endFreq: 780, duration: 0.08, peak: 0.14, attack: 0.008 },
+      { wave: "triangle", startFreq: 520, endFreq: 780, duration: 0.08, peak: 0.19, attack: 0.008 },
       {
         wave: "triangle",
         startFreq: 1040,
         endFreq: 1170,
         duration: 0.08,
-        peak: 0.07,
+        peak: 0.095,
         attack: 0.008,
       },
     ],
@@ -90,33 +90,33 @@ export const VOICES: Record<string, VoiceSpec> = {
   },
   delete: {
     tonal: [
-      { wave: "sine", startFreq: 300, endFreq: 180, duration: 0.13, peak: 0.12, attack: 0.012 },
-      { wave: "sine", startFreq: 600, endFreq: 360, duration: 0.13, peak: 0.06, attack: 0.012 },
+      { wave: "sine", startFreq: 300, endFreq: 180, duration: 0.13, peak: 0.19, attack: 0.012 },
+      { wave: "sine", startFreq: 600, endFreq: 360, duration: 0.13, peak: 0.095, attack: 0.012 },
     ],
     pitchVariation: 0.05,
   },
   drop: {
     tonal: [
-      { wave: "sine", startFreq: 700, endFreq: 350, duration: 0.07, peak: 0.12, attack: 0.008 },
+      { wave: "sine", startFreq: 700, endFreq: 350, duration: 0.07, peak: 0.2, attack: 0.008 },
     ],
     noise: {
       mix: 0.5,
       filter: "bandpass",
       frequency: 1800,
       duration: 0.07,
-      peak: 0.1,
+      peak: 0.12,
       attack: 0.008,
     },
     pitchVariation: 0.05,
   },
   landing: {
-    tonal: [{ wave: "sine", startFreq: 150, endFreq: 75, duration: 0.1, peak: 0.16, attack: 0.01 }],
+    tonal: [{ wave: "sine", startFreq: 150, endFreq: 75, duration: 0.1, peak: 0.22, attack: 0.01 }],
     noise: {
       mix: 0.6,
       filter: "lowpass",
       frequency: 400,
       duration: 0.1,
-      peak: 0.12,
+      peak: 0.14,
       attack: 0.01,
     },
     pitchVariation: 0.05,
@@ -130,7 +130,7 @@ export const VOICES: Record<string, VoiceSpec> = {
         { semitones: 4, duration: 0.09 },
         { semitones: 7, duration: 0.09 },
       ],
-      peak: 0.4,
+      peak: 0.26,
     },
     pitchVariation: 0.05,
   },
