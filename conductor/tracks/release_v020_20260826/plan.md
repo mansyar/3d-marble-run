@@ -21,10 +21,13 @@ About-modal version from `package.json` — only a post-bump build can display
 
 ## Phase 2 · Version Bump & Release Build Smoke Test
 
-- [ ] Task: Cut version bump to `0.2.0`
-  - [ ] `pnpm version minor`; verify `package.json` = `0.2.0` and local tag
+- [x] Task: Cut version bump to `0.2.0` (0fd2632)
+  - [x] `pnpm version minor`; verify `package.json` = `0.2.0` and local tag
         `v0.2.0` created
-  - [ ] Keep tag unpushed until smoke passes
+  - [x] Keep tag unpushed until smoke passes
+  - Notes: `pnpm version minor` produced commit 0fd2632; pkg version 0.2.0;
+    local tag `v0.2.0` confirmed; `git ls-remote origin v0.2.0` empty →
+    unpushed as planned.
 - [ ] Task: Rebuild production bundle & recheck payload budget
   - [ ] `pnpm build`; assert ≤3,500 kB minified / ≤1,250 kB gzip; note deltas
         vs baseline
