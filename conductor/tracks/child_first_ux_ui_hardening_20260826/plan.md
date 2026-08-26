@@ -169,7 +169,7 @@ a verification checkpoint before proceeding.
     accessible names, reduced-motion animation suppression, and no favicon
     request; only the existing Three.js warning remained.
 
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
   - [ ] Run the full test suite, Biome, strict TypeScript, standard build,
     hosted-path build, and bundle-size check.
   - [ ] Manually verify 360px, 390px, tablet, desktop, mouse, touch, keyboard,
