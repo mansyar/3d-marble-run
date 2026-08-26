@@ -1,0 +1,7 @@
+Task: Establish pre-release baseline on master (Phase 1, Cut v0.2.0 Release)
+
+Summary: Verified release baseline. Clean working tree; local master strictly ahead of origin/master (ancestor check passed) carrying the four feature tracks. Gates: frozen install OK; CI=true pnpm vitest run --coverage -> 27 files / 156 tests passed, 90.37% statements coverage; CI=true pnpm biome check . initially failed on missing EOF newline in track metadata.json, fixed via biome --write and re-checked clean (85 files); pnpm build OK with baseline bundle 3,437.74 kB minified / 1,244.96 kB gzip - within budget (<=3,500 / <=1,250).
+
+Files: conductor/tracks/release_v020_20260826/metadata.json
+
+Why: Establish a verified green starting point before the version bump so any post-bump regression is attributable to the bump alone.
