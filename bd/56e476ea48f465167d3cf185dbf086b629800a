@@ -1,0 +1,1 @@
+Added non-blocking first-run coach marks for choosing, placing, and dropping. Progress is remembered locally, can be dismissed, advances for physical pieces and the Drop point, and uses pointer-events plus reduced-motion CSS so the canvas/tray remain usable. Browser checks passed at 390x844 and 1280x720 with no application errors.
