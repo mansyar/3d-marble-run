@@ -40,7 +40,8 @@ describe("voice spec module", () => {
       const spec = VOICES[id];
       if (id === "drop" || id === "landing") {
         expect(spec.noise).toBeDefined();
-        const noise = spec.noise!;
+        if (!spec.noise) throw new Error(`noise missing for ${id}`);
+        const noise = spec.noise;
         expect(noise.mix).toBeGreaterThan(0);
         expect(noise.mix).toBeLessThanOrEqual(1);
         expect(FILTERS).toContain(noise.filter);
@@ -60,7 +61,8 @@ describe("voice spec module", () => {
   it("gives goal a rising pentatonic three-note arpeggio under 400ms", () => {
     const goal = VOICES.goal;
     expect(goal.arpeggio).toBeDefined();
-    const arpeggio = goal.arpeggio!;
+    if (!goal.arpeggio) throw new Error("goal arpeggio missing");
+    const arpeggio = goal.arpeggio;
     const notes: GoalNote[] = arpeggio.notes;
     expect(notes.length).toBeGreaterThanOrEqual(3);
     let total = 0;

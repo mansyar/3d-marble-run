@@ -32,8 +32,8 @@ export function createWebAudioSynth(): SoundPlayer {
     return context;
   }
 
-  function track(node: ActiveNode, stopAt: number): void {
-    node.start(stopAt - 0.02);
+  function track(node: ActiveNode, startAt: number, stopAt: number): void {
+    node.start(startAt);
     node.stop(stopAt);
     active.push(node);
     node.addEventListener("ended", () => {
@@ -63,8 +63,9 @@ export function createWebAudioSynth(): SoundPlayer {
     gain.gain.exponentialRampToValueAtTime(0.0001, at + layer.duration);
 
     osc.connect(gain);
-    gain.connect(master as GainNode);
-    track(osc, at + layer.duration + 0.02);
+    if (!master) return;
+    gain.connect(master);
+    track(osc, at, at + layer.duration + 0.02);
   }
 
   function scheduleNoise(
@@ -74,8 +75,9 @@ export function createWebAudioSynth(): SoundPlayer {
     variation: number,
     random: number,
   ): void {
+    if (!noiseBuffer) return;
     const source = ctx.createBufferSource();
-    source.buffer = noiseBuffer as AudioBuffer;
+    source.buffer = noiseBuffer;
     const filter = ctx.createBiquadFilter();
     filter.type = layer.filter;
     filter.frequency.value = detuneFrequency(layer.frequency, variation, random);
@@ -87,8 +89,9 @@ export function createWebAudioSynth(): SoundPlayer {
 
     source.connect(filter);
     filter.connect(gain);
-    gain.connect(master as GainNode);
-    track(source, at + layer.duration + 0.02);
+    if (!master) return;
+    gain.connect(master);
+    track(source, at, at + layer.duration + 0.02);
   }
 
   function scheduleArpeggio(
@@ -109,8 +112,9 @@ export function createWebAudioSynth(): SoundPlayer {
       gain.gain.exponentialRampToValueAtTime(arpeggio.peak, cursor + 0.008);
       gain.gain.exponentialRampToValueAtTime(0.0001, cursor + note.duration);
       osc.connect(gain);
-      gain.connect(master as GainNode);
-      track(osc, cursor + note.duration + 0.02);
+      if (!master) return;
+      gain.connect(master);
+      track(osc, cursor, cursor + note.duration + 0.02);
       cursor += note.duration;
     }
   }
