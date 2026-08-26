@@ -2,18 +2,19 @@
 
 **Track ID**: `sound_polish_20260827` · Branch: `feat/sound-polish`
 
-## Phase 1 · Voice Spec Module & Synth Renderer (logic)
+## Phase 1 · Voice Spec Module & Synth Renderer (logic) `[checkpoint: c9e1476]`
 
-- [ ] Task: Write failing tests for the voice spec module
-  - [ ] `tests/voices.test.ts`: all 5 events present; tonal layer fields sane (freqs 40–8,000 Hz, durations 20–500ms, peaks in (0, 0.35]); noise layer present only on drop/landing (`noiseMix > 0`), absent elsewhere; goal = 3 ascending notes from the pentatonic offset set {0, +2, +4, +7, +9} semitones; envelope attacks ≥ 8ms everywhere; `pitchVariation ≤ 0.05` per event
-- [ ] Task: Implement `src/audio/voices.ts` until tests pass
-  - [ ] Pure data module, named exports, JSDoc; `VoiceSpec`/`TonalLayer`/`NoiseLayer`/`GoalArpeggio` types; exports `VOICES` record + `detuneFrequency(freq, variation, random)` helper
-- [ ] Task: Refactor `src/audio/synth.ts` to render the voice specs
-  - [ ] Dual-oscillator rendering where specced; shared lazily-built 1s noise AudioBuffer + per-event BiquadFilter for drop/landing; envelope scheduling from spec; lazy AudioContext/resume/stop() unchanged *(manual verification — glue)*
-- [ ] Task: Cover changed logic and commit Phase 1
-  - [ ] Coverage ≥80% on changed logic; `biome check --write`; full suite green
-  - [ ] Commit `feat(audio): Redesign procedural voice family` + git note
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Write failing tests for the voice spec module `c9e1476`
+  - [x] `tests/voices.test.ts`: 11 cases — all 5 events present; tonal layer fields sane (freqs 40–8,000 Hz, durations 20–500ms, peaks in (0, 0.35]); noise layer present only on drop/landing (`mix > 0`), absent elsewhere; goal = 3 ascending notes from the pentatonic offset set {0, +2, +4, +7, +9} semitones; envelope attacks ≥ 8ms everywhere; `pitchVariation ≤ 0.05` per event; `detuneFrequency` suite (base, ±bounds, in-band, deterministic, monotonic, degenerate)
+- [x] Task: Implement `src/audio/voices.ts` until tests pass `c9e1476`
+  - [x] Pure data module, named exports, JSDoc; `VoiceSpec`/`TonalLayer`/`NoiseLayer`/`Arpeggio` types; exports `VOICES` record + `detuneFrequency(freq, variation, random)` helper; `MASTER_GAIN` moved here; new family: snap 2×triangle, delete 2×sine descender, drop sine+noise bandpass 1800Hz, landing sine+noise lowpass 400Hz, goal = 3-note C5 pentatonic arpeggio (C-E-G, 0.27s)
+- [x] Task: Refactor `src/audio/synth.ts` to render the voice specs `c9e1476`
+  - [x] Dual-oscillator rendering where specced; shared lazily-built 1s noise AudioBuffer + per-event BiquadFilter for drop/landing; arpeggio sequential note scheduling (root × 2^(semitones/12)); per-play uniform detune applied to all event frequencies; envelope scheduling from spec (attack/duration); lazy AudioContext/resume/stop() unchanged *(manual verification — glue)*
+- [x] Task: Cover changed logic and commit Phase 1 `c9e1476`
+  - [x] Coverage 100% stmts/branch/funcs/lines on voices.ts (changed logic); biome check --write clean; full suite 31 files / 191 tests green
+  - [x] Commit `feat(audio): Redesign procedural voice family` `c9e1476` + git note
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - [x] User confirmed full-suite green + no regression (Phase 1 renders nothing until wired); checkpoint recorded
 
 ## Phase 2 · Pitch Variation & Loudness Normalization (logic)
 
