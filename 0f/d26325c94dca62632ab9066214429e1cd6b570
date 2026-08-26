@@ -1,0 +1,5 @@
+Task: Cut version bump to 0.2.0 (Phase 2, Cut v0.2.0 Release)
+
+Summary: Ran pnpm version minor -> package.json 0.1.1 -> 0.2.0; pnpm created commit '0.2.0' and local lightweight tag v0.2.0 per documented maintainer workflow.
+Verified: package.json = 0.2.0; local tag v0.2.0 present; ls-remote origin shows no v0.2.0 - tag intentionally unpushed until smoke tests pass.
+Why: Release pipeline derives About-modal version and release validation from package.json/tag match (tag must equal v\).
