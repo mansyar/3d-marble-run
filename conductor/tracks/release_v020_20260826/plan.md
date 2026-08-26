@@ -36,7 +36,7 @@ About-modal version from `package.json` — only a post-bump build can display
     `index-MBj7VghY.js` carries baked-in 0.2.0. Headroom 62.3 / 5.0 kB.
     No code change; note anchored to preceding plan commit.
 - [x] Task: Desktop feature-journey smoke test (1280×720, production preview)
-  - [ ] Piece place/move/delete + connector snapping · Drop point tool +
+  - [x] Piece place/move/delete + connector snapping · Drop point tool +
         landing guide · mixed-edit undo/redo chronology & redo invalidation ·
         autosave + named slot reload · goal counter/timer · orbit/chase cams ·
         About modal shows v0.2.0
@@ -70,3 +70,11 @@ About-modal version from `package.json` — only a post-bump build can display
     About modal v0.2.0; report on 55fee06. README runbook re-checked against
     actual flow — accurate, no drift (push done as two commands vs documented
     `--follow-tags` one-liner; functionally equivalent).
+
+## Phase: Review Fixes
+
+- [x] Task: Apply review suggestions (4d1934e)
+  - Notes: added `.github/release.yml` changelog-categories config to improve
+    future auto-generated release notes (documented PR-less limitation). Also
+    fixed pre-existing desktop-smoke sub-item checkbox in plan. Review verdict:
+    no code issues; suite 156/156 green.
