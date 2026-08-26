@@ -1,0 +1,8 @@
+{
+  "id": "sound_polish_20260827",
+  "type": "FEATURE",
+  "status": "new",
+  "created": "2026-08-27",
+  "updated": "2026-08-27",
+  "description": "Redesign the five procedural Web Audio SFX into a cohesive tonal+noise sound family (3-note pentatonic goal arpeggio, subtle pitch variation, normalized kid-safe loudness) via a pure unit-tested voice spec module."
+}
