@@ -169,14 +169,30 @@ a verification checkpoint before proceeding.
     accessible names, reduced-motion animation suppression, and no favicon
     request; only the existing Three.js warning remained.
 
-- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-  - [ ] Run the full test suite, Biome, strict TypeScript, standard build,
-    hosted-path build, and bundle-size check.
-  - [ ] Manually verify 360px, 390px, tablet, desktop, mouse, touch, keyboard,
-    screen-reader-sized layouts, reduced motion, and console output.
-  - [ ] Complete the workflow security review for DOM and input changes.
-  - [ ] Record the final checkpoint SHA and Git note, obtain user confirmation,
+- [x] Task: Phase Verification & Checkpoint *(e6ca2ec)* (Refer to workflow.md)
+  - [x] Run the full test suite, Biome, strict TypeScript, standard build,
+    hosted-path build, and bundle-size check. `$env:CI="true"; pnpm vitest run
+    && pnpm biome check . && pnpm exec tsc --noEmit && pnpm build` passed with
+    25 files and 146 tests, Biome on 80 files, strict TypeScript, and a
+    3,437.85 kB JS / 1,244.99 kB gzip build. `pnpm exec vite build
+    --base="/marblescape/"` also passed with the same bundle size; both stayed
+    within the documented budgets.
+  - [x] Manually verify 360px, 390px, tablet, desktop, mouse, touch, keyboard,
+    screen-reader-sized layouts, reduced motion, and console output. Checks
+    passed at 360x800, 390x844, 768x1024, and 1280x720 with no horizontal
+    overflow or HUD overlap. iPhone 15 touch checks toggled Auto drop and
+    selected a tray piece; keyboard focus reached the coach dismiss control
+    with `:focus-visible`, and live regions remained polite. Reduced-motion
+    computed animations were `none`. Browser runs had no application errors;
+    only known Three.js precision/shadow warnings remained.
+  - [x] Complete the workflow security review for DOM and input changes. The
+    changes add only static text, ARIA attributes, CSS, and an inline SVG data
+    favicon; there are no secrets, user-controlled HTML, URL handling, or new
+    network dependencies.
+  - [x] Record the final checkpoint SHA and Git note, obtain user confirmation,
     and update the plan.
+  - Notes: Final checkpoint SHA is `e6ca2ec`; the verification report was
+    appended to its Git note, and the user confirmed completion on 2026-08-26.
 
 ## Constraints
 
