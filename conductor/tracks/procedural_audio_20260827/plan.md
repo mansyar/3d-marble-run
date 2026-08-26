@@ -25,7 +25,7 @@
 - [ ] Run full suite once; propose manual verification (dev server, first-gesture sound, toggle state).
 - [ ] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
 
-## Phase 2 · Marble Impact Detector (logic)
+## Phase 2 · Marble Impact Detector (logic) `[checkpoint: b7b662d]`
 
 ### [x] Task: Write failing tests for `src/sim/marbleImpact.ts` `b7b662d`
 - 8 cases: falling→landed transition, never-fell stays silent, independent marbles, no bounce re-fire (terminal landed state), re-track after remove(), reset(), empty samples, threshold ordering. Confirmed RED before implementation.
@@ -43,16 +43,13 @@
 
 ## Phase 3 · HUD Sound Toggle (UI glue)
 
-### [ ] Task: Implement `src/ui/soundToggle.ts`
-- [ ] Compact speaker "Sound" button: ≥44px target, `aria-pressed`, accessible label, consistent HUD styling.
-- [ ] Wires to `preferences` (initial state + persistence) and `engine.setMuted`.
-- [ ] Render-only UI per workflow (no unit-test requirement; preference logic already covered).
+### [x] Task: Implement `src/ui/soundToggle.ts` `51baec2`
+- `createSoundToggle(root, {preferences, engine})`: `button.sound-toggle`, aria-label, textContent "Sound: On"/"Sound: Off", aria-pressed mirrors unmuted; click persists + applies mute. Rendering glue (no unit test per workflow).
+- `main.ts`: creates `soundPreferences` + `sound = createAudioEngine(createWebAudioSynth())` after topHud; syncs initial engine mute from stored preference; appends toggle to topHud.
 
-### [ ] Task: Add toggle styling and verify layout
-- [ ] CSS consistent with existing HUD at phone width/main.ts `topHud`; no overlap or horizontal scroll.
-- [ ] Manual: toggle reachable without keyboard; state persists across reload.
-- [ ] Commit: `feat(audio): Add persisted HUD sound toggle`.
-- [ ] Attach `git notes add` summary; update `plan.md` with commit hash + notes.
+### [x] Task: Add toggle styling and verify layout `51baec2`
+- `style.css`: `#top-hud` desktop grid → `minmax(0, 1fr) auto auto` (3rd column for the toggle); `.sound-toggle` shares HUD button styles (44px min-height, borders, active/focus-visible); ≤900px single-column stack with `justify-self: start`.
+- Quality gate: full suite 180/180, Biome clean, `pnpm build` OK — payload 3,440.09 kB / 1,245.86 kB gzip (within budget).
 
 ### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 - [ ] Full suite once; desktop + touch manual checks.
