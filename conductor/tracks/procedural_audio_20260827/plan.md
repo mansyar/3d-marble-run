@@ -41,7 +41,7 @@
 - [ ] Run full suite once; manual check that each spawned marble lands at most once.
 - [ ] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
 
-## Phase 3 · HUD Sound Toggle (UI glue)
+## Phase 3 · HUD Sound Toggle (UI glue) `[checkpoint: 51baec2]`
 
 ### [x] Task: Implement `src/ui/soundToggle.ts` `51baec2`
 - `createSoundToggle(root, {preferences, engine})`: `button.sound-toggle`, aria-label, textContent "Sound: On"/"Sound: Off", aria-pressed mirrors unmuted; click persists + applies mute. Rendering glue (no unit test per workflow).
@@ -51,9 +51,8 @@
 - `style.css`: `#top-hud` desktop grid → `minmax(0, 1fr) auto auto` (3rd column for the toggle); `.sound-toggle` shares HUD button styles (44px min-height, borders, active/focus-visible); ≤900px single-column stack with `justify-self: start`.
 - Quality gate: full suite 180/180, Biome clean, `pnpm build` OK — payload 3,440.09 kB / 1,245.86 kB gzip (within budget).
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-- [ ] Full suite once; desktop + touch manual checks.
-- [ ] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `51baec2`
+- Full suite 180/180; manual verification (toggle layout desktop + touch, persistence across reload, no overlap at 360px) confirmed by user; verification note appended to `51baec2`.
 
 ## Phase 4 · Event Wiring (integration glue)
 
