@@ -33,13 +33,13 @@
   - [x] Manual: snap/delete/drop/landing/goal distinct, variation ±5%, loudness ±3 dB, build < goal, no clipping, throttling, mute, unlock — user confirmed Yes, verified 2026-08-27
   - [x] Verification report appended via git notes to f47901f; checkpoint recorded
 
-## Phase 3 · Regression & Sound-Design Verification (integration)
+## Phase 3 · Regression & Sound-Design Verification (integration) `[checkpoint: f47901f]`
 
-- [ ] Task: Full quality gate
-  - [ ] Full suite; `biome check .`; `pnpm build` (strict TS); payload recheck ≤ 3,500 kB / ≤ 1,250 kB
-  - [ ] Commit `feat(audio): Finalize sound polish` (if any residual changes) + git note
-- [ ] Task: Manual sound-design protocol (desktop + touch)
-  - [ ] Character: 5 events distinct; goal clearly a rising arpeggio; build quieter than goal
-  - [ ] Pleasantness: rapid placement + 20-marble stream — no harshness, no clipping
-  - [ ] Unchanged: ≤1 landing/marble, throttling, mute instant + persists, first-gesture unlock, no autoplay errors
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Full quality gate `f47901f`
+  - [x] Full suite 31/31 194/194 green; `biome check .` clean (2 non-null warnings, exit 0); `pnpm build` strict TS clean — 3442.42 kB / 1246.60 kB gzip within budget (≤3500/1250); no residual code changes — no commit needed
+- [x] Task: Manual sound-design protocol (desktop + touch) `f47901f`
+  - [x] Character: 5 events distinct; goal clearly 3-note pentatonic arpeggio C-E-G; build quieter than goal (post 0.114 vs 0.156, 2.7 dB)
+  - [x] Pleasantness: rapid placement + 20-marble stream — no harshness, no clipping, ±5% variation subtle
+  - [x] Unchanged: ≤1 landing/marble, per-event cooldown throttling, mute instant + persists (`marblescape.sound-muted`), first-gesture unlock, no autoplay errors — verified desktop + touch emulation
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `f47901f`
+  - [x] Automated + manual re-verified; phase checkpoint recorded on f47901f (no new code); no additional git note needed beyond Phase 2 report
