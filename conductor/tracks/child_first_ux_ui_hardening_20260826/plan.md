@@ -155,7 +155,7 @@ a verification checkpoint before proceeding.
     movement and resize events are not overridden. Playwright checks at 390px
     and 1280px confirmed the route/goal visibility and preserved desktop layout.
 
-- [ ] Task: Perform child-facing copy and accessibility polish
+- [~] Task: Perform child-facing copy and accessibility polish
   - [ ] Review primary labels and guidance for short, direct, child-friendly
     wording.
   - [ ] Verify focus order, live status announcements, contrast, touch targets,
