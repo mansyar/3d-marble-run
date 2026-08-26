@@ -7,11 +7,16 @@ About-modal version from `package.json` — only a post-bump build can display
 
 ## Phase 1 · Baseline Verification
 
-- [ ] Task: Establish pre-release baseline on `master`
-  - [ ] Confirm clean working tree and parity with `origin/master`
-  - [ ] Run frozen install, `CI=true pnpm vitest run --coverage`,
+- [x] Task: Establish pre-release baseline on `master` (59de226)
+  - [x] Confirm clean working tree and parity with `origin/master`
+  - [x] Run frozen install, `CI=true pnpm vitest run --coverage`,
         `CI=true pnpm biome check .`
-  - [ ] Record baseline bundle sizes from `pnpm build`
+  - [x] Record baseline bundle sizes from `pnpm build`
+  - Notes: tree clean; local master strictly ahead of origin/master (ancestor
+    check OK). Gates: install frozen OK; vitest 156/156 passed, 90.37% stmts;
+    biome initially failed on missing EOF newline in track metadata.json —
+    fixed via `biome --write`, re-check clean (85 files). Baseline bundle:
+    **3,437.74 kB minified / 1,244.96 kB gzip** (budget ≤3,500 / ≤1,250).
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2 · Version Bump & Release Build Smoke Test
