@@ -198,9 +198,9 @@ const handle = initScene(app, (elapsedMs) => {
   for (const [id, { body }] of liveMarbles) {
     velocitySamples.push({ id, vy: body.linvel().y });
   }
-  for (const _landedId of marbleImpacts.updateVelocities(velocitySamples)) {
+  marbleImpacts.updateVelocities(velocitySamples).forEach(() => {
     sound.play("landing");
-  }
+  });
   cleanupOutOfBoundsMarbles();
   detectGoalEntries();
   simulationControls.setTimerMs(spawner.state().timerMs);
