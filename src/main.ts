@@ -21,6 +21,7 @@ import {
 } from "./sim/dropPointSpawner";
 import { createGoalTracker, type MarblePosition } from "./sim/goals";
 import type { LandingResult } from "./sim/landing";
+import { createMarbleImpactTracker, type MarbleVelocitySample } from "./sim/marbleImpact";
 import { createPhysics } from "./sim/physics";
 import { findOutOfBoundsMarbleIds } from "./sim/playability";
 import { createSpawner, type Spawner } from "./sim/spawner";
@@ -79,6 +80,7 @@ interface LiveMarble {
 }
 
 const liveMarbles = new Map<number, LiveMarble>();
+const marbleImpacts = createMarbleImpactTracker();
 
 function spawnMarble(marble: PositionedDropPointMarbleSpawn): void {
   const mesh = createMarbleMesh();
@@ -95,9 +97,11 @@ function spawnMarble(marble: PositionedDropPointMarbleSpawn): void {
     body,
     previousPosition: [...marble.position],
   });
+  sound.play("drop");
 }
 
 function removeMarble(id: number): void {
+  marbleImpacts.remove(id);
   const live = liveMarbles.get(id);
   if (!live) return;
   handle.scene.remove(live.mesh);
@@ -163,7 +167,10 @@ function detectGoalEntries(): void {
   for (const entry of goalTracker.update(graph.pieces.values(), currentMarblePositions())) {
     if (spawner.remove(entry.marbleId)) removeMarble(entry.marbleId);
     simulationControls.setGoalCount(goalTracker.count());
-    if (entry.celebration === "pop") simulationControls.showGoalPop();
+    if (entry.celebration === "pop") {
+      sound.play("goal");
+      simulationControls.showGoalPop();
+    }
   }
 }
 
@@ -187,6 +194,13 @@ const handle = initScene(app, (elapsedMs) => {
     world.step();
   }
   syncMarbles(alpha);
+  const velocitySamples: MarbleVelocitySample[] = [];
+  for (const [id, { body }] of liveMarbles) {
+    velocitySamples.push({ id, vy: body.linvel().y });
+  }
+  for (const _landedId of marbleImpacts.updateVelocities(velocitySamples)) {
+    sound.play("landing");
+  }
   cleanupOutOfBoundsMarbles();
   detectGoalEntries();
   simulationControls.setTimerMs(spawner.state().timerMs);
@@ -279,6 +293,10 @@ const sound = createAudioEngine(createWebAudioSynth());
 sound.setMuted(soundPreferences.isMuted());
 createSoundToggle(topHud, { preferences: soundPreferences, engine: sound });
 
+const unlockAudio = (): void => sound.unlock();
+document.addEventListener("pointerdown", unlockAudio, { once: true });
+document.addEventListener("keydown", unlockAudio, { once: true });
+
 let tray!: ReturnType<typeof createTray>;
 let dropPointModeActive = false;
 let refreshEditHistory: () => void = () => {};
@@ -305,7 +323,11 @@ const placement = createPlacementController({
     }),
   sync: syncScene,
   onChange: onEditorChange,
-  onPlace: () => coachMarks.complete("place-piece"),
+  onPlace: () => {
+    coachMarks.complete("place-piece");
+    sound.play("snap");
+  },
+  onDelete: () => sound.play("delete"),
   isEnabled: () => !dropPointModeActive,
   nextId: () => `piece-${++customIdCounter}`,
   onEnd: () => {
@@ -394,6 +416,7 @@ function resetSimulationState(): void {
   const { removedIds } = spawner.reset();
   for (const id of removedIds) removeMarble(id);
   goalTracker.reset();
+  marbleImpacts.reset();
   simulationControls.setGoalCount(0);
   simulationControls.setTimerMs(0);
   simulationControls.setStreamEnabled(false);
