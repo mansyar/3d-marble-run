@@ -27,24 +27,15 @@
 
 ## Phase 2 · Marble Impact Detector (logic)
 
-### [ ] Task: Write failing tests for `src/sim/marbleImpact.ts`
-- [ ] Test airborne→landed transition: strong negative `vy` then deceleration to ~0/positive emits one landing.
-- [ ] Test single-fire: repeated updates with the same marble id never emit twice.
-- [ ] Test multiple marbles tracked independently.
-- [ ] Test removal/reset drops tracking (no stale ids).
-- [ ] Run: `CI=true pnpm vitest run tests/marbleImpact.test.ts` — confirm RED.
+### [x] Task: Write failing tests for `src/sim/marbleImpact.ts` `b7b662d`
+- 8 cases: falling→landed transition, never-fell stays silent, independent marbles, no bounce re-fire (terminal landed state), re-track after remove(), reset(), empty samples, threshold ordering. Confirmed RED before implementation.
 
-### [ ] Task: Implement `src/sim/marbleImpact.ts`
-- [ ] Per-marble first-landing state machine driven by velocity samples (pure logic, no Rapier/Three).
-- [ ] Threshold constants exported; emit new landed ids once.
-- [ ] Document API with JSDoc.
-- [ ] Run: `CI=true pnpm vitest run tests/marbleImpact.test.ts` — GREEN.
+### [x] Task: Implement `src/sim/marbleImpact.ts` `b7b662d`
+- Pure velocity-sample state machine with terminal landed state; threshold constants exported. GREEN 8/8; coverage 100%.
 
-### [ ] Task: Cover changed logic and commit Phase 2
-- [ ] Coverage: `CI=true pnpm vitest run --coverage` scoped to `src/sim/marbleImpact.ts` — ≥80%.
-- [ ] `CI=true pnpm biome check .` — clean.
-- [ ] Commit: `feat(audio): Add per-marble first-landing detector`.
-- [ ] Attach `git notes add` summary; update `plan.md` with commit hash + notes.
+### [x] Task: Cover changed logic and commit Phase 2 `b7b662d`
+- Coverage 100% stmts/branch/funcs/lines; Biome clean.
+- Commit `feat(audio): Add per-marble first-landing detector`; git note attached.
 
 ### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 - [ ] Run full suite once; manual check that each spawned marble lands at most once.
