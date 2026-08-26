@@ -52,7 +52,7 @@ One commit per task.
     targeted suite is intentionally red until the controllers accept the shared
     `history` dependency; Biome passes.
 
-- [ ] Task: Route placement, Drop point editing, and main orchestration through
+- [~] Task: Route placement, Drop point editing, and main orchestration through
   shared history
   - [ ] Replace the separate piece and Drop point stacks with the shared history
     service.
