@@ -144,11 +144,16 @@ a verification checkpoint before proceeding.
 
 ## Phase 4: Mobile camera framing and integrated polish
 
-- [~] Task: Improve initial mobile camera framing
-  - [ ] Adjust initial framing so the starter route and goal cup are visible in
+- [x] Task: Improve initial mobile camera framing *(1d270b4)*
+  - [x] Adjust initial framing so the starter route and goal cup are visible in
     portrait mobile views.
-  - [ ] Avoid overriding user-controlled camera movement after initialization.
-  - [ ] Preserve free and chase camera behavior and desktop composition.
+  - [x] Avoid overriding user-controlled camera movement after initialization.
+  - [x] Preserve free and chase camera behavior and desktop composition.
+  - Notes: Compact viewports use a centered target and wider initial position;
+    the target is passed into the free-orbit controller for consistent reset
+    behavior. The initial framing is selected once, so later user camera
+    movement and resize events are not overridden. Playwright checks at 390px
+    and 1280px confirmed the route/goal visibility and preserved desktop layout.
 
 - [ ] Task: Perform child-facing copy and accessibility polish
   - [ ] Review primary labels and guidance for short, direct, child-friendly
