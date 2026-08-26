@@ -1,7 +1,7 @@
 {
   "id": "unified_edit_history_20260826",
   "type": "BUG_FIX",
-  "status": "new",
+  "status": "completed",
   "created": "2026-08-26",
   "updated": "2026-08-26",
   "description": "Unify chronological Undo/Redo history across physical pieces and the Drop point"
