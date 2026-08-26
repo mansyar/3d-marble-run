@@ -65,12 +65,20 @@ a verification checkpoint before proceeding.
     unavailable.
   - Verify: Focused Vitest tests (4), strict TypeScript, and Biome passed.
 
-- [~] Task: Render non-blocking first-run coach marks
-  - [ ] Show short hints for selecting a piece, placing it, and dropping a
+- [x] Task: Render non-blocking first-run coach marks *(bd56e47)*
+  - [x] Show short hints for selecting a piece, placing it, and dropping a
     marble.
-  - [ ] Allow dismissal at any time without blocking canvas or tray interaction.
-  - [ ] Hide or advance hints when the corresponding action is completed.
-  - [ ] Respect reduced-motion preferences and keep copy child-friendly.
+  - [x] Allow dismissal at any time without blocking canvas or tray interaction.
+  - [x] Hide or advance hints when the corresponding action is completed.
+  - [x] Respect reduced-motion preferences and keep copy child-friendly.
+  - Notes: Added a small first-run Build tips card with local dismissal and
+    ordered progression for physical pieces and the Drop point. The card is
+    pointer-transparent except for its 40px dismiss control and sits below the
+    stacked mobile HUD.
+  - Verify: Coach-mark state tests (4), strict TypeScript, and Biome passed;
+    browser checks passed at 390px and 1280px, including progression,
+    dismissal persistence, no horizontal overflow, no application errors, and
+    reduced-motion animation disabled.
 
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
   - [ ] Run the coach-mark tests plus the full required automated checks.
