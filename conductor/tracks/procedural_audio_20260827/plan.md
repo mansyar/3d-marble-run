@@ -54,7 +54,7 @@
 ### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `51baec2`
 - Full suite 180/180; manual verification (toggle layout desktop + touch, persistence across reload, no overlap at 360px) confirmed by user; verification note appended to `51baec2`.
 
-## Phase 4 · Event Wiring (integration glue)
+## Phase 4 · Event Wiring (integration glue) `[checkpoint: b0db34d]`
 
 ### [x] Task: Wire `snap` and `delete` sounds `b0db34d`
 - `placement.ts`: added `onDelete` to `PlacementDeps`, fired in `deleteActive()`; `main.ts` plays `snap` from `onPlace` (new place + move commit) and `delete` from the new `onDelete`. Undo/redo and Drop point actions stay silent.
@@ -68,6 +68,5 @@
 ### [x] Task: Final quality gate and Phase 4 completion `b0db34d`
 - Full suite 180/180; Biome clean; `pnpm build` (strict TS) OK — payload 3,440.71 kB min / 1,246.10 kB gzip (within 3,500/1,250 budget, rechecked).
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-- [ ] Full manual protocol: desktop (1280×720) + touch (~393×659) — hear every event, verify throttle/quietness, toggle persist/restore, no autoplay errors, bundle within budget.
-- [ ] Await explicit user confirmation; record final checkpoint SHA in `plan.md`.
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `b0db34d`
+- Full manual protocol passed (user confirmed): first-gesture unlock w/o autoplay errors, snap/delete/drop/landing/goal all audible, undo/redo + Drop point silent, throttled stream stays pleasant, ≤1 landing per marble, mute silences + persists + restores, mobile HUD overlap-free. Verification note appended to `b0db34d`.
