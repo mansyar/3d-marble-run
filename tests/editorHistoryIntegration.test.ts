@@ -12,6 +12,14 @@ interface PointerLike {
   clientY: number;
 }
 
+interface KeyboardLike {
+  key: string;
+  ctrlKey: boolean;
+  metaKey: boolean;
+  shiftKey: boolean;
+  preventDefault: () => void;
+}
+
 interface GlobalWindowHolder {
   window?: {
     addEventListener: (...args: unknown[]) => void;
@@ -49,12 +57,25 @@ function createCamera(): PerspectiveCamera {
   return camera;
 }
 
-function withFakeWindow<T>(run: () => T): T {
+function withFakeWindow<T>(run: (dispatchKey: (event: Partial<KeyboardLike>) => void) => T): T {
   const globalObject = globalThis as unknown as GlobalWindowHolder;
   const previousWindow = globalObject.window;
+  let keydownListener: ((event: KeyboardLike) => void) | undefined;
   globalObject.window = { addEventListener() {} };
+  globalObject.window.addEventListener = (...args: unknown[]) => {
+    keydownListener = args[1] as (event: KeyboardLike) => void;
+  };
   try {
-    return run();
+    return run((event) => {
+      keydownListener?.({
+        key: "",
+        ctrlKey: false,
+        metaKey: false,
+        shiftKey: false,
+        preventDefault: () => {},
+        ...event,
+      });
+    });
   } finally {
     globalObject.window = previousWindow;
   }
@@ -63,6 +84,7 @@ function withFakeWindow<T>(run: () => T): T {
 function createDropPointEditorController(
   history: ReturnType<typeof createEditorHistory>,
   state = createDropPointState(),
+  sync = () => {},
 ) {
   const surface = createPointerSurface();
   const controller = createDropPointController({
@@ -70,6 +92,7 @@ function createDropPointEditorController(
     domElement: surface.domElement,
     state,
     history,
+    sync,
     onChange: () => {},
   });
   return { controller, dispatch: surface.dispatch, state };
@@ -173,6 +196,58 @@ describe("integrated editor history", () => {
       expect(state.point).toBeNull();
       expect(history.canUndo()).toBe(false);
       expect(history.canRedo()).toBe(false);
+    });
+  });
+
+  it("synchronizes the scene when controller history changes graph state", () => {
+    withFakeWindow(() => {
+      const graph = createTrackGraph();
+      const history = createEditorHistory();
+      history.execute(
+        graph,
+        new PlaceCommand("piece-1", "straight", {
+          position: [0, 0, 0],
+          yawDeg: 0,
+        }),
+      );
+      let syncCount = 0;
+      const { controller } = createDropPointEditorController(history, undefined, () => {
+        syncCount += 1;
+      });
+
+      expect(controller.undo()).toBe(true);
+      expect(getPiece(graph, "piece-1")).toBeUndefined();
+      expect(syncCount).toBe(1);
+      expect(controller.redo()).toBe(true);
+      expect(getPiece(graph, "piece-1")).toBeDefined();
+      expect(syncCount).toBe(2);
+    });
+  });
+
+  it("routes keyboard Undo and Redo through shared history", () => {
+    withFakeWindow((dispatchKey) => {
+      const graph = createTrackGraph();
+      const history = createEditorHistory();
+      history.execute(
+        graph,
+        new PlaceCommand("piece-1", "straight", {
+          position: [0, 0, 0],
+          yawDeg: 0,
+        }),
+      );
+      let syncCount = 0;
+      createDropPointEditorController(history, undefined, () => {
+        syncCount += 1;
+      });
+
+      dispatchKey({ key: "z", ctrlKey: true });
+      expect(getPiece(graph, "piece-1")).toBeUndefined();
+      dispatchKey({ key: "z", ctrlKey: true, shiftKey: true });
+      expect(getPiece(graph, "piece-1")).toBeDefined();
+      dispatchKey({ key: "z", ctrlKey: true });
+      dispatchKey({ key: "y", ctrlKey: true });
+      expect(getPiece(graph, "piece-1")).toBeDefined();
+      expect(syncCount).toBe(4);
     });
   });
 });
