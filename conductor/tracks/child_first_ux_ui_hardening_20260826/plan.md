@@ -97,7 +97,7 @@ a verification checkpoint before proceeding.
 
 ## Phase 3: Visible mistake recovery and tray clarity
 
-- [ ] Task: Expose touch Undo and Redo
+- [~] Task: Expose touch Undo and Redo
   - [ ] Add visible controls with accessible labels and correct disabled states.
   - [ ] Keep keyboard shortcuts and command-stack behavior unchanged.
   - [ ] Refresh button state after placement, deletion, move, undo, redo, and
