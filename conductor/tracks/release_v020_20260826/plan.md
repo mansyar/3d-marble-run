@@ -19,7 +19,7 @@ About-modal version from `package.json` — only a post-bump build can display
     **3,437.74 kB minified / 1,244.96 kB gzip** (budget ≤3,500 / ≤1,250).
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
-## Phase 2 · Version Bump & Release Build Smoke Test
+## Phase 2 · Version Bump & Release Build Smoke Test [checkpoint: 0fd2632]
 
 - [x] Task: Cut version bump to `0.2.0` (0fd2632)
   - [x] `pnpm version minor`; verify `package.json` = `0.2.0` and local tag
@@ -44,7 +44,7 @@ About-modal version from `package.json` — only a post-bump build can display
   - [x] Same core journeys; ≥44px targets; no page scroll or console errors
   - Notes: PASSED per user confirmation — core journeys OK, targets ≥44px,
     no drag-scroll, console clean. Shared note anchor c8f6691.
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 3 · Release Tag, Pipeline & Live Verification
 
