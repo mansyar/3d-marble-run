@@ -16,7 +16,7 @@ One commit per task.
     point state fixtures. The targeted Vitest run is intentionally red until
     `src/core/editorHistory.ts` is implemented; targeted Biome passes.
 
-- [ ] Task: Implement the shared editor history abstraction
+- [~] Task: Implement the shared editor history abstraction
   - [ ] Add a small domain-aware adapter over the existing generic command-stack
     behavior.
   - [ ] Keep physical-piece commands and Drop point commands domain-local while
