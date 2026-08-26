@@ -1,6 +1,6 @@
 # Implementation Plan: Procedural Audio
 
-## Phase 1 · Audio Engine & Preferences (logic)
+## Phase 1 · Audio Engine & Preferences (logic) `[checkpoint: a05438a]`
 
 ### [x] Task: Write failing tests for the procedural audio engine `a05438a`
 - Engine tests: 9 cases — unlock gate, idempotent unlock, per-event cooldowns (injectable clock), cross-event independence, mute semantics, default state. Confirmed RED (module missing) before implementation.
