@@ -3,3 +3,5 @@ Phase 4 tasks 1-3:
 [drop/landing] main.ts: spawnMarble() plays 'drop' for every spawn (single + stream); createMarbleImpactTracker wired into sim loop — velocity samples (id, vy via body.linvel().y) after stepping, 'landing' played for newly-landed ids; tracker.remove on removeMarble; tracker.reset in resetSimulationState.
 [goal/unlock] detectGoalEntries(): 'goal' played alongside showGoalPop; lazy unlock: one-time pointerdown/keydown document listeners call sound.unlock().
 Quality gate: full suite 180/180, Biome clean, pnpm build OK — payload 3440.71 kB min / 1246.10 kB gzip (budget 3500/1250).
+
+Phase 4 checkpoint verification: user confirmed all five manual checks — (1) no audio before first gesture, no autoplay errors; (2) snap on place/move, soft delete on removal, undo/redo + Drop point silent; (3) drop plink on single+stream, one landing per marble, goal pop; (4) mute silences immediately, persists across reload, restores; (5) mobile viewport HUD overlap-free.
