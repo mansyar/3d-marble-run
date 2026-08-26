@@ -144,7 +144,7 @@ a verification checkpoint before proceeding.
 
 ## Phase 4: Mobile camera framing and integrated polish
 
-- [ ] Task: Improve initial mobile camera framing
+- [~] Task: Improve initial mobile camera framing
   - [ ] Adjust initial framing so the starter route and goal cup are visible in
     portrait mobile views.
   - [ ] Avoid overriding user-controlled camera movement after initialization.
