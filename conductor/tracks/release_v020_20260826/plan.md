@@ -48,14 +48,21 @@ About-modal version from `package.json` — only a post-bump build can display
 
 ## Phase 3 · Release Tag, Pipeline & Live Verification
 
-- [ ] Task: Push release tag and monitor pipeline
-  - [ ] Push `master`, then tag `v0.2.0`; watch release workflow end-to-end
-  - [ ] On gate failure: fix forward on `master`, re-cut tag (never force over
+- [x] Task: Push release tag and monitor pipeline
+  - [x] Push `master`, then tag `v0.2.0`; watch release workflow end-to-end
+  - [x] On gate failure: fix forward on `master`, re-cut tag (never force over
         published tags)
-- [ ] Task: Verify live artifacts
-  - [ ] Pages site loads under repository base path; About modal reads v0.2.0
+  - Notes: authorized push done (`b236e41..55fee06` + tag); run 32948181072
+    ALL GREEN ~2 min (validate/build → GitHub Release → GHCR → Pages →
+    Coolify webhook). No failures, no re-cut.
+- [x] Task: Verify live artifacts
+  - [x] Pages site loads under repository base path; About modal reads v0.2.0
         in production
-  - [ ] GitHub Release published with generated notes covering the four
+  - [x] GitHub Release published with generated notes covering the four
         released tracks
-  - [ ] GHCR images present: `0.2.0`, `latest`, commit SHA
+  - [x] GHCR images present: `0.2.0`, `latest`, commit SHA
+  - Notes: Pages 200 + asset hash matches local build exactly, served JS
+    carries 0.2.0, user confirmed About modal. Release body amended once
+    (user-approved) to cover the four tracks. GHCR tags `0.2.0`, `latest`,
+    `sha-0fd2632` verified.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
