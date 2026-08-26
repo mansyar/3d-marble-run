@@ -110,11 +110,18 @@ a verification checkpoint before proceeding.
     state, physical placement recovery, Drop point move recovery, keyboard
     Control+Z/Control+Y parity, and no application errors.
 
-- [~] Task: Add recognizable tray shape previews
-  - [ ] Add lightweight inline or procedural shape cues for every piece.
-  - [ ] Preserve labels, color differentiation, active selection, and touch
+- [x] Task: Add recognizable tray shape previews *(e4665fd)*
+  - [x] Add lightweight inline or procedural shape cues for every piece.
+  - [x] Preserve labels, color differentiation, active selection, and touch
     sizing.
-  - [ ] Ensure shape cues are not the sole accessible name.
+  - [x] Ensure shape cues are not the sole accessible name.
+  - Notes: Replaced generic swatches with compact CSS silhouettes for all six
+    tray tools, retained their colors and labels, and exposed pressed state while
+    keeping previews aria-hidden.
+  - Verify: 25 Vitest files and 146 tests passed; Biome checked 80 files;
+    strict TypeScript passed. Browser checks at 390px and 1280px confirmed six
+    previews, no horizontal overflow, centered desktop layout, touch-sized
+    buttons, and preserved accessible names.
 
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
   - [ ] Run the full automated checks and production build.
