@@ -208,6 +208,20 @@ a verification checkpoint before proceeding.
     passed, Biome checked 80 files, strict TypeScript passed, and diff checks
     passed. Only the known Three.js shadow-map warning remained.
 
+## Post-completion review correction
+
+- [x] Task: Reset edit history controls after loading a saved track *(db07425)*
+  - [x] Clear the visible Undo/Redo state after a saved graph replaces the
+    current graph and both command stacks are cleared.
+  - Notes: Principal review reproduced a stale enabled Undo button after
+    loading a saved track following a placement. Added the smallest fix by
+    refreshing edit-history state after the load operation clears history.
+  - Verify: Playwright regression at 390x844 reported Undo enabled before load
+    and disabled after load. The full 25-file/146-test suite, Biome on 80
+    files, strict TypeScript, production build (3,437.85 kB JS / 1,244.99 kB
+    gzip), and diff checks passed. The correction was user-approved during
+    review and recorded in the `db07425` Git note.
+
 ## Constraints
 
 - No external runtime assets, network dependencies, audio, broad settings
