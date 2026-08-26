@@ -67,14 +67,25 @@ One commit per task.
     scene state after shared history changes. Full tests, Biome, and TypeScript
     checks pass.
 
-- [~] Task: Complete regression and manual verification
-  - [ ] Run targeted coverage for changed history logic and confirm the
+- [x] Task: Complete regression and manual verification *(543a09e)*
+  - [x] Run targeted coverage for changed history logic and confirm the
     approximately 80% target.
-  - [ ] Run the full Vitest suite, Biome, TypeScript, and production build.
-  - [ ] Verify desktop mouse/keyboard mixed editing and Undo/Redo.
-  - [ ] Verify touch placement, Drop point editing, visible buttons,
+  - [x] Run the full Vitest suite, Biome, TypeScript, and production build.
+  - [x] Verify desktop mouse/keyboard mixed editing and Undo/Redo.
+  - [x] Verify touch placement, Drop point editing, visible buttons,
     cancellation, and load reset.
-  - [ ] Confirm the production bundle remains within the 3,500 kB JS / 1,250 kB
+  - [x] Confirm the production bundle remains within the 3,500 kB JS / 1,250 kB
     gzip budget.
+  - Notes: Targeted V8 coverage passed at 84.67% aggregate lines across the
+    editor-history suites; `EditorHistory` and `DropPointEditor` reached 100%,
+    and `DropPointController` reached 83.33%. The full suite passed 27 files and
+    156 tests; Biome checked 84 files and TypeScript passed. The production
+    build measured 3,437.74 kB JS / 1,244.96 kB gzip, within budget. Desktop
+    1280x720 verification confirmed mixed chronological Undo/Redo, redo-branch
+    invalidation, keyboard Undo, save-load history reset, and cancellation.
+    Touch verification at 393x659 and 360x800 confirmed Drop point editing,
+    mixed-edit interaction, 44px+ controls, no scrolling, and no errors;
+    tablet 768x1024 remained viewport-fit. Only the known Three.js warnings
+    appeared.
 
 - [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
