@@ -1,0 +1,5 @@
+Task: Rebuild production bundle & recheck payload budget (Phase 2, Cut v0.2.0 Release)
+
+Summary: pnpm build (tsc --noEmit + vite build) succeeded post-bump. Bundle 3,437.74 kB minified / 1,244.96 kB gzip - identical to Phase 1 baseline (delta 0.00/0.00 kB); only asset hash changed (index-MBj7VghY.js vs index-dDe0dxtn.js) reflecting the baked-in 0.2.0 version.
+Budget assertion: <=3,500 kB minified OK (headroom 62.26 kB); <=1,250 kB gzip OK (headroom 5.04 kB).
+No code changes - verification-only task; note anchored to preceding plan commit.
