@@ -70,3 +70,8 @@
 
 ### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `b0db34d`
 - Full manual protocol passed (user confirmed): first-gesture unlock w/o autoplay errors, snap/delete/drop/landing/goal all audible, undo/redo + Drop point silent, throttled stream stays pleasant, ≤1 landing per marble, mute silences + persists + restores, mobile HUD overlap-free. Verification note appended to `b0db34d`.
+
+## Phase: Review Fixes
+
+### [x] Task: Apply review suggestions `7b87b5d`
+- Replaced `_landedId` loop binding (naming-law violation) with `.forEach()` over landed ids in `main.ts`; suite 180/180, Biome clean, payload unchanged. Git note attached.
