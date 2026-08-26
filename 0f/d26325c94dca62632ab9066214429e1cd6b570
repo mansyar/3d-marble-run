@@ -3,3 +3,10 @@ Task: Cut version bump to 0.2.0 (Phase 2, Cut v0.2.0 Release)
 Summary: Ran pnpm version minor -> package.json 0.1.1 -> 0.2.0; pnpm created commit '0.2.0' and local lightweight tag v0.2.0 per documented maintainer workflow.
 Verified: package.json = 0.2.0; local tag v0.2.0 present; ls-remote origin shows no v0.2.0 - tag intentionally unpushed until smoke tests pass.
 Why: Release pipeline derives About-modal version and release validation from package.json/tag match (tag must equal v\).
+
+PHASE VERIFICATION REPORT - Phase 2: Version Bump & Release Build Smoke Test (Cut v0.2.0 Release)
+
+Command: CI=true pnpm vitest run --coverage -> exit 0; 27 files / 156 tests passed; release-version validation output: 'Release tag v0.2.0 matches package.json version 0.2.0' (parity against local unpushed tag confirmed).
+Build: pnpm build green post-bump (tsc strict + vite); bundle 3,437.74 kB minified / 1,244.96 kB gzip = identical to baseline, delta 0.00/0.00; within budget <=3,500 / <=1,250.
+Manual verification (production preview http://localhost:4173): Desktop 1280x720 - ALL PASSED (About modal v0.2.0; place/move/delete + snapping; Drop point + landing guide; mixed undo/redo + redo invalidation; autosave + named slot reload; goal counter/timer; orbit/chase cams). Touch ~393x659 emulated - ALL PASSED (core journeys, >=44px targets, no drag scroll, console clean).
+User confirmation: explicit yes received for checkpoint AND authorization for Phase 3 public release push.
