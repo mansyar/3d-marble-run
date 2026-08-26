@@ -40,13 +40,17 @@ One commit per task.
 
 ## Phase 2 · Controller and Application Integration
 
-- [~] Task: Write failing integration tests for mixed editor changes
-  - [ ] Verify actual piece commands and Drop point commands share one timeline.
-  - [ ] Verify connected-piece movement/deletion still restores graph
+- [x] Task: Write failing integration tests for mixed editor changes *(58d41d1)*
+  - [x] Verify actual piece commands and Drop point commands share one timeline.
+  - [x] Verify connected-piece movement/deletion still restores graph
     connections after mixed Undo/Redo.
-  - [ ] Verify Drop point placement/deletion is restored losslessly.
-  - [ ] Verify transient placement/movement cancellation creates no history
+  - [x] Verify Drop point placement/deletion is restored losslessly.
+  - [x] Verify transient Drop point preview cancellation creates no history
     entry.
+  - Notes: Added headless controller tests for mixed graph/Drop point history,
+    connected MoveCommand and DeleteCommand restoration, and cancellation. The
+    targeted suite is intentionally red until the controllers accept the shared
+    `history` dependency; Biome passes.
 
 - [ ] Task: Route placement, Drop point editing, and main orchestration through
   shared history
