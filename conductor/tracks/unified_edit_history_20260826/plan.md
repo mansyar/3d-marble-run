@@ -40,7 +40,7 @@ One commit per task.
 
 ## Phase 2 · Controller and Application Integration
 
-- [ ] Task: Write failing integration tests for mixed editor changes
+- [~] Task: Write failing integration tests for mixed editor changes
   - [ ] Verify actual piece commands and Drop point commands share one timeline.
   - [ ] Verify connected-piece movement/deletion still restores graph
     connections after mixed Undo/Redo.
