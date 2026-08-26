@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { createDropPointEditor, createDropPointState } from "../src/build/dropPointPlacement";
-import { createCommandStack } from "../src/core/commandStack";
+import { createEditorHistory } from "../src/core/editorHistory";
 import { addPiece, createTrackGraph } from "../src/track/graph";
 
 describe("Drop point placement state", () => {
   it("moves and replaces one point on the free X/Z plane", () => {
     const state = createDropPointState();
-    const editor = createDropPointEditor(state, createCommandStack());
+    const editor = createDropPointEditor(state, createEditorHistory());
 
     expect(editor.place([2, -100, -3])).toBe(true);
     expect(state.point).toEqual({ position: [2, 4, -3] });
@@ -16,8 +16,8 @@ describe("Drop point placement state", () => {
 
   it("deletes and restores the point through undo and redo", () => {
     const state = createDropPointState({ position: [1, 4, 1] });
-    const stack = createCommandStack();
-    const editor = createDropPointEditor(state, stack);
+    const history = createEditorHistory();
+    const editor = createDropPointEditor(state, history);
 
     expect(editor.delete()).toBe(true);
     expect(state.point).toBeNull();
@@ -32,7 +32,7 @@ describe("Drop point placement state", () => {
     addPiece(graph, "straight", { position: [0, 0, 0], yawDeg: 0 });
     const before = structuredClone(graph);
     const state = createDropPointState();
-    const editor = createDropPointEditor(state, createCommandStack());
+    const editor = createDropPointEditor(state, createEditorHistory());
 
     editor.place([3, 0, -2]);
     editor.delete();
@@ -42,7 +42,7 @@ describe("Drop point placement state", () => {
 
   it("rejects invalid positions without changing the active point", () => {
     const state = createDropPointState({ position: [1, 4, 1] });
-    const editor = createDropPointEditor(state, createCommandStack());
+    const editor = createDropPointEditor(state, createEditorHistory());
 
     expect(editor.place([21, 0, 0])).toBe(false);
     expect(state.point).toEqual({ position: [1, 4, 1] });

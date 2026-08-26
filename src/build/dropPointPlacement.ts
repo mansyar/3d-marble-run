@@ -1,4 +1,5 @@
-import type { Command, CommandStack } from "../core/commandStack";
+import type { Command } from "../core/commandStack";
+import type { EditorHistory } from "../core/editorHistory";
 import type { Vec3 } from "../pieces/registry";
 import { createDropPoint, type DropPoint } from "../track/dropPoint";
 
@@ -39,21 +40,21 @@ export function createDropPointState(point: DropPoint | null = null): DropPointS
 /** Edit the separate Drop point setting without receiving or mutating a graph. */
 export function createDropPointEditor(
   state: DropPointState,
-  stack: CommandStack<DropPointState>,
+  history: EditorHistory,
 ): DropPointEditor {
   return {
     place(position) {
       const next = createDropPoint(position);
       if (!next) return false;
-      stack.execute(state, new SetDropPointCommand(state.point, next));
+      history.execute(state, new SetDropPointCommand(state.point, next));
       return true;
     },
     delete() {
       if (!state.point) return false;
-      stack.execute(state, new SetDropPointCommand(state.point, null));
+      history.execute(state, new SetDropPointCommand(state.point, null));
       return true;
     },
-    undo: () => stack.undo(state),
-    redo: () => stack.redo(state),
+    undo: () => history.undo(),
+    redo: () => history.redo(),
   };
 }

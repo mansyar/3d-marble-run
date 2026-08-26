@@ -1,6 +1,6 @@
 import type { Group, MeshStandardMaterial, Object3D, PerspectiveCamera, Scene } from "three";
 import { Plane, Raycaster, Vector2, Vector3 } from "three";
-import type { CommandStack } from "../core/commandStack";
+import type { EditorHistory } from "../core/editorHistory";
 import { buildPiece } from "../pieces/builders";
 import type { PieceTypeId, Placement } from "../pieces/registry";
 import { DeleteCommand, MoveCommand, PlaceCommand } from "../track/commands";
@@ -18,7 +18,7 @@ import { canPlacePiece } from "./placementRules";
 /**
  * Ghost placement flow: pick a piece in the tray, a translucent ghost follows
  * the pointer/finger across the table, snaps to compatible free ports, and
- * places on release (routed through the command stack for undo/redo).
+ * places on release (routed through the shared editor history for undo/redo).
  */
 
 const GHOST_OPACITY = 0.55;
@@ -36,7 +36,7 @@ export interface PlacementDeps {
   camera: PerspectiveCamera;
   domElement: HTMLElement;
   graph: TrackGraph;
-  stack: CommandStack<TrackGraph>;
+  history: EditorHistory;
   /** Spawns meshes+colliders for a freshly placed piece and records its id. */
   spawn: (id: string, typeId: PieceTypeId, placement: Placement) => void;
   /** Removes a live mesh/body before a move or delete. */
@@ -75,7 +75,7 @@ export function createPlacementController(deps: PlacementDeps): {
   redo: () => boolean;
   readonly activeTypeId: PieceTypeId | null;
 } {
-  const { scene, camera, domElement, graph, stack } = deps;
+  const { scene, camera, domElement, graph, history } = deps;
 
   let activeTypeId: PieceTypeId | null = null;
   let yawDeg = 0;
@@ -220,7 +220,7 @@ export function createPlacementController(deps: PlacementDeps): {
         : undefined;
     if (moving) {
       const state = moving;
-      stack.execute(
+      history.execute(
         graph,
         new MoveCommand(state.id, state.before, placement, connection, state.beforeSnapshot),
       );
@@ -229,7 +229,7 @@ export function createPlacementController(deps: PlacementDeps): {
       deps.onPlace?.();
     } else {
       const id = deps.nextId();
-      stack.execute(graph, new PlaceCommand(id, activeTypeId, placement, connection));
+      history.execute(graph, new PlaceCommand(id, activeTypeId, placement, connection));
       deps.spawn(id, activeTypeId, placement);
       deps.onChange?.();
       deps.onPlace?.();
@@ -290,14 +290,14 @@ export function createPlacementController(deps: PlacementDeps): {
     cursorPos = null;
     rotateBtn.hidden = true;
     deleteBtn.hidden = true;
-    stack.execute(graph, new DeleteCommand(state.id, state.beforeSnapshot));
+    history.execute(graph, new DeleteCommand(state.id, state.beforeSnapshot));
     deps.onChange?.();
     deps.onEnd?.();
   }
 
   function undo(): boolean {
     cancel();
-    const changed = stack.undo(graph);
+    const changed = history.undo();
     if (changed) {
       deps.sync();
       deps.onChange?.();
@@ -307,7 +307,7 @@ export function createPlacementController(deps: PlacementDeps): {
 
   function redo(): boolean {
     cancel();
-    const changed = stack.redo(graph);
+    const changed = history.redo();
     if (changed) {
       deps.sync();
       deps.onChange?.();

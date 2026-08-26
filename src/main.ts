@@ -1,9 +1,9 @@
 import "./style.css";
 import { ColliderDesc, RigidBodyDesc, type World } from "@dimforge/rapier3d-compat";
 import { createDropPointController } from "./build/dropPointController";
-import { createDropPointState, type DropPointState } from "./build/dropPointPlacement";
+import { createDropPointState } from "./build/dropPointPlacement";
 import { createPlacementController } from "./build/placement";
-import { createCommandStack } from "./core/commandStack";
+import { createEditorHistory } from "./core/editorHistory";
 import { createStepper } from "./core/stepper";
 import { type SpawnedPiece, spawnStaticPiece } from "./pieces/builders";
 import { createMarbleMesh, MARBLE_RADIUS } from "./pieces/marble";
@@ -191,7 +191,7 @@ const handle = initScene(app, (elapsedMs) => {
 
 // --- Build mode state -------------------------------------------------------
 
-const stack = createCommandStack<TrackGraph>();
+const history = createEditorHistory();
 
 /** Placed pieces' live meshes + physics bodies, keyed by graph piece id. */
 const spawned = new Map<string, SpawnedPiece>();
@@ -238,7 +238,7 @@ function replaceGraph(next: TrackGraph): void {
     graph.pieces.set(piece.id, structuredClone(piece));
   }
   seedCustomIdCounter(graph);
-  stack.clear();
+  history.clear();
   syncScene();
 }
 
@@ -272,17 +272,21 @@ const coachMarks = createCoachMarks(document.body);
 
 let tray!: ReturnType<typeof createTray>;
 let dropPointModeActive = false;
-type EditHistoryDomain = "pieces" | "drop-point";
-type EditHistoryAction = "undo" | "redo";
-let lastEditDomain: EditHistoryDomain | null = null;
 let refreshEditHistory: () => void = () => {};
+
+function onEditorChange(): void {
+  storage.scheduleAutosave(currentTrackDocument());
+  if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
+  refreshDropPointHealth();
+  refreshEditHistory();
+}
 
 const placement = createPlacementController({
   scene: handle.scene,
   camera: handle.camera,
   domElement: handle.renderer.domElement,
   graph,
-  stack,
+  history,
   spawn: spawnPiece,
   remove: removePiece,
   editablePieces: () =>
@@ -291,13 +295,7 @@ const placement = createPlacementController({
       return piece ? [{ id, typeId: piece.typeId, group: live.group }] : [];
     }),
   sync: syncScene,
-  onChange: () => {
-    lastEditDomain = "pieces";
-    storage.scheduleAutosave(currentTrackDocument());
-    if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
-    refreshDropPointHealth();
-    refreshEditHistory();
-  },
+  onChange: onEditorChange,
   onPlace: () => coachMarks.complete("place-piece"),
   isEnabled: () => !dropPointModeActive,
   nextId: () => `piece-${++customIdCounter}`,
@@ -307,7 +305,6 @@ const placement = createPlacementController({
   },
 });
 
-const dropPointStack = createCommandStack<DropPointState>();
 dropPointGuide = createDropPointGuide({
   scene: handle.scene,
   world,
@@ -324,16 +321,11 @@ const dropPointPlacement = createDropPointController({
   camera: handle.camera,
   domElement: handle.renderer.domElement,
   state: dropPointState,
-  stack: dropPointStack,
+  history,
+  sync: syncScene,
   isEnabled: () => dropPointModeActive,
   onMove: (position) => dropPointGuide?.setPreview(position),
-  onChange: () => {
-    lastEditDomain = "drop-point";
-    storage.scheduleAutosave(currentTrackDocument());
-    if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
-    refreshDropPointHealth();
-    refreshEditHistory();
-  },
+  onChange: onEditorChange,
   onPlace: () => coachMarks.complete("place-piece"),
   onEnd: () => {
     tray.setActive(null);
@@ -341,35 +333,26 @@ const dropPointPlacement = createDropPointController({
   },
 });
 
-function canEditHistory(action: EditHistoryAction, domain: EditHistoryDomain): boolean {
-  const historyStack = domain === "pieces" ? stack : dropPointStack;
-  return action === "undo" ? historyStack.canUndo() : historyStack.canRedo();
-}
-
-function selectEditHistoryDomain(action: EditHistoryAction): EditHistoryDomain | null {
-  if (lastEditDomain && canEditHistory(action, lastEditDomain)) return lastEditDomain;
-  if (dropPointModeActive && canEditHistory(action, "drop-point")) return "drop-point";
-  if (canEditHistory(action, "pieces")) return "pieces";
-  if (canEditHistory(action, "drop-point")) return "drop-point";
-  return null;
-}
-
 function undoEdit(): void {
   placement.cancel();
   dropPointPlacement.cancel();
-  const domain = selectEditHistoryDomain("undo");
-  if (domain === "pieces") placement.undo();
-  else if (domain === "drop-point") dropPointPlacement.undo();
-  refreshEditHistory();
+  if (history.undo()) {
+    syncScene();
+    onEditorChange();
+  } else {
+    refreshEditHistory();
+  }
 }
 
 function redoEdit(): void {
   placement.cancel();
   dropPointPlacement.cancel();
-  const domain = selectEditHistoryDomain("redo");
-  if (domain === "pieces") placement.redo();
-  else if (domain === "drop-point") dropPointPlacement.redo();
-  refreshEditHistory();
+  if (history.redo()) {
+    syncScene();
+    onEditorChange();
+  } else {
+    refreshEditHistory();
+  }
 }
 
 tray = createTray(document.body, (selection) => {
@@ -436,10 +419,7 @@ const simulationControls = createSimulationControls(topHud, {
 });
 
 refreshEditHistory = () => {
-  simulationControls.setEditHistory(
-    selectEditHistoryDomain("undo") !== null,
-    selectEditHistoryDomain("redo") !== null,
-  );
+  simulationControls.setEditHistory(history.canUndo(), history.canRedo());
 };
 
 simulationControls.setStreamEnabled(spawner.isContinuous());
@@ -466,7 +446,6 @@ const saveSlots = createSaveSlotControls(topHud, {
     dropPointPlacement.cancel();
     resetSimulationState();
     dropPointState.point = loaded.dropPoint;
-    dropPointStack.clear();
     replaceGraph(loaded.graph);
     refreshEditHistory();
     if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();

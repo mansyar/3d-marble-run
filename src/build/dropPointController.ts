@@ -1,5 +1,5 @@
 import { type PerspectiveCamera, Plane, Raycaster, Vector2, Vector3 } from "three";
-import type { CommandStack } from "../core/commandStack";
+import type { EditorHistory } from "../core/editorHistory";
 import type { Vec3 } from "../pieces/registry";
 import { shouldHandleDropPointShortcut } from "./dropPointKeyboard";
 import { createDropPointEditor, type DropPointState } from "./dropPointPlacement";
@@ -8,7 +8,9 @@ export interface DropPointControllerDeps {
   camera: PerspectiveCamera;
   domElement: HTMLElement;
   state: DropPointState;
-  stack: CommandStack<DropPointState>;
+  history: EditorHistory;
+  /** Rebuilds live meshes/bodies when shared history undoes a graph command. */
+  sync?: () => void;
   isEnabled?: () => boolean;
   onChange?: () => void;
   /** Called only after the Drop point is successfully placed or moved. */
@@ -32,7 +34,7 @@ export function createDropPointController(deps: DropPointControllerDeps): {
   readonly cursorPosition: Vec3 | null;
 } {
   const { camera, domElement } = deps;
-  const editor = createDropPointEditor(deps.state, deps.stack);
+  const editor = createDropPointEditor(deps.state, deps.history);
   const tablePlane = new Plane(new Vector3(0, 1, 0), 0);
   const raycaster = new Raycaster();
   const ndc = new Vector2();
@@ -90,13 +92,19 @@ export function createDropPointController(deps: DropPointControllerDeps): {
       ev.preventDefault();
       if (active) end();
       const changed = ev.shiftKey ? editor.redo() : editor.undo();
-      if (changed) deps.onChange?.();
+      if (changed) {
+        deps.sync?.();
+        deps.onChange?.();
+      }
       return;
     }
     if (modifier && key === "y") {
       ev.preventDefault();
       if (active) end();
-      if (editor.redo()) deps.onChange?.();
+      if (editor.redo()) {
+        deps.sync?.();
+        deps.onChange?.();
+      }
       return;
     }
     if (active && ev.key === "Escape") {
@@ -131,12 +139,18 @@ export function createDropPointController(deps: DropPointControllerDeps): {
     },
     undo() {
       const changed = editor.undo();
-      if (changed) deps.onChange?.();
+      if (changed) {
+        deps.sync?.();
+        deps.onChange?.();
+      }
       return changed;
     },
     redo() {
       const changed = editor.redo();
-      if (changed) deps.onChange?.();
+      if (changed) {
+        deps.sync?.();
+        deps.onChange?.();
+      }
       return changed;
     },
     get active() {
