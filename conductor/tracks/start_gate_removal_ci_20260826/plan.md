@@ -2,7 +2,7 @@
 
 **Track ID**: `start_gate_removal_ci_20260826` · Branch: `chore/start-gate-removal-ci-gating`
 
-## Phase 1 · PR-Triggered CI Gating (infra)
+## Phase 1 · PR-Triggered CI Gating (infra) `[checkpoint: 318d721]`
 
 - [x] Task: Add PR trigger to CI workflow `318d721`
   - [x] Update `.github/workflows/ci.yml` `on:` to include `pull_request:` in addition to existing `push` onto `master`, so the same quality gate (tests, Biome, `tsc --noEmit`, `build`) runs on PRs.
@@ -12,8 +12,9 @@
   - [x] *(no logic tests required — infrastructure only)*
 - [x] Task: Commit Phase 1 `318d721`
   - [x] Commit `chore(ci): Add pull_request trigger to quality gate`
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-  - [ ] Confirm CI runs the full gate on this PR; checkpoint recorded
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `318d721`
+  - [x] Automated: 31 files / 194 tests green; biome clean; build within budget. Manual: cloud-side Actions run pending PR push (local verification of YAML by inspection). User confirmed Yes.
+  - [x] Verification report attached via git notes to `318d721`; checkpoint recorded.
 
 ## Phase 2 · Start-Gate Elimination (logic)
 
