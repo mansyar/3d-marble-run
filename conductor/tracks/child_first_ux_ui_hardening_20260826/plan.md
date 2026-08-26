@@ -123,7 +123,7 @@ a verification checkpoint before proceeding.
     previews, no horizontal overflow, centered desktop layout, touch-sized
     buttons, and preserved accessible names.
 
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
   - [ ] Run the full automated checks and production build.
   - [ ] Manually verify recovery after every supported edit path, disabled
     states, keyboard parity, tray selection, narrow widths, and screen-reader
