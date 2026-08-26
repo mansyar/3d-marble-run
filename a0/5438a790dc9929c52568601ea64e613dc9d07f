@@ -1,3 +1,5 @@
 Task: Cover changed logic and commit Phase 1 (covers plan tasks 1-5: engine tests+impl, preferences tests+impl, tech-stack doc).
 
 Summary: New src/audio module — engine.ts (pure scheduling: SoundEvent taxonomy, per-event cooldowns snap 60ms / delete 60ms / drop 150ms / landing 100ms / goal 100ms, lazy unlock gate, mute with immediate stop, injectable clock), synth.ts (WebAudio one-shots with lazy AudioContext, five oscillator/envelope voices, master gain 0.6), preferences.ts (localStorage 'marblescape.sound-muted', injectable storage, safe read/write). Tests: audioEngine.test.ts (9), audioPreferences.test.ts (7). Verified: 172/172 suite pass, coverage engine 90.9% / preferences 81.8% stmts (>=80%), Biome clean, tech-stack.md documents the Web Audio layer. Files: src/audio/{engine,synth,preferences}.ts, tests/audio{Engine,Preferences}.test.ts, conductor/tech-stack.md.
+
+Phase 1 verification report: 'CI=true pnpm vitest run' -> 29 files / 172 tests passed. Coverage: engine 90.9%, preferences 81.8% stmts. Manual: pnpm dev boots, no console errors, no audio at load (expected). User confirmed 2026-08-27.
