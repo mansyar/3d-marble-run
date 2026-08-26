@@ -40,6 +40,71 @@ canvas.camera-orbiting {
   pointer-events: auto;
 }
 
+/* --- First-run coach marks -------------------------------------------------- */
+
+#coach-marks {
+  position: fixed;
+  top: max(184px, calc(env(safe-area-inset-top) + 184px));
+  left: 50%;
+  z-index: 8;
+  width: min(340px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+#coach-marks[hidden] {
+  display: none;
+}
+
+.coach-mark {
+  display: flex;
+  align-items: start;
+  gap: 12px;
+  padding: 12px 12px 12px 16px;
+  border: 2px solid #f3c623;
+  border-radius: 16px;
+  background: rgb(255 255 255 / 0.9);
+  box-shadow: 0 5px 18px rgb(61 52 40 / 0.2);
+  color: #3d3428;
+  animation: coach-mark-in 180ms ease-out both;
+}
+
+.coach-mark-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.coach-mark-title {
+  font-size: 15px;
+}
+
+.coach-mark-message {
+  font-size: 13px;
+}
+
+.coach-mark-dismiss {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  margin: -4px -4px 0 0;
+  padding: 0;
+  border: 1px solid #cdbda8;
+  border-radius: 999px;
+  background: #fff;
+  color: #3d3428;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.coach-mark-dismiss:active {
+  background: #f2e8d8;
+}
+
 /* --- Simulation controls --------------------------------------------------- */
 
 #simulation-controls {
@@ -279,6 +344,10 @@ canvas.camera-orbiting {
   #save-slot-region {
     justify-self: start;
   }
+
+  #coach-marks {
+    top: max(292px, calc(env(safe-area-inset-top) + 280px));
+  }
 }
 
 @keyframes goal-pop {
@@ -404,5 +473,20 @@ canvas.camera-orbiting {
 @media (prefers-reduced-motion: reduce) {
   .goal-pop {
     animation: none;
+  }
+
+  .coach-mark {
+    animation: none;
+  }
+}
+
+@keyframes coach-mark-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

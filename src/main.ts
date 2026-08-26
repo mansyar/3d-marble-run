@@ -28,6 +28,7 @@ import { createStarterDocument } from "./track/starter";
 import { loadInitialTrack } from "./track/startup";
 import { createTrackStorage } from "./track/storage";
 import { createAboutDialog } from "./ui/about";
+import { createCoachMarks } from "./ui/coachMarks";
 import { createSaveSlotControls } from "./ui/save-slots";
 import { createSimulationControls } from "./ui/simulation";
 import { createTray } from "./ui/tray";
@@ -261,6 +262,7 @@ handle.scene.add(previewMarble);
 const topHud = document.createElement("div");
 topHud.id = "top-hud";
 document.body.appendChild(topHud);
+const coachMarks = createCoachMarks(document.body);
 
 let tray!: ReturnType<typeof createTray>;
 let dropPointModeActive = false;
@@ -284,6 +286,7 @@ const placement = createPlacementController({
     if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
     refreshDropPointHealth();
   },
+  onPlace: () => coachMarks.complete("place-piece"),
   isEnabled: () => !dropPointModeActive,
   nextId: () => `piece-${++customIdCounter}`,
   onEnd: () => tray.setActive(null),
@@ -314,10 +317,12 @@ const dropPointPlacement = createDropPointController({
     if (dropPointGuide) dropPointLanding = dropPointGuide.refresh();
     refreshDropPointHealth();
   },
+  onPlace: () => coachMarks.complete("place-piece"),
   onEnd: () => tray.setActive(null),
 });
 
 tray = createTray(document.body, (selection) => {
+  if (selection) coachMarks.complete("choose-piece");
   if (selection === "drop-point") {
     dropPointModeActive = true;
     placement.cancel();
@@ -353,10 +358,12 @@ function resetSimulationState(): void {
 
 const aboutDialog = createAboutDialog(document.body, APP_VERSION);
 const simulationControls = createSimulationControls(topHud, {
-  onDrop: () =>
+  onDrop: () => {
+    coachMarks.complete("drop-marble");
     applyDropPointSpawnResult(
       createDropPointSpawnerDrop(spawner, dropPointState.point, dropPointLanding),
-    ),
+    );
+  },
   onToggleStream: () => {
     const health = assessDropPointHealth(
       graph,

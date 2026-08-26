@@ -47,6 +47,8 @@ export interface PlacementDeps {
   sync: () => void;
   /** Called after every placement or cancel so UI state can re-sync. */
   onEnd?: () => void;
+  /** Called only after a new or moved piece is successfully placed. */
+  onPlace?: () => void;
   /** Called after a graph edit so persistence can debounce an autosave. */
   onChange?: () => void;
   /** Disables physical-piece pointer handling while another build tool is active. */
@@ -222,11 +224,13 @@ export function createPlacementController(deps: PlacementDeps): {
       );
       deps.spawn(state.id, state.typeId, placement);
       deps.onChange?.();
+      deps.onPlace?.();
     } else {
       const id = deps.nextId();
       stack.execute(graph, new PlaceCommand(id, activeTypeId, placement, connection));
       deps.spawn(id, activeTypeId, placement);
       deps.onChange?.();
+      deps.onPlace?.();
     }
     moving = null;
     clearGhost();

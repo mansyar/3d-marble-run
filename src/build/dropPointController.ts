@@ -11,6 +11,8 @@ export interface DropPointControllerDeps {
   stack: CommandStack<DropPointState>;
   isEnabled?: () => boolean;
   onChange?: () => void;
+  /** Called only after the Drop point is successfully placed or moved. */
+  onPlace?: () => void;
   onMove?: (position: Vec3 | null) => void;
   onEnd?: () => void;
 }
@@ -76,6 +78,7 @@ export function createDropPointController(deps: DropPointControllerDeps): {
     updateCursor(ev);
     if (!cursorPosition || !editor.place(cursorPosition)) return;
     deps.onChange?.();
+    deps.onPlace?.();
     end();
   }
 
