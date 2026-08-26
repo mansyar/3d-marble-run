@@ -1,0 +1,5 @@
+Phase 4 tasks 1-3:
+[snap/delete] placement.ts: added optional onDelete to PlacementDeps, fired in deleteActive() alongside onChange/onEnd; main.ts placement deps: onPlace now also plays 'snap' (new place + move commit), onDelete plays 'delete'. Undo/redo and Drop point actions stay silent (no callbacks from those paths).
+[drop/landing] main.ts: spawnMarble() plays 'drop' for every spawn (single + stream); createMarbleImpactTracker wired into sim loop — velocity samples (id, vy via body.linvel().y) after stepping, 'landing' played for newly-landed ids; tracker.remove on removeMarble; tracker.reset in resetSimulationState.
+[goal/unlock] detectGoalEntries(): 'goal' played alongside showGoalPop; lazy unlock: one-time pointerdown/keydown document listeners call sound.unlock().
+Quality gate: full suite 180/180, Biome clean, pnpm build OK — payload 3440.71 kB min / 1246.10 kB gzip (budget 3500/1250).
