@@ -123,13 +123,24 @@ a verification checkpoint before proceeding.
     previews, no horizontal overflow, centered desktop layout, touch-sized
     buttons, and preserved accessible names.
 
-- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-  - [ ] Run the full automated checks and production build.
-  - [ ] Manually verify recovery after every supported edit path, disabled
+- [x] Task: Phase Verification & Checkpoint *(e4665fd)* (Refer to workflow.md)
+  - [x] Run the full automated checks and production build.
+    `$env:CI="true"; pnpm vitest run && pnpm biome check . && pnpm exec tsc
+    --noEmit && pnpm build` passed: 25 files, 146 tests; Biome checked 80
+    files; TypeScript passed; build output was 3,437.43 kB JavaScript and
+    1,244.83 kB gzip, within the bundle budgets.
+  - [x] Manually verify recovery after every supported edit path, disabled
     states, keyboard parity, tray selection, narrow widths, and screen-reader
-    labels.
-  - [ ] Record the checkpoint SHA, Git note, user confirmation, and plan update
+    labels. Verified physical placement, move, delete, Undo/Redo, Drop point
+    move recovery, Control+Z/Control+Y parity, initial disabled states, and
+    tray selection at 360x800, 390x844, and 1280x720. Six tray controls fit
+    without horizontal overflow; accessible names and aria-hidden previews were
+    confirmed. Browser diagnostics contained no application errors; only the
+    existing favicon 404 and Three.js warnings.
+  - [x] Record the checkpoint SHA, Git note, user confirmation, and plan update
     commit.
+  - Notes: Checkpoint SHA is `e4665fd`; the verification report was appended
+    to its Git note, and the user confirmed the checkpoint on 2026-08-26.
 
 ## Phase 4: Mobile camera framing and integrated polish
 
