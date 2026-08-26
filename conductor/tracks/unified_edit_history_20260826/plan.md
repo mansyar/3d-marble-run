@@ -5,7 +5,7 @@ One commit per task.
 
 ## Phase 1 · Shared History Model
 
-- [ ] Task: Write failing tests for chronological editor history
+- [~] Task: Write failing tests for chronological editor history
   - [ ] Add a focused history fixture with independent piece and Drop point
     state.
   - [ ] Verify mixed edits undo in strict reverse chronological order.
