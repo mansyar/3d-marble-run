@@ -6,3 +6,5 @@
 - [x] **Track: Subtle Drop Point Guide** *Link: [./archive/subtle_drop_point_guide_20260825/index.md](./archive/subtle_drop_point_guide_20260825/index.md)*
 - [x] **Track: Child-First UX/UI Hardening** *Link: [./archive/child_first_ux_ui_hardening_20260826/index.md](./archive/child_first_ux_ui_hardening_20260826/index.md)*
 - [x] **Track: Unified Edit History & Undo/Redo Reliability** *Link: [./archive/unified_edit_history_20260826/index.md](./archive/unified_edit_history_20260826/index.md)*
+- [x] **Track: Release-Only Deployment Policy & Master CI** *Link: [./archive/release_only_deployments_20260825/index.md](./archive/release_only_deployments_20260825/index.md)*
+- [x] **Track: Tagged Release Pipeline & Application Versioning** *Link: [./archive/release_versioning_20260825/index.md](./archive/release_versioning_20260825/index.md)*
