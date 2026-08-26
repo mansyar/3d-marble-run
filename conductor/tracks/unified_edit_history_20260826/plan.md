@@ -16,14 +16,17 @@ One commit per task.
     point state fixtures. The targeted Vitest run is intentionally red until
     `src/core/editorHistory.ts` is implemented; targeted Biome passes.
 
-- [~] Task: Implement the shared editor history abstraction
-  - [ ] Add a small domain-aware adapter over the existing generic command-stack
+- [x] Task: Implement the shared editor history abstraction *(2219b58)*
+  - [x] Add a small domain-aware adapter over the existing generic command-stack
     behavior.
-  - [ ] Keep physical-piece commands and Drop point commands domain-local while
+  - [x] Keep physical-piece commands and Drop point commands domain-local while
     routing both through one timeline.
-  - [ ] Preserve command execution, reversal, and state cloning semantics.
-  - [ ] Avoid new runtime dependencies and keep the existing generic
+  - [x] Preserve command execution, reversal, and state cloning semantics.
+  - [x] Avoid new runtime dependencies and keep the existing generic
     command-stack tests passing.
+  - Notes: Added `EditorHistory` as a context-binding adapter over the existing
+    generic command stack. Focused history tests and existing command-stack
+    tests pass; targeted Biome passes for changed files.
 
 - [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
 
