@@ -1,0 +1,3 @@
+Task: Push release tag and monitor pipeline (Phase 3, Cut v0.2.0 Release)
+
+Summary: With explicit user authorization, pushed master (b236e41..55fee06) then tag v0.2.0. Release workflow run 32948181072 completed end-to-end SUCCESS (~2 min): Validate and build release (tag validation, tests, lint, type-check, Pages-path build) -> Create GitHub Release with generated notes -> Publish GHCR image -> Deploy GitHub Pages -> Trigger Coolify deployment webhook. No gate failures; no re-cut needed. Non-blocking Node.js 20 deprecation annotations only.
