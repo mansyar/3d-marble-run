@@ -4,14 +4,14 @@
 
 ## Phase 1 · PR-Triggered CI Gating (infra)
 
-- [ ] Task: Add PR trigger to CI workflow
-  - [ ] Update `.github/workflows/ci.yml` `on:` to include `pull_request:` in addition to existing `push` onto `master`, so the same quality gate (tests, Biome, `tsc --noEmit`, `build`) runs on PRs.
-  - [ ] *(glue — no logic change; no TDD phase needed. Manual verification: view the Actions run on this track's branch/PR.)*
-- [ ] Task: Verify CI configuration
-  - [ ] Confirm the workflow YAML is valid and triggers on both `push` and `pull_request`.
-  - [ ] *(no logic tests required — infrastructure only)*
-- [ ] Task: Commit Phase 1
-  - [ ] Commit `chore(ci): Add pull_request trigger to quality gate`
+- [x] Task: Add PR trigger to CI workflow `318d721`
+  - [x] Update `.github/workflows/ci.yml` `on:` to include `pull_request:` in addition to existing `push` onto `master`, so the same quality gate (tests, Biome, `tsc --noEmit`, `build`) runs on PRs.
+  - [x] *(glue — no logic change; no TDD phase needed. Manual verification: view the Actions run on this track's branch/PR.)*
+- [x] Task: Verify CI configuration `318d721`
+  - [x] Confirm the workflow YAML is valid and triggers on both `push` and `pull_request`.
+  - [x] *(no logic tests required — infrastructure only)*
+- [x] Task: Commit Phase 1 `318d721`
+  - [x] Commit `chore(ci): Add pull_request trigger to quality gate`
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
   - [ ] Confirm CI runs the full gate on this PR; checkpoint recorded
 
