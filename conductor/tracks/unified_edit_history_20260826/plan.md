@@ -28,7 +28,7 @@ One commit per task.
     generic command stack. Focused history tests and existing command-stack
     tests pass; targeted Biome passes for changed files.
 
-- [ ] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
+- [~] Task: Phase Verification & Checkpoint (Refer to `workflow.md`)
 
 ## Phase 2 · Controller and Application Integration
 
