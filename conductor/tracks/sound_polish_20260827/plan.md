@@ -16,18 +16,22 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
   - [x] User confirmed full-suite green + no regression (Phase 1 renders nothing until wired); checkpoint recorded
 
-## Phase 2 · Pitch Variation & Loudness Normalization (logic)
+## Phase 2 · Pitch Variation & Loudness Normalization (logic) `[checkpoint: f47901f]`
 
-- [ ] Task: Write failing tests for variation + loudness
-  - [ ] `tests/voices.test.ts`: `detuneFrequency` with injected RNG — random=0 → base; random=1/-1 → ±variation bounds; mid values within band; deterministic for fixed RNG
-  - [ ] Loudness: normalized peak ratios across events within a ±3 dB band (max/min ratio ≤ 1.41); post-master absolute peak ≤ 0.25 (goal ≤ 0.3)
-- [ ] Task: Wire `detuneFrequency` into synth rendering
-  - [ ] Per-play random detune via `Math.random`; variation applied to all tonal oscillators of the event; *(glue — manual verification)*
-- [ ] Task: Adjust `voices.ts` peak values until normalization tests pass
-- [ ] Task: Cover changed logic and commit Phase 2
-  - [ ] Coverage ≥80%; full suite green; biome clean
-  - [ ] Commit `feat(audio): Normalize loudness and add pitch variation` + git note
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Write failing tests for variation + loudness `f47901f`
+  - [x] `tests/voices.test.ts`: 3 new loudness tests — kid-safe ceiling (≤0.25, goal ≤0.3), ±3 dB spread (max/min ≤1.41), build < goal; helper `effectivePeakPre` = max(tonal peak, noise.peak*mix) or arpeggio.peak; `detuneFrequency` suite already 6 cases (base, ±bounds, in-band, deterministic, monotonic, degenerate) — verified failing (ratio 3.33→ fail) then green
+  - [x] Loudness: normalized peak ratios across events within a ±3 dB band (max/min ratio ≤ 1.41); post-master absolute peak ≤ 0.25 (goal ≤ 0.3) — now 14 tests green (was 11), ratio 1.37
+- [x] Task: Wire `detuneFrequency` into synth rendering `f47901f`
+  - [x] Verified `src/audio/synth.ts` already renders per-play uniform detune via `Math.random()*2-1` applied to all tonal/noise/arpeggio frequencies via `detuneFrequency`; no code change needed; *(glue — manual verification)*
+- [x] Task: Adjust `voices.ts` peak values until normalization tests pass `f47901f`
+  - [x] Rebalanced to post-master 0.114–0.156 (±3 dB): snap 0.19/0.095, delete 0.19/0.095, drop 0.20+noise 0.12, landing 0.22+noise 0.14, goal 0.26 (was 0.40); preserves attacks ≥8ms, pitchVariation 0.05, filter topology
+- [x] Task: Cover changed logic and commit Phase 2 `f47901f`
+  - [x] Coverage 100% stmts/branch/funcs/lines on voices.ts (changed logic); `biome check --write` clean; full suite 31 files / 194 tests green; `pnpm build` strict TS clean — 3442.42 kB / 1246.60 kB gzip (budget 3500/1250)
+  - [x] Commit `feat(audio): Normalize loudness and add pitch variation` `f47901f` + git note
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `f47901f`
+  - [x] Automated: vitest 194 green, coverage 100%, biome clean, build 3442.42/1246.60 within budget; diff since c9e1476 = voices.ts + voices.test.ts (logic)
+  - [x] Manual: snap/delete/drop/landing/goal distinct, variation ±5%, loudness ±3 dB, build < goal, no clipping, throttling, mute, unlock — user confirmed Yes, verified 2026-08-27
+  - [x] Verification report appended via git notes to f47901f; checkpoint recorded
 
 ## Phase 3 · Regression & Sound-Design Verification (integration)
 
