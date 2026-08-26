@@ -56,27 +56,17 @@
 
 ## Phase 4 · Event Wiring (integration glue)
 
-### [ ] Task: Wire `snap` and `delete` sounds
-- [ ] `placement.ts`: fire `snap` via existing `onPlace` path (new place + move commit); add `onDelete` deps callback and fire it in `deleteActive()`.
-- [ ] `main.ts`: pass a sound callback into placement deps (`onPlace`/`onDelete`).
-- [ ] Verify undo/redo and Drop point actions stay silent.
-- [ ] Commit: `feat(audio): Wire piece snap and delete sounds`.
+### [x] Task: Wire `snap` and `delete` sounds `b0db34d`
+- `placement.ts`: added `onDelete` to `PlacementDeps`, fired in `deleteActive()`; `main.ts` plays `snap` from `onPlace` (new place + move commit) and `delete` from the new `onDelete`. Undo/redo and Drop point actions stay silent.
 
-### [ ] Task: Wire `drop` and `landing` sounds
-- [ ] `main.ts` `spawnMarble()`: play `drop` for every spawn (covers single + stream).
-- [ ] Integrate `createMarbleImpactTracker` into the sim loop: feed per-marble velocities after stepping, play `landing`, drop tracking on marble removal.
-- [ ] Commit: `feat(audio): Wire marble drop and landing sounds`.
+### [x] Task: Wire `drop` and `landing` sounds `b0db34d`
+- `main.ts`: `spawnMarble()` plays `drop` (single drop + continuous stream); `createMarbleImpactTracker` feeds per-marble velocity samples each frame after stepping and plays `landing` for newly-landed ids; tracker kept in sync via `removeMarble()` + `resetSimulationState()`.
 
-### [ ] Task: Wire `goal` sound and lazy unlock
-- [ ] `main.ts` `detectGoalEntries()`: play `goal` alongside the existing visual pop.
-- [ ] Lazy unlock: one-time `pointerdown`/`keydown` listener calling `engine.unlock()`.
-- [ ] Commit: `feat(audio): Wire goal pop sound and lazy audio unlock`.
+### [x] Task: Wire `goal` sound and lazy unlock `b0db34d`
+- `detectGoalEntries()` plays `goal` beside `showGoalPop()`; one-time `pointerdown`/`keydown` document listeners unlock the audio context on the first gesture.
 
-### [ ] Task: Final quality gate and Phase 4 completion
-- [ ] Full `CI=true pnpm vitest run`, `CI=true pnpm biome check .`, `pnpm build` (strict TS).
-- [ ] Payload budget recheck (JS ≤3,500 kB / gzip ≤1,250 kB) and record sizes in `tech-stack.md` note.
-- [ ] Commit any gate fixes; update `plan.md` with commit hashes + notes.
-- [ ] Attach `git notes add` summary per task.
+### [x] Task: Final quality gate and Phase 4 completion `b0db34d`
+- Full suite 180/180; Biome clean; `pnpm build` (strict TS) OK — payload 3,440.71 kB min / 1,246.10 kB gzip (within 3,500/1,250 budget, rechecked).
 
 ### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 - [ ] Full manual protocol: desktop (1280×720) + touch (~393×659) — hear every event, verify throttle/quietness, toggle persist/restore, no autoplay errors, bundle within budget.
