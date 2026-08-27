@@ -7,9 +7,9 @@ About-modal version from `package.json` — only a post-bump build can display
 `chore/release-v030` and reach `master` through a PR (current CI-gating
 policy); the tag is pushed only after merge and smoke pass.
 
-## Phase 1 · Baseline Verification
+## Phase 1 · Baseline Verification [checkpoint: 1c4aaec]
 
-- [x] Task: Establish pre-release baseline on `chore/release-v030`
+- [x] Task: Establish pre-release baseline on `chore/release-v030` (1c4aaec)
   - [x] Confirm clean working tree and parity with `origin/master` (branch
         point)
   - [x] Run frozen install, `CI=true pnpm vitest run --coverage`,
