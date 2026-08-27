@@ -1,6 +1,6 @@
 # Implementation Plan: Mobile Tray Ergonomics & Free-Placement Touch Polish
 
-## Phase 1 · Tray Horizontal Scroll & Affordance [checkpoint: TBD]
+## Phase 1 · Tray Horizontal Scroll & Affordance [checkpoint: b16b538]
 
 ### [x] Task: Write failing tests for tray scroll helper (if logic-bearing) `bd0018c`
 - If a pure helper `trayScroll.ts` or scroll-state util is introduced, pin behavior: `atStart(scrollLeft)`, `atEnd(scrollLeft, scrollWidth, clientWidth)`, keyboard step size, reduced-motion branch. Confirm RED before implementation.
@@ -24,9 +24,10 @@
 - Commit `feat(tray): make tray horizontally scrollable with fade and separator`; git note attached.
 - **Done:** `pnpm vitest run` 244/244 passed; `pnpm biome check` clean (after fixing unused var); `pnpm build` ok 3494.87/1246.03 within budget (+1.74/+0.46 vs 3493.13/1245.57).
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md) `TBD`
-- [ ] Run full suite once; propose manual verification (dev server; 393×659 touch: scroll with finger, snap points, fades hide at edges, divider visible, active centers, 1280 desktop unchanged).
-- [ ] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `b16b538`
+- [x] Run full suite once; propose manual verification (dev server; 393×659 touch: scroll with finger, snap points, fades hide at edges, divider visible, active centers, 1280 desktop unchanged).
+- [x] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
+- **Checkpoint:** Manual verification confirmed 2026-08-28 — fades hide at edges, snap works, auto-center ok, divider visible, headroom 5.13kB/3.97kB.
 
 ## Phase 2 · Free-Placement Touch Polish (hit-radius + ghost boost) [checkpoint: TBD]
 
