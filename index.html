@@ -8,10 +8,24 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%238333ec'/%3E%3Ccircle cx='23' cy='22' r='8' fill='white' fill-opacity='.85'/%3E%3C/svg%3E"
     />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./icons/icon-apple-180.png" />
     <title>Marblescape</title>
   </head>
   <body>
     <div id="app"></div>
+    <div id="boot-screen" role="status" aria-live="polite">
+      <div id="boot-card">
+        <div class="boot-marble" aria-hidden="true"></div>
+        <p class="boot-title">Marblescape</p>
+        <p class="boot-hint">Warming up the marbles…</p>
+      </div>
+      <div id="boot-retry" hidden>
+        <p class="boot-title">Oh no, the marbles didn't load.</p>
+        <p class="boot-hint">Check your connection and try again.</p>
+        <button id="boot-retry-button" type="button">Try again</button>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

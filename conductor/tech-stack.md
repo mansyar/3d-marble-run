@@ -2,7 +2,7 @@
 
 ## Overview
 
-Web-first, zero-backend, fully offline. Every runtime asset is procedurally generated in code — the shipped product is a static bundle of JS/WASM/CSS/HTML only.
+Web-first, zero-backend, fully offline. Every runtime media asset is procedurally generated in code — the shipped product is a static bundle of JS/WASM/CSS/HTML plus the PWA shell chrome (web manifest, service worker, generated icon PNGs).
 
 | Layer | Choice | Rationale |
 |---|---|---|
@@ -13,6 +13,7 @@ Web-first, zero-backend, fully offline. Every runtime asset is procedurally gene
 | **Storage** | IndexedDB (via tiny `idb` wrapper) | Async local auto-save + named slots; no backend, survives refreshes |
 | **UI layer** | Vanilla TS + DOM overlay over canvas | Minimal HUD doesn't justify a framework's bundle cost; CSS handles styling |
 | **Audio** | Web Audio API (native) | Procedural one-shot SFX synthesized in code (oscillators/envelopes) — no samples, no assets, ~zero bundle cost; v2-deferred per product.md, shipped with the Procedural Audio track |
+| **PWA shell** | `vite-plugin-pwa` (dev dep) + build-generated icons | Manifest + precache service worker for installability/offline; icons rasterized at build from a single source SVG via `@resvg/resvg-js` (dev dep) — no hand-maintained binaries |
 | **Testing** | Vitest | Fast TS-native unit tests for pure logic: track graph, snapping rules, save serialization, spawner state machine |
 | **Hosting** | Any static host (GitHub Pages / Netlify / Cloudflare Pages) | Zero server logic required |
 
@@ -31,10 +32,14 @@ Web-first, zero-backend, fully offline. Every runtime asset is procedurally gene
 
 ## Constraints & Budgets
 
-- **Zero external runtime assets:** all geometry and materials generated in code — no textures, models, or audio files shipped
-- **Payload:** V1 budget is ≤3,500 kB minified JavaScript / ≤1,250 kB gzip. The
-  v0.2.0 release baseline is 3,437.74 kB / 1,244.96 kB; the remaining size is primarily
-  Rapier's embedded WASM, so every build must recheck this ceiling.
+- **Zero external runtime media assets:** all 3D geometry, materials, and audio generated in code — no textures, models, or audio files shipped. Documented exception (since `pwa_budget_20260827`): PWA shell chrome only — web manifest, service worker, and icon PNGs rasterized at build time from the source SVG.
+- **Payload:** V1 budget is ≤3,500 kB minified / ≤1,250 kB gzip, measured globally
+  across all emitted chunks by `pnpm check:size`, which hard-fails CI and releases
+  on violation. Since `pwa_budget_20260827`, the physics runtime (Rapier + embedded
+  WASM) lives in an async `app` chunk fetched behind the boot screen; the post-split
+  build measures 3,455.12 kB min / 1,233.29 kB gzip in total, with an initial entry
+  chunk of only 2.57 kB min / 1.25 kB gzip (plus 9.78 kB CSS and the HTML shell).
+  The app chunk remains dominated by Rapier's embedded WASM.
 - **Mobile rendering:** compact/touch viewports cap DPR at 1.5, disable antialiasing, and use 1024px shadows; desktop retains DPR 2 and 2048px shadows.
 - **Browser support:** current versions of Chrome, Edge, Firefox, Safari (desktop) · iOS Safari · Android Chrome
 - **Input parity:** every mouse interaction must have a touch equivalent from day one

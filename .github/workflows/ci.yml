@@ -45,3 +45,6 @@ jobs:
 
       - name: Build production bundle
         run: pnpm build
+
+      - name: Enforce payload budget
+        run: pnpm check:size

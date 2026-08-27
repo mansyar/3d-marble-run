@@ -27,6 +27,27 @@ Drop point using its X/Z position at the fixed overhead height, then the gate
 and its graph connection are removed. Gate-less version-1 saves load without a
 Drop point and can be edited normally.
 
+## Installable PWA
+
+Marblescape ships as a Progressive Web App. After the first visit, the service
+worker precaches the whole bundle, so airplane-mode reloads stay fully playable,
+and the browser offers **Install** / **Add to Home Screen** (the installed app
+runs standalone with any orientation). Icons and the web manifest are generated
+at build time from the single source SVG and manifest metadata:
+
+```bash
+pnpm generate:icons
+```
+
+App updates deploy silently: the next load activates the new service worker in
+the background, and no prompt ever interrupts play. The service worker stays
+disabled in development.
+
+The payload budget is ≤3,500 kB minified / ≤1,250 kB gzip, measured globally
+across all emitted chunks. Physics (Rapier + its embedded WASM) loads as a
+separate async chunk behind the branded boot screen, keeping the initial entry
+chunk tiny.
+
 ## Development
 
 ```bash
@@ -40,12 +61,14 @@ Open the local URL printed by Vite. Quality checks are:
 CI=true pnpm vitest run
 CI=true pnpm biome check .
 pnpm build
+pnpm check:size
 ```
 
 ## Continuous integration
 
 Pushes to `master` run `.github/workflows/ci.yml`, which installs from the
-frozen lockfile and runs tests, Biome, TypeScript, and the production build.
+frozen lockfile and runs tests, Biome, TypeScript, the production build, and
+the payload budget check.
 Master pushes are CI-only: they do not deploy Pages, publish GHCR images, or
 trigger Coolify.
 
@@ -109,8 +132,8 @@ git push origin master --follow-tags
 
 The version command creates the version commit and `vX.Y.Z` tag. Pushing both
 starts `.github/workflows/release.yml`, which first installs dependencies with
-the frozen lockfile and runs the release check, tests, Biome, TypeScript, and
-the production build. A successful gate then creates a GitHub Release with
+the frozen lockfile and runs the release check, tests, Biome, TypeScript, the
+production build, and the payload budget check. A successful gate then creates a GitHub Release with
 GitHub-generated notes, deploys GitHub Pages, and publishes GHCR images.
 
 The release check rejects prereleases, malformed tags, and mismatches before
