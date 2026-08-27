@@ -44,7 +44,8 @@ coverage on changed logic, plan status updates `[ ]` → `[~]` → `[x] <sha7>`)
   - Notes: `public/manifest.webmanifest` (standalone, any orientation, warm-palette theme, `id`/`start_url`/`scope` `./`, relative icon srcs → base-safe under root and `/<repo>/` Pages deploys); `index.html` gained `rel=manifest` + `rel=apple-touch-icon` (generated 180px PNG, inline SVG favicon kept); build verified — dist carries manifest + icons + intact links; gate 3,455.32 kB min / 1,233.37 kB gzip ✓
   - name/short_name "Marblescape", `standalone`, orientation `any`, theme/background
     colors; favicon + apple-touch-icon wired in `index.html`
-- [ ] **Task 2.4: Service worker** *(glue)*
+- [x] 5138a77 **Task 2.4: Service worker** *(glue)*
+  - Notes: `vite-plugin-pwa` 1.3.0, `registerType: autoUpdate` (silent skipWaiting + clients.claim), `manifest: false` (static manifest stays single source), precache glob covers js/css/html/png/webmanifest, per-file limit raised to 4 MiB — the default 2 MiB rejected the 3.44 MB WASM-carrying app chunk; dev stays SW-free. Verified: sw.js + local workbox runtime + injected registration, precache includes HTML/CSS/chunks/manifest/4 icons, zero CDN refs; 213/213 tests, tsc/biome clean, gate 3,472.10 kB min / 1,239.56 kB gzip ✓
   - `vite-plugin-pwa`: precache all hashed assets + `index.html`, cache-first,
     `autoUpdate` (skipWaiting + clients.claim), disabled in dev
 - [ ] **Task 2.5: Docs touch-ups**
