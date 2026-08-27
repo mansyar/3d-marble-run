@@ -1,0 +1,9 @@
+Task: Implement CSS tray horizontal scroll + scroll affordance & Drop-point separator
+
+Summary: CSS-only horizontal scroll tray for 8 buttons, separator before Drop point, mask-image fades with at-start/at-end toggles, auto-center active via scrollIntoView.
+
+Files:
+- src/style.css: flex nowrap, overflow-x:auto, snap, hidden scrollbar, mask-image fades, separator, mobile 640 query fix, reduced-motion
+- src/ui/tray.ts: separator DOM, rAF-throttled scroll listener updating at-start/at-end, active centering with reduced-motion check, load/resize handling
+
+Why: Fixes 393px overflow after Splitter+Bumper added; keeps >=44px targets, single row, minimal HUD, no deps, +1.74kB/0.46kB delta within budget.
