@@ -129,14 +129,18 @@ docker build -t marblescape:local .
 
 `package.json` is the release source of truth. Releases use stable
 `vMAJOR.MINOR.PATCH` tags, and the tag must exactly match the package version.
-Use pnpm's version command from a clean branch:
+Cut each release from a dedicated branch — `master` only accepts changes
+through PRs, so the tag is pushed only after the merge:
 
 ```bash
-pnpm version patch # or: minor, major
-git push origin master --follow-tags
+git checkout -b chore/release-vX.Y.Z
+pnpm version patch --no-git-tag-version # plain `pnpm version` fails on a dirty tree
+git commit -am "X.Y.Z"                   # bump commit
+git tag -a vX.Y.Z -m "vX.Y.Z"            # annotated tag, kept unpushed until merge
 ```
 
-The version command creates the version commit and `vX.Y.Z` tag. Pushing both
+Push the branch, open a PR to `master`, and merge it once CI is green. Pushing
+the tag afterwards (`git push origin vX.Y.Z`)
 starts `.github/workflows/release.yml`, which first installs dependencies with
 the frozen lockfile and runs the release check, tests, Biome, TypeScript, the
 production build, and the payload budget check. A successful gate then creates a GitHub Release with
