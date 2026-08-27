@@ -31,7 +31,7 @@
 - [x] Await explicit user confirmation; record phase checkpoint SHA in
   `plan.md`.
 
-## Phase 2 · Bumper Piece (portless node + free placement)
+## Phase 2 · Bumper Piece (portless node + free placement) [checkpoint: 6f3d80d]
 
 ### [x] Task: Write failing tests for bumper registry & serialization `458847b`
 - `"bumper"` type def with empty ports; `TrackDocument` round-trip with
@@ -56,11 +56,16 @@
   serialization, builders, tray all exercised); Biome clean; 234/234; payload
   within budget.
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-- [ ] Run full suite once; propose manual verification (bumper placement on
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `6f3d80d`
+- [x] Run full suite once; propose manual verification (bumper placement on
   the table, bounce feel, move/delete/undo/redo).
-- [ ] Await explicit user confirmation; record phase checkpoint SHA in
+- [x] Await explicit user confirmation; record phase checkpoint SHA in
   `plan.md`.
+- Notes: verification took three user-feedback rounds — stem rails trimmed
+  (`02be177`), smoother arc segments (`10249fe`) + bumper seats on track
+  surfaces (`babec33`), smaller dome `0.17/0.16` resolving wedging
+  (`6f3d80d`); user confirmed desktop + touch. Report attached as git note
+  on `6f3d80d`.
 
 ## Phase 3 · Route Guidance (logic + rendering)
 
