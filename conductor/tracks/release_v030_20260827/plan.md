@@ -26,10 +26,16 @@ policy); the tag is pushed only after merge and smoke pass.
 
 ## Phase 2 · Version Bump & Release Build Smoke Test
 
-- [ ] Task: Cut version bump to `0.3.0`
-  - [ ] `pnpm version minor`; verify `package.json` = `0.3.0` and local tag
+- [x] Task: Cut version bump to `0.3.0`
+  - [x] `pnpm version minor`; verify `package.json` = `0.3.0` and local tag
         `v0.3.0` created
-  - [ ] Keep tag unpushed until smoke passes
+  - [x] Keep tag unpushed until smoke passes
+  - Notes: `pnpm version minor` failed with ERR_PNPM_UNCLEAN_WORKING_TREE
+    (dirty plan.md + pre-existing untracked `.playwright-cli/`), so used
+    `pnpm version minor --no-git-tag-version` (pkg -> 0.3.0) and cut the
+    bump commit + annotated tag manually: commit adf9e13 ("0.3.0"), tag
+    `v0.3.0` -> adf9e13, tag type verified annotated. Unpushed: remote tags
+    are v0.1.1 / v0.2.0 only.
 - [ ] Task: Rebuild production bundle & recheck payload budget
   - [ ] `pnpm build`; assert ≤3,500 kB minified / ≤1,250 kB gzip; note deltas
         vs baseline
