@@ -26,7 +26,8 @@ coverage on changed logic, plan status updates `[ ]` → `[~]` → `[x] <sha7>`)
   - Notes: tech-stack.md Payload constraint now documents the chunked architecture: global totals via `pnpm check:size` (constants unchanged at 3,500/1,250 kB), measured post-split 3,455.12 kB min / 1,233.29 kB gzip, entry chunk 2.57 kB min / 1.25 kB gzip + 9.78 kB CSS + HTML shell.
   - Build, measure post-split min+gzip totals; update tech-stack.md payload section
     + gate constants; record measured numbers in plan notes
-- [ ] **Task 1.4: Phase Verification & Checkpoint** *(refer to workflow.md)*
+- [x] **Task 1.4: Phase Verification & Checkpoint** *(refer to workflow.md)* — checkpoint at `ec9f2bb`
+  - Notes: Manual verification confirmed by user against the dev server: (1) branded boot screen paints instantly, fades to playable starter track; (2) Offline throttling → failure panel → "Try again" after restoring network boots successfully; (3) `prefers-reduced-motion` disables bounce/fade. Gates at checkpoint: 208/208 tests, tsc clean, biome clean, build OK, budget gate within 3,500/1,250 kB (3,455.12 kB min / 1,233.29 kB gzip). Phase commits: `96519cc`, `7dfed56`, `ec9f2bb`.
 
 ## Phase 2 — Installable PWA Shell
 
