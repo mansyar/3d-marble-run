@@ -9,3 +9,11 @@ Summary: Verified the release-track starting point and recorded baseline gates.
 - Baseline payload: 3,493.13 kB min / 1,245.57 kB gzip (budget 3,500 / 1,250; headroom 6.87 / 4.43 kB)
 Files: conductor/tracks/release_v030_20260827/plan.md
 Why: Establishes the gate baseline the v0.3.0 release train is measured against.
+
+Phase 1 - Baseline Verification: checkpoint report
+
+Command: ='true' pnpm vitest run --coverage; ='true' pnpm biome check .; pnpm build; pnpm check:size
+Results: 244/244 tests passed (31 files); coverage 87.41% stmts / 90.18% lines; biome clean (108 files); build green; payload 3,493.13 kB min / 1,245.57 kB gzip (budget 3,500 / 1,250)
+Manual verification: none required - phase changed zero application code (conductor docs only); no user-facing surface
+User confirmation: explicit - confirmed Phase 1 checkpoint via structured question (2026-08-27)
+Checkpoint target: 1c4aaec (task-completion commit)
