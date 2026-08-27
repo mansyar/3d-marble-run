@@ -1,0 +1,7 @@
+Task 1.2: Async physics chunk + boot flow (pwa_budget_20260827)
+
+TDD: new src/core/boot.ts boot controller (loading -> ready | failed, guarded begin/retry, transition-only notifications) driven by 10 tests in tests/boot.test.ts (red -> green; one test bug fixed where a shared deferred made the retry attempt fail too).
+
+Chunk split: former main.ts moved verbatim to src/app.ts (only change: style.css import moved out) and is now loaded via dynamic import from a 27-line src/main.ts bootstrap, so Rapier + WASM and every rapier value importer (builders, landing) land in the async app chunk; entry chunk is 2.57 kB min / 1.25 kB gzip, app chunk 3,441.50 kB min / 1,246.17 kB gzip.
+
+Boot UX: static #boot-screen in index.html (title + CSS bouncing marble, zero assets) paints before JS; ready fades it out; failure swaps to kid-safe retry panel (Try again re-runs the boot controller). prefers-reduced-motion disables the bounce and fade. Gates: 208/208 tests, tsc clean, biome clean, build OK, gate within budget (3,455.12 kB min / 1,233.29 kB gzip).
