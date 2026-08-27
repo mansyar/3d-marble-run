@@ -70,7 +70,7 @@ policy); the tag is pushed only after merge and smoke pass.
     defbfe9 = latest Phase 2 commit (bump adf9e13 + verified bundle state
     3,493.13 kB min / 1,245.57 kB gzip + task notes).
 
-## Phase 3 · Release Tag, Pipeline & Live Verification
+## Phase 3 · Release Tag, Pipeline & Live Verification [checkpoint: 37dfb55]
 
 - [x] Task: Merge PR, push release tag, monitor pipeline (990b07b)
   - [x] Open/merge PR `chore/release-v030` → `master` with CI green; push
@@ -101,4 +101,10 @@ policy); the tag is pushed only after merge and smoke pass.
     README "Tagged releases" still described the old
     `git push origin master --follow-tags` flow → rewrote to the PR-gated
     flow.
-- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - Notes: test suite green at close (`$env:CI='true'; pnpm vitest run`:
+    31 files / 244 tests, 2.14s); no logic-bearing modules changed in this
+    phase (publish automation + docs only). Manual verification of live
+    artifacts confirmed by user (desktop live-site check incl. About modal
+    v0.3.0). Checkpoint 37dfb55 = last functional commit of the phase
+    (README runbook alignment).
