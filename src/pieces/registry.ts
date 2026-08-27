@@ -26,7 +26,7 @@ export interface PieceTypeDef {
   ports: PortDef[];
 }
 
-export type PieceTypeId = "straight" | "curve" | "ramp" | "funnel" | "goal-cup";
+export type PieceTypeId = "straight" | "curve" | "ramp" | "funnel" | "goal-cup" | "splitter";
 
 /** Where a piece sits in the world. v1 restricts rotation to Y-axis yaw. */
 export interface Placement {
@@ -92,6 +92,18 @@ const GOAL_CUP: PieceTypeDef = {
   ports: [p("inlet", "cup", [0, CUP_INLET_HEIGHT, 0], [0, 1, 0])],
 };
 
+/** Branch arc radius; also offsets the inlet (z=+R) and outlets (x=±R). */
+export const SPLITTER_RADIUS = 1;
+
+const SPLITTER: PieceTypeDef = {
+  id: "splitter",
+  ports: [
+    p("inlet", "run", [0, 0, SPLITTER_RADIUS], [0, 0, 1]),
+    p("outlet-l", "run", [-SPLITTER_RADIUS, 0, 0], [-1, 0, 0]),
+    p("outlet-r", "run", [SPLITTER_RADIUS, 0, 0], [1, 0, 0]),
+  ],
+};
+
 /** All available piece types, keyed by id. */
 export const PIECE_TYPE_IDS: Record<PieceTypeId, PieceTypeDef> = {
   straight: STRAIGHT,
@@ -99,6 +111,7 @@ export const PIECE_TYPE_IDS: Record<PieceTypeId, PieceTypeDef> = {
   ramp: RAMP,
   funnel: FUNNEL,
   "goal-cup": GOAL_CUP,
+  splitter: SPLITTER,
 };
 
 const COMPATIBLE_PAIRS = new Set(["mouth|run", "run|run", "run|spout", "spout|cup"]);

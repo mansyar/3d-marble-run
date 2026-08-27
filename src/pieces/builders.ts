@@ -1,6 +1,7 @@
 import { ColliderDesc, RigidBodyDesc, type World } from "@dimforge/rapier3d-compat";
 import {
   BoxGeometry,
+  ConeGeometry,
   DoubleSide,
   Group,
   LatheGeometry,
@@ -10,6 +11,7 @@ import {
   Vector2,
   Vector3,
 } from "three";
+import { MARBLE_RADIUS } from "./marble";
 import { makePieceMaterial } from "./materials";
 import {
   CUP_INLET_HEIGHT,
@@ -18,6 +20,7 @@ import {
   type PieceTypeId,
   type Placement,
   RAMP_RISE,
+  SPLITTER_RADIUS,
   STRAIGHT_LENGTH,
   TRACK_WIDTH,
 } from "./registry";
@@ -57,39 +60,37 @@ function shadowed(mesh: Mesh): Mesh {
   return mesh;
 }
 
-/** U-channel trough segment running along local Z. Shared by straight/ramp/curve. */
-function trough(length: number, typeId: PieceTypeId): BuiltPiece {
+/** U-channel trough segment running along local Z. Shared by straight/ramp/curve/splitter. */
+function trough(
+  length: number,
+  typeId: PieceTypeId,
+  rails: [boolean, boolean] = [true, true],
+): BuiltPiece {
   const group = new Group();
   const mat = makePieceMaterial(typeId);
   const floor = shadowed(new Mesh(new BoxGeometry(TRACK_WIDTH, FLOOR_T, length), mat));
   floor.position.y = -FLOOR_T / 2;
   group.add(floor);
   const railGeo = new BoxGeometry(RAIL_T, WALL_H, length);
+  const colliders: ColliderSpec[] = [
+    {
+      kind: "cuboid",
+      half: [TRACK_WIDTH / 2, FLOOR_T / 2, length / 2],
+      position: [0, -FLOOR_T / 2, 0],
+    },
+  ];
   for (const side of [-1, 1]) {
+    if (!rails[side === 1 ? 0 : 1]) continue;
     const rail = shadowed(new Mesh(railGeo, mat));
     rail.position.set((side * TRACK_WIDTH) / 2, WALL_H / 2, 0);
     group.add(rail);
+    colliders.push({
+      kind: "cuboid",
+      half: [RAIL_T / 2, WALL_H / 2, length / 2],
+      position: [(side * TRACK_WIDTH) / 2, WALL_H / 2, 0],
+    });
   }
-  return {
-    group,
-    colliders: [
-      {
-        kind: "cuboid",
-        half: [TRACK_WIDTH / 2, FLOOR_T / 2, length / 2],
-        position: [0, -FLOOR_T / 2, 0],
-      },
-      {
-        kind: "cuboid",
-        half: [RAIL_T / 2, WALL_H / 2, length / 2],
-        position: [TRACK_WIDTH / 2, WALL_H / 2, 0],
-      },
-      {
-        kind: "cuboid",
-        half: [RAIL_T / 2, WALL_H / 2, length / 2],
-        position: [-TRACK_WIDTH / 2, WALL_H / 2, 0],
-      },
-    ],
-  };
+  return { group, colliders };
 }
 
 function rotX(v: [number, number, number], angle: number): [number, number, number] {
@@ -170,6 +171,89 @@ function buildCurve(): BuiltPiece {
   return { group, colliders };
 }
 
+const FORK_TRIM_FRACTION = 0.45;
+
+function buildSplitter(): BuiltPiece {
+  // Plan-view Y: a shared stem feeds a fork where two quarter-arc branches
+  // diverge to sideways exits. A solid cone nose in the fork deflects
+  // marbles purely physically. Outer rails are trimmed near the fork so each
+  // branch's channel stays open where the opposite branch sweeps past it.
+  const group = new Group();
+  const colliders: ColliderSpec[] = [];
+  const pushSegment = (
+    seg: BuiltPiece,
+    mid: [number, number, number],
+    yaw: number,
+    yOff = 0,
+  ): void => {
+    seg.group.position.set(mid[0], mid[1] + yOff, mid[2]);
+    seg.group.rotation.y = yaw;
+    group.add(seg.group);
+    const q = new Quaternion().setFromAxisAngle(Y_AXIS, yaw);
+    const cy = Math.cos(yaw);
+    const sy = Math.sin(yaw);
+    for (const c of seg.colliders) {
+      if (c.kind !== "cuboid") continue;
+      const lp = c.position ?? [0, 0, 0];
+      colliders.push({
+        ...c,
+        position: [
+          lp[0] * cy + lp[2] * sy + mid[0],
+          lp[1] + mid[1] + yOff,
+          -lp[0] * sy + lp[2] * cy + mid[2],
+        ],
+        rotation: q.clone(),
+      });
+    }
+  };
+  // Stem: z from 0.45 to 1.0, meeting the inlet port at z = SPLITTER_RADIUS.
+  pushSegment(trough(0.55, "splitter"), [0, 0, 0.725], 0);
+  // Quarter-arc branches of r=SPLITTER_RADIUS centered on (±R, 0, R). The
+  // right branch sweeps a: π → 3π/2, the left: 0 → -π/2; under these sweep
+  // directions the OUTER rail rides local +X for the right branch and local
+  // -X for the left (mirrored), so the fork trims flip too. The right
+  // branch's floors sit 2 mm lower — the two forks' floors merge coplanar
+  // near the fork and z-fight without the offset.
+  const branches = [
+    {
+      cx: SPLITTER_RADIUS,
+      aFrom: Math.PI,
+      aTo: Math.PI + Math.PI / 2,
+      trim: [false, true],
+      yOff: -0.002,
+    },
+    { cx: -SPLITTER_RADIUS, aFrom: 0, aTo: -Math.PI / 2, trim: [true, false], yOff: 0 },
+  ] as const;
+  const segLength = 2 * SPLITTER_RADIUS * Math.sin(Math.PI / (4 * CURVE_SEGMENTS));
+  for (const branch of branches) {
+    for (let i = 0; i < CURVE_SEGMENTS; i++) {
+      const t0 = i / CURVE_SEGMENTS;
+      const t1 = (i + 1) / CURVE_SEGMENTS;
+      const a0 = branch.aFrom + (branch.aTo - branch.aFrom) * t0;
+      const a1 = branch.aFrom + (branch.aTo - branch.aFrom) * t1;
+      const mid: [number, number, number] = [
+        ((Math.cos(a0) + Math.cos(a1)) / 2) * SPLITTER_RADIUS + branch.cx,
+        0,
+        ((Math.sin(a0) + Math.sin(a1)) / 2) * SPLITTER_RADIUS + SPLITTER_RADIUS,
+      ];
+      const dx = Math.cos(a1) - Math.cos(a0);
+      const dz = Math.sin(a1) - Math.sin(a0);
+      const yaw = Math.atan2(dx, dz);
+      const rails: [boolean, boolean] =
+        t0 < FORK_TRIM_FRACTION ? [branch.trim[0], branch.trim[1]] : [true, true];
+      pushSegment(trough(segLength, "splitter", rails), mid, yaw, branch.yOff);
+    }
+  }
+  // Rounded cone nose — the fork's deflecting apex, baked at its local pose
+  // so the trimesh collider shares the exact mesh vertices (funnel pattern).
+  const noseGeo = new ConeGeometry(0.28, 0.56, 12);
+  noseGeo.rotateX(Math.PI / 2);
+  noseGeo.translate(0, MARBLE_RADIUS, 0.39);
+  group.add(shadowed(new Mesh(noseGeo, makePieceMaterial("splitter"))));
+  colliders.push({ kind: "trimesh", ...geometryToTrimesh(noseGeo) });
+  return { group, colliders };
+}
+
 /** Bell-curve shell from rim to throat plus a short cylindrical spout. */
 function buildFunnel(): BuiltPiece {
   const group = new Group();
@@ -226,6 +310,7 @@ const BUILDERS: Record<PieceTypeId, () => BuiltPiece> = {
   ramp: buildRamp,
   funnel: buildFunnel,
   "goal-cup": buildGoalCup,
+  splitter: buildSplitter,
 };
 
 export function buildPiece(typeId: PieceTypeId): BuiltPiece {

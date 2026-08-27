@@ -7,9 +7,9 @@ import {
   canConnect,
   getWorldPort,
   PIECE_TYPE_IDS,
-  SPLITTER_RADIUS,
   type PieceTypeId,
   type PortKind,
+  SPLITTER_RADIUS,
 } from "../src/pieces/registry";
 import { createPhysics } from "../src/sim/physics";
 
@@ -128,6 +128,61 @@ describe("port math", () => {
   });
 });
 
+/**
+ * The piece has no downstream track in this world, so a successful exit is
+ * observed as an event (|x| > 0.9 inside a branch mouth) rather than a final
+ * resting position. A rebound off the apex that exits north (z > 1) is an
+ * upstream re-approach on real (sloped, connected) tracks — only a fall
+ * *through* the fork floor (y < -0.5 at z < 0.6) counts as a leak.
+ */
+describe("splitter physics", () => {
+  it("feeds both branches across deterministic off-center entries", async () => {
+    const world = await createPhysics();
+    spawnStaticPiece(new Scene(), world, "splitter", { position: [0, 0, 0], yawDeg: 0 });
+    const sides = new Set<string>();
+    for (const startX of [-0.02, 0.02]) {
+      const body = world.createRigidBody(RigidBodyDesc.dynamic().setTranslation(startX, 0.5, 0.9));
+      world.createCollider(
+        ColliderDesc.ball(MARBLE_RADIUS).setFriction(0.45).setRestitution(0.15),
+        body,
+      );
+      body.setLinvel({ x: 0, y: 0, z: -2.5 }, true);
+      let side: "left" | "right" | null = null;
+      let leaked = false;
+      for (let step = 0; step < 900 && !side && !leaked; step += 1) {
+        world.step();
+        const t = body.translation();
+        if (t.y < -0.5 && t.z < 0.6) leaked = true;
+        else if (Math.abs(t.x) > 0.9) side = t.x < 0 ? "left" : "right";
+      }
+      world.removeRigidBody(body);
+      expect(leaked).toBe(false);
+      expect(side).not.toBeNull();
+      sides.add(side as "left" | "right");
+    }
+    expect(sides.has("left")).toBe(true);
+    expect(sides.has("right")).toBe(true);
+  });
+
+  it("does not leak a dead-center arrival through the fork floor", async () => {
+    const world = await createPhysics();
+    spawnStaticPiece(new Scene(), world, "splitter", { position: [0, 0, 0], yawDeg: 0 });
+    const body = world.createRigidBody(RigidBodyDesc.dynamic().setTranslation(0, 0.5, 0.9));
+    world.createCollider(
+      ColliderDesc.ball(MARBLE_RADIUS).setFriction(0.45).setRestitution(0.15),
+      body,
+    );
+    body.setLinvel({ x: 0, y: 0, z: -2.5 }, true);
+    let leakedThroughFork = false;
+    for (let step = 0; step < 900 && !leakedThroughFork; step += 1) {
+      world.step();
+      const t = body.translation();
+      if (t.y < -0.5 && t.z < 0.6) leakedThroughFork = true;
+    }
+    expect(leakedThroughFork).toBe(false);
+  });
+});
+
 describe("funnel physics", () => {
   it("lets a marble fall through the lower spout", async () => {
     const world = await createPhysics();
@@ -173,7 +228,7 @@ describe("splitter piece", () => {
   });
 
   it("has exactly three run ports: one inlet, two outlets", () => {
-    const def = PIECE_TYPE_IDS["splitter"];
+    const def = PIECE_TYPE_IDS.splitter;
     expect(def.ports).toHaveLength(3);
     expect(def.ports.map((p) => p.id).sort()).toEqual(["inlet", "outlet-l", "outlet-r"]);
     for (const p of def.ports) expect(p.kind).toBe("run");
