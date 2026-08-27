@@ -1,0 +1,1 @@
+Splitter fork entry fix: trimmed stem rails (0.55->0.4+0.15 floor-only tail, tail 1mm low), branch mouths now unobstructed; existing splitter physics tests (event-based exits, fork-sieve invariant) unchanged and passing.
