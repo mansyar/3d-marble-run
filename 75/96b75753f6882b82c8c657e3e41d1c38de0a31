@@ -1,0 +1,1 @@
+Phase 2 closed: desktop (1280x720) + touch (~393x659) smoke PASSED per user confirmation against production preview (v0.3.0 in-app). Full suite at close: 31 files / 244 tests green (CI=true pnpm vitest run, 3.63s).
