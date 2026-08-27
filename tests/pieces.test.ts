@@ -7,6 +7,7 @@ import {
   canConnect,
   getWorldPort,
   PIECE_TYPE_IDS,
+  SPLITTER_RADIUS,
   type PieceTypeId,
   type PortKind,
 } from "../src/pieces/registry";
@@ -23,9 +24,9 @@ function port(typeId: PieceTypeId, portId: string) {
 }
 
 describe("piece registry", () => {
-  it("defines exactly the five physical piece types", () => {
+  it("defines exactly the six physical piece types", () => {
     expect(Object.keys(PIECE_TYPE_IDS).sort()).toEqual(
-      ["curve", "funnel", "goal-cup", "ramp", "straight"].sort(),
+      ["curve", "funnel", "goal-cup", "ramp", "splitter", "straight"].sort(),
     );
   });
 
@@ -163,5 +164,48 @@ describe("compatibility rules", () => {
         expect(canConnect(a, b)).toBe(canConnect(b, a));
       }
     }
+  });
+});
+
+describe("splitter piece", () => {
+  it("is one of the registered piece types", () => {
+    expect(Object.keys(PIECE_TYPE_IDS)).toContain("splitter");
+  });
+
+  it("has exactly three run ports: one inlet, two outlets", () => {
+    const def = PIECE_TYPE_IDS["splitter"];
+    expect(def.ports).toHaveLength(3);
+    expect(def.ports.map((p) => p.id).sort()).toEqual(["inlet", "outlet-l", "outlet-r"]);
+    for (const p of def.ports) expect(p.kind).toBe("run");
+  });
+
+  it("places the inlet at the stem end and outlets at symmetric branch tips", () => {
+    const inlet = port("splitter", "inlet");
+    const left = port("splitter", "outlet-l");
+    const right = port("splitter", "outlet-r");
+    expect(inlet.position).toEqual([0, 0, SPLITTER_RADIUS]);
+    expect(left.position).toEqual([-SPLITTER_RADIUS, 0, 0]);
+    expect(right.position).toEqual([SPLITTER_RADIUS, 0, 0]);
+    expect(left.position[1]).toBe(inlet.position[1]);
+    expect(right.position[1]).toBe(inlet.position[1]);
+  });
+
+  it("directs the inlet upstream and both outlets sideways (perpendicular)", () => {
+    const inlet = port("splitter", "inlet");
+    const left = port("splitter", "outlet-l");
+    const right = port("splitter", "outlet-r");
+    expect(inlet.direction).toEqual([0, 0, 1]);
+    expect(left.direction).toEqual([-1, 0, 0]);
+    expect(right.direction).toEqual([1, 0, 0]);
+    for (const outlet of [left, right]) {
+      const dot =
+        inlet.direction[0] * outlet.direction[0] + inlet.direction[2] * outlet.direction[2];
+      expect(dot).toBeCloseTo(0, 5);
+    }
+  });
+
+  it("joins via the existing run|run compatibility rule", () => {
+    expect(canConnect(port("splitter", "inlet").kind, "run")).toBe(true);
+    expect(canConnect("run", port("splitter", "outlet-l").kind)).toBe(true);
   });
 });
