@@ -22,7 +22,8 @@ coverage on changed logic, plan status updates `[ ]` → `[~]` → `[x] <sha7>`)
     friendly retry state on first-visit failure
   - Branded inline loading screen in `index.html` (CSS-only bouncing marble,
     `prefers-reduced-motion` respected), fading out on ready
-- [ ] **Task 1.3: Re-baseline budgets** *(docs)*
+- [x] **Task 1.3: Re-baseline budgets** *(docs)* — see Task 1.4 commit
+  - Notes: tech-stack.md Payload constraint now documents the chunked architecture: global totals via `pnpm check:size` (constants unchanged at 3,500/1,250 kB), measured post-split 3,455.12 kB min / 1,233.29 kB gzip, entry chunk 2.57 kB min / 1.25 kB gzip + 9.78 kB CSS + HTML shell.
   - Build, measure post-split min+gzip totals; update tech-stack.md payload section
     + gate constants; record measured numbers in plan notes
 - [ ] **Task 1.4: Phase Verification & Checkpoint** *(refer to workflow.md)*

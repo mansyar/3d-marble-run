@@ -32,9 +32,13 @@ Web-first, zero-backend, fully offline. Every runtime asset is procedurally gene
 ## Constraints & Budgets
 
 - **Zero external runtime assets:** all geometry and materials generated in code — no textures, models, or audio files shipped
-- **Payload:** V1 budget is ≤3,500 kB minified JavaScript / ≤1,250 kB gzip. The
-  v0.2.0 release baseline is 3,437.74 kB / 1,244.96 kB; the remaining size is primarily
-  Rapier's embedded WASM, so every build must recheck this ceiling.
+- **Payload:** V1 budget is ≤3,500 kB minified / ≤1,250 kB gzip, measured globally
+  across all emitted chunks by `pnpm check:size`, which hard-fails CI and releases
+  on violation. Since `pwa_budget_20260827`, the physics runtime (Rapier + embedded
+  WASM) lives in an async `app` chunk fetched behind the boot screen; the post-split
+  build measures 3,455.12 kB min / 1,233.29 kB gzip in total, with an initial entry
+  chunk of only 2.57 kB min / 1.25 kB gzip (plus 9.78 kB CSS and the HTML shell).
+  The app chunk remains dominated by Rapier's embedded WASM.
 - **Mobile rendering:** compact/touch viewports cap DPR at 1.5, disable antialiasing, and use 1024px shadows; desktop retains DPR 2 and 2048px shadows.
 - **Browser support:** current versions of Chrome, Edge, Firefox, Safari (desktop) · iOS Safari · Android Chrome
 - **Input parity:** every mouse interaction must have a touch equivalent from day one
