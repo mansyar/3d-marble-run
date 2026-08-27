@@ -12,4 +12,4 @@
 - [x] **Track: Procedural Audio** *Link: [./archive/procedural_audio_20260827/index.md](./archive/procedural_audio_20260827/index.md)*
 - [x] **Track: Sound Design Polish** *Link: [./archive/sound_polish_20260827/index.md](./archive/sound_polish_20260827/index.md)*
 - [x] **Track: Start-Gate Removal + PR CI Gating** *Link: [./archive/start_gate_removal_ci_20260826/index.md](./archive/start_gate_removal_ci_20260826/index.md)*
-- [~] **Track: Installable PWA & Payload Budget Hardening** *Link: [./tracks/pwa_budget_20260827/index.md](./tracks/pwa_budget_20260827/index.md)*
+- [x] **Track: Installable PWA & Payload Budget Hardening** *Link: [./tracks/pwa_budget_20260827/index.md](./tracks/pwa_budget_20260827/index.md)*
