@@ -112,13 +112,15 @@
 
 ## Phase 4 · Docs & Release Readiness
 
-### [ ] Task: Update product docs
+### [x] Task: Update product docs `317a03f`
 - `product.md` piece set (5 physical → 7 with splitter + bumper) and
   guidance description; README tray/guidance description.
 
-### [ ] Task: Final quality gate
+### [x] Task: Final quality gate `317a03f`
 - Full suite, `CI=true pnpm biome check .`, `pnpm build`, `pnpm check:size`
   within ≤3,500 kB min / ≤1,250 kB gzip.
+- Notes: Biome clean (107 files), 244/244 tests, build OK, payload
+  3,493.19 kB min / 1,245.60 kB gzip within budget (3,500 / 1,250).
 
 ### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 - [ ] Full manual protocol on desktop + touch: Y-branch feeds both cups from
