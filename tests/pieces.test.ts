@@ -272,3 +272,26 @@ describe("bumper piece", () => {
     expect(def.ports).toEqual([]);
   });
 });
+
+describe("bumper physics", () => {
+  it("blocks a head-on marble and rebounds it with lively restitution", async () => {
+    const world = await createPhysics();
+    spawnStaticPiece(new Scene(), world, "bumper", { position: [0, 0, 0], yawDeg: 0 });
+    const body = world.createRigidBody(RigidBodyDesc.dynamic().setTranslation(0, 0.1, 1));
+    world.createCollider(
+      ColliderDesc.ball(MARBLE_RADIUS).setFriction(0.45).setRestitution(0.15),
+      body,
+    );
+    body.setLinvel({ x: 0, y: 0, z: -2 }, true);
+    let rebounded = false;
+    let tunneled = false;
+    for (let step = 0; step < 900 && !rebounded && !tunneled; step += 1) {
+      world.step();
+      const t = body.translation();
+      if (t.z < -0.35) tunneled = true;
+      else if (t.z > 0.5) rebounded = true;
+    }
+    expect(tunneled).toBe(false);
+    expect(rebounded).toBe(true);
+  });
+});

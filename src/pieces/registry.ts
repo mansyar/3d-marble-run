@@ -26,7 +26,14 @@ export interface PieceTypeDef {
   ports: PortDef[];
 }
 
-export type PieceTypeId = "straight" | "curve" | "ramp" | "funnel" | "goal-cup" | "splitter";
+export type PieceTypeId =
+  | "straight"
+  | "curve"
+  | "ramp"
+  | "funnel"
+  | "goal-cup"
+  | "splitter"
+  | "bumper";
 
 /** Where a piece sits in the world. v1 restricts rotation to Y-axis yaw. */
 export interface Placement {
@@ -92,6 +99,12 @@ const GOAL_CUP: PieceTypeDef = {
   ports: [p("inlet", "cup", [0, CUP_INLET_HEIGHT, 0], [0, 1, 0])],
 };
 
+/** Free-standing bounce dome — deliberately portless, placed anywhere. */
+const BUMPER: PieceTypeDef = {
+  id: "bumper",
+  ports: [],
+};
+
 /** Branch arc radius; also offsets the inlet (z=+R) and outlets (x=±R). */
 export const SPLITTER_RADIUS = 1;
 
@@ -112,6 +125,7 @@ export const PIECE_TYPE_IDS: Record<PieceTypeId, PieceTypeDef> = {
   funnel: FUNNEL,
   "goal-cup": GOAL_CUP,
   splitter: SPLITTER,
+  bumper: BUMPER,
 };
 
 const COMPATIBLE_PAIRS = new Set(["mouth|run", "run|run", "run|spout", "spout|cup"]);

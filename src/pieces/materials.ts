@@ -12,6 +12,7 @@ export const PIECE_COLORS: Record<PieceTypeId, number> = {
   funnel: 0x3a86ff, // blue
   "goal-cup": 0xffc300, // reward gold
   splitter: 0xe85d04, // burnt orange (curve's shade family)
+  bumper: 0xf4978e, // light coral (red-family tint, reads as toy rubber)
 };
 
 export function makePieceMaterial(typeId: PieceTypeId): MeshStandardMaterial {

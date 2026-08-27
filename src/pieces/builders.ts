@@ -38,8 +38,9 @@ export type ColliderSpec =
       half: [number, number, number];
       position?: [number, number, number];
       rotation?: Quaternion;
+      restitution?: number;
     }
-  | { kind: "trimesh"; vertices: Float32Array; indices: Uint32Array };
+  | { kind: "trimesh"; vertices: Float32Array; indices: Uint32Array; restitution?: number };
 
 export interface BuiltPiece {
   group: Group;
@@ -304,6 +305,33 @@ function buildGoalCup(): BuiltPiece {
   return { group, colliders: [{ kind: "trimesh", ...geometryToTrimesh(cup.geometry) }] };
 }
 
+const BUMPER_RADIUS = 0.22;
+const BUMPER_HEIGHT = 0.28;
+/** Lively toy-ball bounce — well above marbles' own restitution (0.15). */
+const BUMPER_RESTITUTION = 0.85;
+
+/** Glossy bounce dome: a squashed hemisphere profile, lathe-built like the
+ * funnel/cup round pieces, with the same surface as its trimesh collider. */
+function buildBumper(): BuiltPiece {
+  const dome = new LatheGeometry(
+    [
+      new Vector2(BUMPER_RADIUS, 0),
+      new Vector2(0.21, 0.06),
+      new Vector2(0.18, 0.13),
+      new Vector2(0.13, 0.2),
+      new Vector2(0.07, 0.26),
+      new Vector2(0.001, BUMPER_HEIGHT),
+    ],
+    24,
+  );
+  const group = new Group();
+  group.add(shadowed(new Mesh(dome, makePieceMaterial("bumper"))));
+  return {
+    group,
+    colliders: [{ kind: "trimesh", ...geometryToTrimesh(dome), restitution: BUMPER_RESTITUTION }],
+  };
+}
+
 const BUILDERS: Record<PieceTypeId, () => BuiltPiece> = {
   straight: buildStraight,
   curve: buildCurve,
@@ -311,6 +339,7 @@ const BUILDERS: Record<PieceTypeId, () => BuiltPiece> = {
   funnel: buildFunnel,
   "goal-cup": buildGoalCup,
   splitter: buildSplitter,
+  bumper: buildBumper,
 };
 
 export function buildPiece(typeId: PieceTypeId): BuiltPiece {
@@ -318,19 +347,22 @@ export function buildPiece(typeId: PieceTypeId): BuiltPiece {
 }
 
 function toColliderDesc(spec: ColliderSpec): ColliderDesc {
+  let desc: ColliderDesc;
   if (spec.kind === "trimesh") {
-    return ColliderDesc.trimesh(spec.vertices, spec.indices);
+    desc = ColliderDesc.trimesh(spec.vertices, spec.indices);
+  } else {
+    desc = ColliderDesc.cuboid(...spec.half);
+    if (spec.position) desc.setTranslation(...spec.position);
+    if (spec.rotation) {
+      desc.setRotation({
+        x: spec.rotation.x,
+        y: spec.rotation.y,
+        z: spec.rotation.z,
+        w: spec.rotation.w,
+      });
+    }
   }
-  const desc = ColliderDesc.cuboid(...spec.half);
-  if (spec.position) desc.setTranslation(...spec.position);
-  if (spec.rotation) {
-    desc.setRotation({
-      x: spec.rotation.x,
-      y: spec.rotation.y,
-      z: spec.rotation.z,
-      w: spec.rotation.w,
-    });
-  }
+  if (spec.restitution !== undefined) desc.setRestitution(spec.restitution);
   return desc;
 }
 

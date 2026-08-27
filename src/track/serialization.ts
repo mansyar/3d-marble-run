@@ -37,7 +37,9 @@ function isPieceTypeId(value: unknown): value is PieceTypeId {
     value === "curve" ||
     value === "ramp" ||
     value === "funnel" ||
-    value === "goal-cup"
+    value === "goal-cup" ||
+    value === "splitter" ||
+    value === "bumper"
   );
 }
 
