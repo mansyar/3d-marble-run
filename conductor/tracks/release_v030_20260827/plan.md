@@ -36,11 +36,16 @@ policy); the tag is pushed only after merge and smoke pass.
     bump commit + annotated tag manually: commit adf9e13 ("0.3.0"), tag
     `v0.3.0` -> adf9e13, tag type verified annotated. Unpushed: remote tags
     are v0.1.1 / v0.2.0 only.
-- [ ] Task: Rebuild production bundle & recheck payload budget
-  - [ ] `pnpm build`; assert ≤3,500 kB minified / ≤1,250 kB gzip; note deltas
+- [x] Task: Rebuild production bundle & recheck payload budget
+  - [x] `pnpm build`; assert ≤3,500 kB minified / ≤1,250 kB gzip; note deltas
         vs baseline
-  - [ ] Treat headroom drift as a blocker to investigate (baseline headroom
+  - [x] Treat headroom drift as a blocker to investigate (baseline headroom
         only ~4 kB gzip)
+  - Notes: post-bump build green (tsc strict + vite); payload **3,493.13 kB
+    min / 1,245.57 kB gzip** — identical to baseline (Δ 0.00/0.00); new
+    asset hash `app-DLmXnOZK.js` carries baked-in 0.3.0; headroom 6.87 /
+    4.43 kB → no drift, no blocker. `check:release` v0.3.0: tag matches pkg
+    0.3.0 (script takes tag as argv[2] / RELEASE_TAG env).
 - [ ] Task: Desktop smoke test (1280×720, production preview)
   - [ ] v0.2.0 suite: piece place/move/delete + snapping · Drop point +
         landing guide · mixed-edit undo/redo chronology & redo invalidation ·
