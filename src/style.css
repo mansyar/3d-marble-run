@@ -603,6 +603,24 @@ canvas.camera-orbiting {
   box-shadow: 0 4px 12px rgb(61 52 40 / 0.22);
 }
 
+.placement-hint {
+  position: fixed;
+  left: 50%;
+  bottom: calc(max(12px, env(safe-area-inset-bottom)) + 204px);
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 999px;
+  background: #3d3428;
+  color: #fff;
+  font-size: 14px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgb(61 52 40 / 0.35);
+  pointer-events: none;
+  max-width: min(90vw, 420px);
+  text-align: center;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .goal-pop {
     animation: none;

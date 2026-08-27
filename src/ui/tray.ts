@@ -7,6 +7,8 @@ const PIECE_LABELS: Record<PieceTypeId, string> = {
   ramp: "Ramp",
   funnel: "Funnel",
   "goal-cup": "Goal cup",
+  splitter: "Splitter",
+  bumper: "Bumper",
 };
 
 export type TraySelection = PieceTypeId | "drop-point";

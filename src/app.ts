@@ -9,9 +9,10 @@ import { createEditorHistory } from "./core/editorHistory";
 import { createStepper } from "./core/stepper";
 import { type SpawnedPiece, spawnStaticPiece } from "./pieces/builders";
 import { createMarbleMesh, MARBLE_RADIUS } from "./pieces/marble";
-import type { PieceTypeId, Placement } from "./pieces/registry";
+import { channelPath, type PieceTypeId, type Placement } from "./pieces/registry";
 import { type CameraTarget, createFreeOrbitCamera, type FreeOrbitCamera } from "./render/camera";
 import { createDropPointGuide, type DropPointGuide } from "./render/dropPointGuide";
+import { createGuidanceRenderer, type GuidanceRenderer } from "./render/guidance";
 import { initScene } from "./render/scene";
 import {
   createDropPointSpawnerAdvance,
@@ -25,7 +26,11 @@ import { createPhysics } from "./sim/physics";
 import { findOutOfBoundsMarbleIds } from "./sim/playability";
 import { createSpawner, type Spawner } from "./sim/spawner";
 import type { TrackGraph } from "./track/graph";
-import { assessDropPointHealth } from "./track/health";
+import {
+  assessDropPointHealth,
+  routePathsToGoals,
+  unreachableConnectorPieces,
+} from "./track/health";
 import type { TrackDocument } from "./track/serialization";
 import { createStarterDocument } from "./track/starter";
 import { loadInitialTrack } from "./track/startup";
@@ -181,9 +186,11 @@ function cleanupOutOfBoundsMarbles(): void {
 
 let cameraController: FreeOrbitCamera | null = null;
 let dropPointGuide: DropPointGuide | null = null;
+let guidance: GuidanceRenderer | null = null;
 
 const handle = initScene(app, (elapsedMs) => {
   dropPointGuide?.refresh();
+  guidance?.tick(elapsedMs);
   applyDropPointSpawnResult(
     createDropPointSpawnerAdvance(spawner, dropPointState.point, dropPointLanding, elapsedMs),
   );
@@ -260,11 +267,8 @@ function replaceGraph(next: TrackGraph): void {
 }
 
 function refreshDropPointHealth(): void {
-  const health = assessDropPointHealth(
-    graph,
-    dropPointState.point,
-    dropPointLanding.status === "ready" ? dropPointLanding.pieceId : null,
-  );
+  const landingPieceId = dropPointLanding.status === "ready" ? dropPointLanding.pieceId : null;
+  const health = assessDropPointHealth(graph, dropPointState.point, landingPieceId);
   const ready = health.status === "ready";
   simulationControls.setTrackHealth(health.status);
   simulationControls.setSimulationReady(ready);
@@ -272,9 +276,31 @@ function refreshDropPointHealth(): void {
     spawner.setContinuous(false);
     simulationControls.setStreamEnabled(false);
   }
+  guidance?.refresh({
+    unreachablePieceIds: unreachableConnectorPieces(graph, landingPieceId),
+    routes: routePathsToGoals(graph, landingPieceId),
+  });
 }
 
 syncScene();
+
+guidance = createGuidanceRenderer({
+  scene: handle.scene,
+  channelPathOf: (pieceId, inPortId, outPortId) => {
+    const piece = graph.pieces.get(pieceId);
+    if (!piece) return [];
+    return channelPath(piece.placement, piece.typeId, inPortId, outPortId);
+  },
+  pieceGroupOf: (pieceId) => spawned.get(pieceId)?.group ?? null,
+  connectedPortOf: (pieceId, otherId) => {
+    const piece = graph.pieces.get(pieceId);
+    if (!piece) return null;
+    for (const [portId, ref] of Object.entries(piece.connections)) {
+      if (ref && ref.pieceId === otherId) return portId;
+    }
+    return null;
+  },
+});
 
 const previewMarble = createMarbleMesh();
 previewMarble.position.set(2.2, MARBLE_RADIUS, -1);

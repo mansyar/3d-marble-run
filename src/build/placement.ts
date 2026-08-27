@@ -2,7 +2,7 @@ import type { Group, MeshStandardMaterial, Object3D, PerspectiveCamera, Scene } 
 import { Plane, Raycaster, Vector2, Vector3 } from "three";
 import type { EditorHistory } from "../core/editorHistory";
 import { buildPiece } from "../pieces/builders";
-import type { PieceTypeId, Placement } from "../pieces/registry";
+import { PIECE_TYPE_IDS, type PieceTypeId, type Placement } from "../pieces/registry";
 import { DeleteCommand, MoveCommand, PlaceCommand } from "../track/commands";
 import {
   getPiece,
@@ -108,18 +108,45 @@ export function createPlacementController(deps: PlacementDeps): {
   deleteBtn.addEventListener("click", () => deleteActive());
   document.body.appendChild(deleteBtn);
 
+  // Contextual hint for portless pieces — they place freely instead of
+  // snapping, which otherwise reads as "broken" (found in playtesting).
+  const FREE_PLACEMENT_HINTS: Partial<Record<PieceTypeId, string>> = {
+    bumper: "Bumpers sit free anywhere — even on the track. Marbles bounce off them.",
+  };
+  const hintEl = document.createElement("div");
+  hintEl.className = "placement-hint";
+  hintEl.hidden = true;
+  document.body.appendChild(hintEl);
+
+  function refreshHint(): void {
+    const text = activeTypeId ? FREE_PLACEMENT_HINTS[activeTypeId] : undefined;
+    hintEl.textContent = text ?? "";
+    hintEl.hidden = !text;
+  }
+
   const tablePlane = new Plane(new Vector3(0, 1, 0), 0);
   const raycaster = new Raycaster();
   const ndc = new Vector2();
   const hit = new Vector3();
 
-  function pointOnTable(clientX: number, clientY: number): Vector3 | null {
+  /** Seat portless tools (the bumper) on whatever track surface is under
+   * the pointer — a raised bell, ramp or rails — instead of always dropping
+   * to the table plane; connector pieces stay on the table plane and let
+   * classifySnap decide their pose. */
+  function pointerPoint(clientX: number, clientY: number): Vector3 | null {
     const rect = domElement.getBoundingClientRect();
     ndc.set(
       ((clientX - rect.left) / rect.width) * 2 - 1,
       -((clientY - rect.top) / rect.height) * 2 + 1,
     );
     raycaster.setFromCamera(ndc, camera);
+    if (activeTypeId && PIECE_TYPE_IDS[activeTypeId].ports.length === 0) {
+      const hits = raycaster.intersectObjects(
+        [...deps.editablePieces()].map((piece) => piece.group),
+        true,
+      );
+      if (hits.length > 0) return hits[0].point.clone();
+    }
     return raycaster.ray.intersectPlane(tablePlane, hit);
   }
 
@@ -177,7 +204,10 @@ export function createPlacementController(deps: PlacementDeps): {
     if (!ghost || !activeTypeId || !cursorPos) return;
     const query = {
       typeId: activeTypeId,
-      placement: { position: [cursorPos.x, 0, cursorPos.z] as [number, number, number], yawDeg },
+      placement: {
+        position: [cursorPos.x, cursorPos.y, cursorPos.z] as [number, number, number],
+        yawDeg,
+      },
     };
     const c = classifySnap(graph, query, moving?.id);
     lastStatus = c.status;
@@ -202,7 +232,10 @@ export function createPlacementController(deps: PlacementDeps): {
     if (!ghost || !activeTypeId || !cursorPos || lastStatus === "blocked") return;
     const query = {
       typeId: activeTypeId,
-      placement: { position: [cursorPos.x, 0, cursorPos.z] as [number, number, number], yawDeg },
+      placement: {
+        position: [cursorPos.x, cursorPos.y, cursorPos.z] as [number, number, number],
+        yawDeg,
+      },
     };
     const c = classifySnap(graph, query, moving?.id);
     if (c.status === "blocked") return;
@@ -237,6 +270,7 @@ export function createPlacementController(deps: PlacementDeps): {
     cursorPos = null;
     rotateBtn.hidden = true;
     deleteBtn.hidden = true;
+    refreshHint();
     deps.onEnd?.();
   }
 
@@ -265,6 +299,7 @@ export function createPlacementController(deps: PlacementDeps): {
     ghost = makeGhost(piece.typeId);
     rotateBtn.hidden = false;
     deleteBtn.hidden = false;
+    refreshHint();
   }
 
   function restoreMoving(): void {
@@ -287,6 +322,7 @@ export function createPlacementController(deps: PlacementDeps): {
     cursorPos = null;
     rotateBtn.hidden = true;
     deleteBtn.hidden = true;
+    refreshHint();
     history.execute(graph, new DeleteCommand(state.id, state.beforeSnapshot));
     deps.onChange?.();
     deps.onDelete?.();
@@ -315,7 +351,7 @@ export function createPlacementController(deps: PlacementDeps): {
 
   function onPointerMove(ev: PointerEvent): void {
     if (!isEnabled() || !ghost) return;
-    cursorPos = pointOnTable(ev.clientX, ev.clientY);
+    cursorPos = pointerPoint(ev.clientX, ev.clientY);
     refreshGhost();
   }
 
@@ -333,7 +369,7 @@ export function createPlacementController(deps: PlacementDeps): {
       startMove(piece);
     }
     // First contact also re-anchors the ghost so taps far away still work.
-    cursorPos = pointOnTable(ev.clientX, ev.clientY);
+    cursorPos = pointerPoint(ev.clientX, ev.clientY);
     refreshGhost();
   }
 
@@ -394,6 +430,7 @@ export function createPlacementController(deps: PlacementDeps): {
     ghost = makeGhost(typeId);
     rotateBtn.hidden = false;
     deleteBtn.hidden = true;
+    refreshHint();
   }
 
   function cancel(): void {
@@ -405,6 +442,7 @@ export function createPlacementController(deps: PlacementDeps): {
     cursorPos = null;
     rotateBtn.hidden = true;
     deleteBtn.hidden = true;
+    refreshHint();
     deps.onEnd?.();
   }
 

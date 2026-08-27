@@ -4,11 +4,16 @@ import { describe, expect, it } from "vitest";
 import { buildPiece, FUNNEL_SPOUT_INNER_RADIUS, spawnStaticPiece } from "../src/pieces/builders";
 import { MARBLE_RADIUS } from "../src/pieces/marble";
 import {
+  CURVE_RADIUS,
   canConnect,
+  channelPath,
   getWorldPort,
   PIECE_TYPE_IDS,
   type PieceTypeId,
   type PortKind,
+  RAMP_RISE,
+  SPLITTER_RADIUS,
+  STRAIGHT_LENGTH,
 } from "../src/pieces/registry";
 import { createPhysics } from "../src/sim/physics";
 
@@ -23,14 +28,15 @@ function port(typeId: PieceTypeId, portId: string) {
 }
 
 describe("piece registry", () => {
-  it("defines exactly the five physical piece types", () => {
+  it("defines exactly the seven physical piece types", () => {
     expect(Object.keys(PIECE_TYPE_IDS).sort()).toEqual(
-      ["curve", "funnel", "goal-cup", "ramp", "straight"].sort(),
+      ["bumper", "curve", "funnel", "goal-cup", "ramp", "splitter", "straight"].sort(),
     );
   });
 
-  it("gives every piece at least one fully-specified port", () => {
-    for (const def of Object.values(PIECE_TYPE_IDS)) {
+  it("gives every connector piece at least one fully-specified port", () => {
+    for (const [typeId, def] of Object.entries(PIECE_TYPE_IDS)) {
+      if (typeId === "bumper") continue; // free-standing; intentionally portless
       expect(def.ports.length).toBeGreaterThan(0);
       for (const p of def.ports) {
         expect(p.id).toBeTruthy();
@@ -127,6 +133,61 @@ describe("port math", () => {
   });
 });
 
+/**
+ * The piece has no downstream track in this world, so a successful exit is
+ * observed as an event (|x| > 0.9 inside a branch mouth) rather than a final
+ * resting position. A rebound off the apex that exits north (z > 1) is an
+ * upstream re-approach on real (sloped, connected) tracks — only a fall
+ * *through* the fork floor (y < -0.5 at z < 0.6) counts as a leak.
+ */
+describe("splitter physics", () => {
+  it("feeds both branches across deterministic off-center entries", async () => {
+    const world = await createPhysics();
+    spawnStaticPiece(new Scene(), world, "splitter", { position: [0, 0, 0], yawDeg: 0 });
+    const sides = new Set<string>();
+    for (const startX of [-0.02, 0.02]) {
+      const body = world.createRigidBody(RigidBodyDesc.dynamic().setTranslation(startX, 0.5, 0.9));
+      world.createCollider(
+        ColliderDesc.ball(MARBLE_RADIUS).setFriction(0.45).setRestitution(0.15),
+        body,
+      );
+      body.setLinvel({ x: 0, y: 0, z: -2.5 }, true);
+      let side: "left" | "right" | null = null;
+      let leaked = false;
+      for (let step = 0; step < 900 && !side && !leaked; step += 1) {
+        world.step();
+        const t = body.translation();
+        if (t.y < -0.5 && t.z < 0.6) leaked = true;
+        else if (Math.abs(t.x) > 0.9) side = t.x < 0 ? "left" : "right";
+      }
+      world.removeRigidBody(body);
+      expect(leaked).toBe(false);
+      expect(side).not.toBeNull();
+      sides.add(side as "left" | "right");
+    }
+    expect(sides.has("left")).toBe(true);
+    expect(sides.has("right")).toBe(true);
+  });
+
+  it("does not leak a dead-center arrival through the fork floor", async () => {
+    const world = await createPhysics();
+    spawnStaticPiece(new Scene(), world, "splitter", { position: [0, 0, 0], yawDeg: 0 });
+    const body = world.createRigidBody(RigidBodyDesc.dynamic().setTranslation(0, 0.5, 0.9));
+    world.createCollider(
+      ColliderDesc.ball(MARBLE_RADIUS).setFriction(0.45).setRestitution(0.15),
+      body,
+    );
+    body.setLinvel({ x: 0, y: 0, z: -2.5 }, true);
+    let leakedThroughFork = false;
+    for (let step = 0; step < 900 && !leakedThroughFork; step += 1) {
+      world.step();
+      const t = body.translation();
+      if (t.y < -0.5 && t.z < 0.6) leakedThroughFork = true;
+    }
+    expect(leakedThroughFork).toBe(false);
+  });
+});
+
 describe("funnel physics", () => {
   it("lets a marble fall through the lower spout", async () => {
     const world = await createPhysics();
@@ -163,5 +224,142 @@ describe("compatibility rules", () => {
         expect(canConnect(a, b)).toBe(canConnect(b, a));
       }
     }
+  });
+});
+
+describe("splitter piece", () => {
+  it("is one of the registered piece types", () => {
+    expect(Object.keys(PIECE_TYPE_IDS)).toContain("splitter");
+  });
+
+  it("has exactly three run ports: one inlet, two outlets", () => {
+    const def = PIECE_TYPE_IDS.splitter;
+    expect(def.ports).toHaveLength(3);
+    expect(def.ports.map((p) => p.id).sort()).toEqual(["inlet", "outlet-l", "outlet-r"]);
+    for (const p of def.ports) expect(p.kind).toBe("run");
+  });
+
+  it("places the inlet at the stem end and outlets at symmetric branch tips", () => {
+    const inlet = port("splitter", "inlet");
+    const left = port("splitter", "outlet-l");
+    const right = port("splitter", "outlet-r");
+    expect(inlet.position).toEqual([0, 0, SPLITTER_RADIUS]);
+    expect(left.position).toEqual([-SPLITTER_RADIUS, 0, 0]);
+    expect(right.position).toEqual([SPLITTER_RADIUS, 0, 0]);
+    expect(left.position[1]).toBe(inlet.position[1]);
+    expect(right.position[1]).toBe(inlet.position[1]);
+  });
+
+  it("directs the inlet upstream and both outlets sideways (perpendicular)", () => {
+    const inlet = port("splitter", "inlet");
+    const left = port("splitter", "outlet-l");
+    const right = port("splitter", "outlet-r");
+    expect(inlet.direction).toEqual([0, 0, 1]);
+    expect(left.direction).toEqual([-1, 0, 0]);
+    expect(right.direction).toEqual([1, 0, 0]);
+    for (const outlet of [left, right]) {
+      const dot =
+        inlet.direction[0] * outlet.direction[0] + inlet.direction[2] * outlet.direction[2];
+      expect(dot).toBeCloseTo(0, 5);
+    }
+  });
+
+  it("joins via the existing run|run compatibility rule", () => {
+    expect(canConnect(port("splitter", "inlet").kind, "run")).toBe(true);
+    expect(canConnect("run", port("splitter", "outlet-l").kind)).toBe(true);
+  });
+});
+
+describe("bumper piece", () => {
+  it("registers a portless free-standing type", () => {
+    const def = PIECE_TYPE_IDS.bumper;
+    expect(def.ports).toEqual([]);
+  });
+});
+
+describe("channel path", () => {
+  const P0 = { position: [0, 0, 0] as [number, number, number], yawDeg: 0 };
+
+  /** Radial distance of every sample from an arc centre, on the XZ plane. */
+  function expectArc(samples: [number, number, number][], centre: [number, number]): void {
+    for (const [x, y, z] of samples) {
+      expect(Math.hypot(x - centre[0], z - centre[1])).toBeCloseTo(CURVE_RADIUS, 5);
+      expect(y).toBeCloseTo(0, 5);
+    }
+  }
+
+  it("runs straight between the used ports on a straight", () => {
+    expect(channelPath(P0, "straight", "a", "b")).toEqual([
+      [0, 0, -STRAIGHT_LENGTH / 2],
+      [0, 0, STRAIGHT_LENGTH / 2],
+    ]);
+  });
+
+  it("chords the ramp incline between its ports", () => {
+    expect(channelPath(P0, "ramp", "a", "b")).toEqual([
+      [0, 0, -STRAIGHT_LENGTH / 2],
+      [0, RAMP_RISE, STRAIGHT_LENGTH / 2],
+    ]);
+  });
+
+  it("samples the curve quarter arc from a to b", () => {
+    const samples = channelPath(P0, "curve", "a", "b");
+    expect(samples.length).toBeGreaterThan(4);
+    const first = samples[0];
+    const last = samples[samples.length - 1];
+    expect(first[0]).toBeCloseTo(-CURVE_RADIUS / 2, 5);
+    expect(first[2]).toBeCloseTo(CURVE_RADIUS / 2, 5);
+    expect(last[0]).toBeCloseTo(CURVE_RADIUS / 2, 5);
+    expect(last[2]).toBeCloseTo(-CURVE_RADIUS / 2, 5);
+    expectArc(samples, [-CURVE_RADIUS / 2, -CURVE_RADIUS / 2]);
+  });
+
+  it("samples the splitter branch arcs from the inlet to each outlet", () => {
+    const right = channelPath(P0, "splitter", "inlet", "outlet-r");
+    expect(right[0][2]).toBeCloseTo(SPLITTER_RADIUS, 5);
+    expect(right[right.length - 1][0]).toBeCloseTo(SPLITTER_RADIUS, 5);
+    expect(right[right.length - 1][2]).toBeCloseTo(0, 5);
+    expectArc(right, [SPLITTER_RADIUS, SPLITTER_RADIUS]);
+
+    const left = channelPath(P0, "splitter", "inlet", "outlet-l");
+    expect(left[0][2]).toBeCloseTo(SPLITTER_RADIUS, 5);
+    expect(left[left.length - 1][0]).toBeCloseTo(-SPLITTER_RADIUS, 5);
+    expect(left[left.length - 1][2]).toBeCloseTo(0, 5);
+    expectArc(left, [-SPLITTER_RADIUS, SPLITTER_RADIUS]);
+  });
+
+  it("applies placement yaw and position to arc samples", () => {
+    const samples = channelPath({ position: [1, 0, 2], yawDeg: 90 }, "curve", "a", "b");
+    // a local (-0.5, 0, 0.5) rotated 90° about +Y lands at (0.5, 0.5) + pos.
+    expect(samples[0][0]).toBeCloseTo(1.5, 5);
+    expect(samples[0][2]).toBeCloseTo(2.5, 5);
+  });
+
+  it("reduces to the used port on single-port pieces and the origin when portless", () => {
+    expect(channelPath(P0, "goal-cup", "inlet", null)).toEqual([[0, 0.6, 0]]);
+    expect(channelPath(P0, "bumper", null, null)).toEqual([[0, 0, 0]]);
+  });
+});
+
+describe("bumper physics", () => {
+  it("lets a head-on marble bounce away or pop over, never rest trapped", async () => {
+    const world = await createPhysics();
+    spawnStaticPiece(new Scene(), world, "bumper", { position: [0, 0, 0], yawDeg: 0 });
+    const body = world.createRigidBody(RigidBodyDesc.dynamic().setTranslation(0, 0.1, 1));
+    world.createCollider(
+      ColliderDesc.ball(MARBLE_RADIUS).setFriction(0.45).setRestitution(0.15),
+      body,
+    );
+    body.setLinvel({ x: 0, y: 0, z: -2 }, true);
+    // The dome must never trap a marble against a rail: with gentle flanks a
+    // head-on marble either rebounds (z back past +0.5) or rides up and over
+    // the low crown (continues past -0.5, no downstream piece in this world).
+    let settled = false;
+    for (let step = 0; step < 900 && !settled; step += 1) {
+      world.step();
+      const t = body.translation();
+      if (t.z > 0.5 || t.z < -0.5) settled = true;
+    }
+    expect(settled).toBe(true);
   });
 });

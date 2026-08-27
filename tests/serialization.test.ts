@@ -267,4 +267,36 @@ describe("track serialization", () => {
     };
     expect(() => deserializeTrack(JSON.stringify(asymmetric))).toThrow();
   });
+
+  it("round-trips splitter and portless bumper nodes without connections", () => {
+    const graph = createTrackGraph();
+    const splitter = addPiece(graph, "splitter", P0, "piece-1");
+    const bumper = addPiece(graph, "bumper", P1, "piece-2");
+
+    const restored = deserializeTrack(serializeTrack(graph));
+
+    expect(getPiece(restored, splitter)?.typeId).toBe("splitter");
+    const restoredBumper = getPiece(restored, bumper);
+    expect(restoredBumper?.typeId).toBe("bumper");
+    expect(restoredBumper?.connections).toEqual({});
+    expect(restoredBumper?.placement).toEqual(P1);
+    expect(addPiece(restored, "straight", P0)).toBe("piece-3");
+  });
+
+  it("loads v2 saves written before the splitter and bumper existed", () => {
+    const payload = {
+      version: 2,
+      nextId: 2,
+      pieces: [
+        { id: "piece-1", typeId: "straight", placement: P0, connections: { a: null, b: null } },
+      ],
+      dropPoint: null,
+    };
+
+    const restored = deserializeTrack(JSON.stringify(payload));
+
+    expect(restored.pieces.size).toBe(1);
+    expect(getPiece(restored, "piece-1")?.typeId).toBe("straight");
+    expect([...restored.pieces.values()].some((piece) => piece.typeId === "bumper")).toBe(false);
+  });
 });
