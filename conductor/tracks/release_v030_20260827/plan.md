@@ -9,12 +9,19 @@ policy); the tag is pushed only after merge and smoke pass.
 
 ## Phase 1 · Baseline Verification
 
-- [ ] Task: Establish pre-release baseline on `chore/release-v030`
-  - [ ] Confirm clean working tree and parity with `origin/master` (branch
+- [x] Task: Establish pre-release baseline on `chore/release-v030`
+  - [x] Confirm clean working tree and parity with `origin/master` (branch
         point)
-  - [ ] Run frozen install, `CI=true pnpm vitest run --coverage`,
+  - [x] Run frozen install, `CI=true pnpm vitest run --coverage`,
         `CI=true pnpm biome check .`
-  - [ ] Record baseline bundle sizes from `pnpm build`
+  - [x] Record baseline bundle sizes from `pnpm build`
+  - Notes: branch point 9231355 == origin/master; tree clean except this
+    plan file + pre-existing untracked `.playwright-cli/`. Frozen install OK
+    (lockfile up to date, supply-chain policy passed). Gates: vitest 244/244
+    passed (31 files), 87.41% stmts / 90.18% lines overall; biome clean
+    (108 files). Baseline bundle: **3,493.13 kB min / 1,245.57 kB gzip**
+    (budget ≤3,500 / ≤1,250; headroom 6.87 kB min / 4.43 kB gzip). Note:
+    pwsh needs `$env:CI='true'` instead of bash-style `CI=true` prefix.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2 · Version Bump & Release Build Smoke Test
