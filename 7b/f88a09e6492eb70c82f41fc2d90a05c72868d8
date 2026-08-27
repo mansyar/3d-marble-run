@@ -1,0 +1,8 @@
+Task: Cut version bump to 0.3.0
+
+Summary: Bumped package.json to 0.3.0 and cut the local release tag.
+- pnpm version minor --no-git-tag-version: 0.2.0 -> 0.3.0 (full pnpm version refused: ERR_PNPM_UNCLEAN_WORKING_TREE)
+- Manual bump commit adf9e13 + annotated tag v0.3.0 -> adf9e13 (annotated type verified)
+- Tag unpushed: ls-remote shows v0.1.1 / v0.2.0 only; kept unpushed until smoke passes
+Files: package.json, conductor/tracks/release_v030_20260827/plan.md
+Why: FR-1 version bump precedes the smoke test so the preview build bakes 0.3.0 into the About modal.
