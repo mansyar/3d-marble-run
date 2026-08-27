@@ -5,11 +5,15 @@ import { buildPiece, FUNNEL_SPOUT_INNER_RADIUS, spawnStaticPiece } from "../src/
 import { MARBLE_RADIUS } from "../src/pieces/marble";
 import {
   canConnect,
+  channelPath,
+  CURVE_RADIUS,
   getWorldPort,
   PIECE_TYPE_IDS,
   type PieceTypeId,
   type PortKind,
+  RAMP_RISE,
   SPLITTER_RADIUS,
+  STRAIGHT_LENGTH,
 } from "../src/pieces/registry";
 import { createPhysics } from "../src/sim/physics";
 
@@ -270,6 +274,68 @@ describe("bumper piece", () => {
   it("registers a portless free-standing type", () => {
     const def = PIECE_TYPE_IDS.bumper;
     expect(def.ports).toEqual([]);
+  });
+});
+
+describe("channel path", () => {
+  const P0 = { position: [0, 0, 0] as [number, number, number], yawDeg: 0 };
+
+  /** Radial distance of every sample from an arc centre, on the XZ plane. */
+  function expectArc(samples: [number, number, number][], centre: [number, number]): void {
+    for (const [x, y, z] of samples) {
+      expect(Math.hypot(x - centre[0], z - centre[1])).toBeCloseTo(CURVE_RADIUS, 5);
+      expect(y).toBeCloseTo(0, 5);
+    }
+  }
+
+  it("runs straight between the used ports on a straight", () => {
+    expect(channelPath(P0, "straight", "a", "b")).toEqual([
+      [0, 0, -STRAIGHT_LENGTH / 2],
+      [0, 0, STRAIGHT_LENGTH / 2],
+    ]);
+  });
+
+  it("chords the ramp incline between its ports", () => {
+    expect(channelPath(P0, "ramp", "a", "b")).toEqual([
+      [0, 0, -STRAIGHT_LENGTH / 2],
+      [0, RAMP_RISE, STRAIGHT_LENGTH / 2],
+    ]);
+  });
+
+  it("samples the curve quarter arc from a to b", () => {
+    const samples = channelPath(P0, "curve", "a", "b");
+    expect(samples.length).toBeGreaterThan(4);
+    const first = samples[0];
+    const last = samples[samples.length - 1];
+    expect(first[0]).toBeCloseTo(-CURVE_RADIUS / 2, 5);
+    expect(first[2]).toBeCloseTo(CURVE_RADIUS / 2, 5);
+    expect(last[0]).toBeCloseTo(CURVE_RADIUS / 2, 5);
+    expect(last[2]).toBeCloseTo(-CURVE_RADIUS / 2, 5);
+    expectArc(samples, [-CURVE_RADIUS / 2, -CURVE_RADIUS / 2]);
+  });
+
+  it("samples the splitter branch arcs from the inlet to each outlet", () => {
+    const right = channelPath(P0, "splitter", "inlet", "outlet-r");
+    expect(right[0][2]).toBeCloseTo(SPLITTER_RADIUS, 5);
+    expect(right[right.length - 1]).toEqual([SPLITTER_RADIUS, 0, 0]);
+    expectArc(right, [SPLITTER_RADIUS, SPLITTER_RADIUS]);
+
+    const left = channelPath(P0, "splitter", "inlet", "outlet-l");
+    expect(left[0][2]).toBeCloseTo(SPLITTER_RADIUS, 5);
+    expect(left[left.length - 1]).toEqual([-SPLITTER_RADIUS, 0, 0]);
+    expectArc(left, [-SPLITTER_RADIUS, SPLITTER_RADIUS]);
+  });
+
+  it("applies placement yaw and position to arc samples", () => {
+    const samples = channelPath({ position: [1, 0, 2], yawDeg: 90 }, "curve", "a", "b");
+    // a local (-0.5, 0, 0.5) rotated 90° about +Y lands at (0.5, 0.5) + pos.
+    expect(samples[0][0]).toBeCloseTo(1.5, 5);
+    expect(samples[0][2]).toBeCloseTo(2.5, 5);
+  });
+
+  it("reduces to the used port on single-port pieces and the origin when portless", () => {
+    expect(channelPath(P0, "goal-cup", "inlet", null)).toEqual([[0, 0.6, 0]]);
+    expect(channelPath(P0, "bumper", null, null)).toEqual([[0, 0, 0]]);
   });
 });
 
