@@ -72,17 +72,33 @@ policy); the tag is pushed only after merge and smoke pass.
 
 ## Phase 3 · Release Tag, Pipeline & Live Verification
 
-- [~] Task: Merge PR, push release tag, monitor pipeline
-  - [~] Open/merge PR `chore/release-v030` → `master` with CI green; push
+- [x] Task: Merge PR, push release tag, monitor pipeline (990b07b)
+  - [x] Open/merge PR `chore/release-v030` → `master` with CI green; push
         `master`, then tag `v0.3.0`; watch release workflow end-to-end
-  - [ ] On gate failure: fix forward, re-cut tag (never force over published
-        tags)
-- [ ] Task: Verify live artifacts
-  - [ ] Pages site loads under repository base path; About modal reads v0.3.0
+  - [x] On gate failure: fix forward, re-cut tag (never force over published
+        tags) (n/a — no stage failed)
+  - Notes: branch pushed at 721a3fb; PR #6 merged with a merge commit
+    (990b07b) — merge-commit required so tag target adf9e13 stays in master
+    ancestry; annotated tag v0.3.0 pushed after merge. Release run
+    33119653788 green end-to-end: quality gate (tag check, vitest 244,
+    biome, tsc, build, size) → GitHub Release → Pages build+deploy → GHCR
+    publish → Coolify deploy webhook OK. Non-blocking annotations:
+    Node 20 deprecation warnings on some pinned actions.
+- [x] Task: Verify live artifacts
+  - [x] Pages site loads under repository base path; About modal reads v0.3.0
         in production
-  - [ ] GitHub Release published with generated notes covering the four
+  - [x] GitHub Release published with generated notes covering the four
         released tracks
-  - [ ] GHCR images present: `0.3.0`, `latest`, commit SHA
-  - [ ] README runbook re-checked against actual flow (update only if
-        drifted)
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - [x] GHCR images present: `0.3.0`, `latest`, commit SHA
+  - [x] README runbook re-checked against actual flow (update only if
+        drifted) (drifted → updated)
+  - Notes: Pages serves under /3d-marble-run/; live app chunk
+    app-DLmXnOZK.js carries version:"0.3.0" — hash identical to the Phase 2
+    smoke-tested build, so the About modal reads v0.3.0. Release published
+    2026-08-27T21:46:46Z; generated notes span v0.2.0...v0.3.0 covering all
+    four released tracks (audio, sound polish, PWA, branching). GHCR tags
+    confirmed via anonymous OCI tags API: 0.3.0, latest, sha-adf9e13.
+    README "Tagged releases" still described the old
+    `git push origin master --follow-tags` flow → rewrote to the PR-gated
+    flow.
+- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
