@@ -31,16 +31,11 @@ function isVec3(value: unknown): value is [number, number, number] {
   );
 }
 
+/** Derived from the registry so a new piece type can never drift out of
+ * sync here again (the hand-written list once missed `splitter`, silently
+ * breaking its saves). `Object.hasOwn` rejects inherited Object keys. */
 function isPieceTypeId(value: unknown): value is PieceTypeId {
-  return (
-    value === "straight" ||
-    value === "curve" ||
-    value === "ramp" ||
-    value === "funnel" ||
-    value === "goal-cup" ||
-    value === "splitter" ||
-    value === "bumper"
-  );
+  return typeof value === "string" && Object.hasOwn(PIECE_TYPE_IDS, value);
 }
 
 function parsePlacement(value: unknown): Placement {
