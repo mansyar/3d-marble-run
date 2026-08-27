@@ -6,8 +6,11 @@ locally in the browser.
 
 ## Build and play
 
-The tray contains five physical pieces: straight, curve, ramp, funnel, and goal
-cup, plus a dedicated Drop point tool. The Drop point is a separate overhead
+The tray contains seven physical pieces: straight, curve, ramp, funnel,
+splitter, bumper, and goal cup, plus a dedicated Drop point tool. Splitters
+fork a channel into two branches, and bumpers are free-standing domes you can
+seat anywhere — on the table or right on top of a track. The Drop point is a
+separate overhead
 marble entry point: place it freely above the table, then use its vertical guide
 to find the first track surface below. A fresh launch includes a connected
 five-piece starter route with a ready Drop point, while custom layouts remain
@@ -17,6 +20,9 @@ The Track status helper explains what is needed: place a Drop point, move it
 above a track piece, connect a goal cup, or drop a marble when the route is
 ready. Drop and Stream stay disabled until a valid landing and goal route exist;
 disconnected pieces are not blocked, so experimentation stays forgiving.
+Route guidance stays ambient: connector pieces you have not joined to the route
+yet pulse gently until they connect, and a soft violet glow traces each ready
+path from the Drop point landing to its goal cup.
 Marbles that leave the playable world are cleaned up automatically, and all
 saves remain local to the browser.
 

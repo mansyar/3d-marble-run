@@ -2,7 +2,7 @@
 
 ## Summary
 
-A browser-based 3D marble run builder where players snap together glossy toy-like track pieces — straights, curves, ramps, funnels, and goal cups — into cascading contraptions, then place a separate overhead Drop point to release marbles and watch real physics carry them home. Fully offline and optionally installable to the home screen, it runs equally well on desktop browsers (mouse + keyboard) and mobile (touch), with free-orbit camera while building and a chase-cam mode for spectating marbles in motion. Construction feels forgiving thanks to connector-snapping placement, free Drop point placement, undo/redo, advisory track guidance, and local auto-save; play feels rewarding through a global goal counter, run timer, and toggleable single-drop or continuous marble streams. Every visual asset is procedurally generated — no downloads, instant load, clean toy aesthetic.
+A browser-based 3D marble run builder where players snap together glossy toy-like track pieces — straights, curves, ramps, funnels, splitters, bumpers, and goal cups — into cascading contraptions, then place a separate overhead Drop point to release marbles and watch real physics carry them home. Fully offline and optionally installable to the home screen, it runs equally well on desktop browsers (mouse + keyboard) and mobile (touch), with free-orbit camera while building and a chase-cam mode for spectating marbles in motion. Construction feels forgiving thanks to connector-snapping placement, free Drop point placement, undo/redo, advisory track guidance, and local auto-save; play feels rewarding through a global goal counter, run timer, and toggleable single-drop or continuous marble streams. Every visual asset is procedurally generated — no downloads, instant load, clean toy aesthetic.
 
 ## Target Audience
 
@@ -21,15 +21,15 @@ A browser-based 3D marble run builder where players snap together glossy toy-lik
 
 ## V1 Feature Set
 
-- **5 physical piece types:** straight · curve · slope/ramp · funnel · goal cup
+- **7 physical piece types:** straight · curve · slope/ramp · funnel · splitter · bumper · goal cup
 - **Drop point tool:** one free X/Z overhead entry point at fixed height, with a live landing guide
-- **Connector-snapping placement** with ghost preview and rotation
+- **Connector-snapping placement** with ghost preview and rotation; free-standing bumpers seat anywhere on the table or track
 - **Editing tools:** place · delete · move · undo/redo
 - **Spawning:** manual drop + continuous stream from the single active Drop point, toggleable only when a landing and goal route are ready
 - **Cameras:** free orbit (build/spectate) + chase cam (follow a marble)
 - **Light metrics:** global goal counter, run timer
 - **Persistence:** version-2 IndexedDB auto-save + named save slots, with version-1 Start-gate migration (fully offline)
-- **Guidance:** advisory status for missing Drop points, missing landings, disconnected goals, and ready routes; lost marbles are cleaned up outside playable bounds
+- **Guidance:** advisory status for missing Drop points, missing landings, disconnected goals, and ready routes; ambient route guidance pulses unreachable connector pieces and glows ready landing-to-cup paths; lost marbles are cleaned up outside playable bounds
 
 ## Success Criteria (V1)
 
