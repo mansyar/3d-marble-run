@@ -33,10 +33,12 @@
 
 ## Phase 2 · Bumper Piece (portless node + free placement)
 
-### [ ] Task: Write failing tests for bumper registry & serialization
+### [x] Task: Write failing tests for bumper registry & serialization `458847b`
 - `"bumper"` type def with empty ports; `TrackDocument` round-trip with
   bumper nodes; old saves without bumpers load; graph BFS treats portless
   nodes safely (never a goal, never in routes). Confirm RED.
+- Notes: RED 4/39 — also exposed the serializer's `isPieceTypeId` allow-list
+  rejects `"splitter"` (latent Phase 1 gap); fixed in the GREEN commit.
 
 ### [ ] Task: Implement bumper piece, placement & edit integration
 - Dome geometry + static dome/sphere collider with high-restitution constant;
