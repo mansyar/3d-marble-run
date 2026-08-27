@@ -2,7 +2,7 @@
 
 ## Overview
 
-Web-first, zero-backend, fully offline. Every runtime asset is procedurally generated in code — the shipped product is a static bundle of JS/WASM/CSS/HTML only.
+Web-first, zero-backend, fully offline. Every runtime media asset is procedurally generated in code — the shipped product is a static bundle of JS/WASM/CSS/HTML plus the PWA shell chrome (web manifest, service worker, generated icon PNGs).
 
 | Layer | Choice | Rationale |
 |---|---|---|
@@ -13,6 +13,7 @@ Web-first, zero-backend, fully offline. Every runtime asset is procedurally gene
 | **Storage** | IndexedDB (via tiny `idb` wrapper) | Async local auto-save + named slots; no backend, survives refreshes |
 | **UI layer** | Vanilla TS + DOM overlay over canvas | Minimal HUD doesn't justify a framework's bundle cost; CSS handles styling |
 | **Audio** | Web Audio API (native) | Procedural one-shot SFX synthesized in code (oscillators/envelopes) — no samples, no assets, ~zero bundle cost; v2-deferred per product.md, shipped with the Procedural Audio track |
+| **PWA shell** | `vite-plugin-pwa` (dev dep) + build-generated icons | Manifest + precache service worker for installability/offline; icons rasterized at build from a single source SVG via `@resvg/resvg-js` (dev dep) — no hand-maintained binaries |
 | **Testing** | Vitest | Fast TS-native unit tests for pure logic: track graph, snapping rules, save serialization, spawner state machine |
 | **Hosting** | Any static host (GitHub Pages / Netlify / Cloudflare Pages) | Zero server logic required |
 
@@ -31,7 +32,7 @@ Web-first, zero-backend, fully offline. Every runtime asset is procedurally gene
 
 ## Constraints & Budgets
 
-- **Zero external runtime assets:** all geometry and materials generated in code — no textures, models, or audio files shipped
+- **Zero external runtime media assets:** all 3D geometry, materials, and audio generated in code — no textures, models, or audio files shipped. Documented exception (since `pwa_budget_20260827`): PWA shell chrome only — web manifest, service worker, and icon PNGs rasterized at build time from the source SVG.
 - **Payload:** V1 budget is ≤3,500 kB minified / ≤1,250 kB gzip, measured globally
   across all emitted chunks by `pnpm check:size`, which hard-fails CI and releases
   on violation. Since `pwa_budget_20260827`, the physics runtime (Rapier + embedded

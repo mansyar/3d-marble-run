@@ -31,7 +31,8 @@ coverage on changed logic, plan status updates `[ ]` → `[~]` → `[x] <sha7>`)
 
 ## Phase 2 — Installable PWA Shell
 
-- [ ] **Task 2.1: Tech-stack amendments before implementation** *(workflow rule 2)*
+- [x] **Task 2.1: Tech-stack amendments before implementation** *(workflow rule 2)*
+  - Notes: Overview + asset constraint now document the PWA-shell exception (manifest, SW, build-rasterized icon PNGs — media still 100% procedural); stack table gains "PWA shell" row naming `vite-plugin-pwa` and `@resvg/resvg-js` as devDependencies (pins recorded in package.json when added).
   - Document `vite-plugin-pwa` + icon rasterizer as devDependencies and the
     manifest/SW/icon-PNG asset exception
 - [ ] **Task 2.2: Icon pipeline** *(logic-bearing config)*
