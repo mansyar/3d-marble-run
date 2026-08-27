@@ -9,7 +9,7 @@ import { createEditorHistory } from "./core/editorHistory";
 import { createStepper } from "./core/stepper";
 import { type SpawnedPiece, spawnStaticPiece } from "./pieces/builders";
 import { createMarbleMesh, MARBLE_RADIUS } from "./pieces/marble";
-import { getWorldPort, type PieceTypeId, type Placement } from "./pieces/registry";
+import { getWorldPort, PIECE_TYPE_IDS, type PieceTypeId, type Placement } from "./pieces/registry";
 import { type CameraTarget, createFreeOrbitCamera, type FreeOrbitCamera } from "./render/camera";
 import { createDropPointGuide, type DropPointGuide } from "./render/dropPointGuide";
 import { createGuidanceRenderer, type GuidanceRenderer } from "./render/guidance";
@@ -286,7 +286,22 @@ syncScene();
 
 guidance = createGuidanceRenderer({
   scene: handle.scene,
-  originOf: (pieceId) => graph.pieces.get(pieceId)?.placement.position ?? null,
+  channelPointOf: (pieceId) => {
+    const piece = graph.pieces.get(pieceId);
+    if (!piece) return null;
+    const ports = PIECE_TYPE_IDS[piece.typeId].ports;
+    if (ports.length === 0) return piece.placement.position;
+    let x = 0;
+    let y = 0;
+    let z = 0;
+    for (const port of ports) {
+      const world = getWorldPort(piece.placement, piece.typeId, port.id);
+      x += world.position[0];
+      y += world.position[1];
+      z += world.position[2];
+    }
+    return [x / ports.length, y / ports.length, z / ports.length];
+  },
   pieceGroupOf: (pieceId) => spawned.get(pieceId)?.group ?? null,
   connectionPointOf: (aId, bId) => {
     const piece = graph.pieces.get(aId);

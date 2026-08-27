@@ -28,7 +28,9 @@ export interface GuidanceState {
 
 export interface GuidanceDeps {
   scene: Scene;
-  originOf: (pieceId: string) => [number, number, number] | null;
+  /** Mid-channel point of a piece — centroid of its ports' world positions
+   * (rides the ramp's rise; falls back to the placement origin if portless). */
+  channelPointOf: (pieceId: string) => [number, number, number] | null;
   /** Rendered group for a piece id, used to pulse its materials. */
   pieceGroupOf: (pieceId: string) => Group | null;
   /** World position of the shared port between two connected pieces — the
@@ -88,10 +90,10 @@ export function createGuidanceRenderer(deps: GuidanceDeps): GuidanceRenderer {
         if (previous && previous.distanceToSquared(point) < 1e-6) return;
         points.push(point);
       };
-      push(deps.originOf(route.pieceIds[0]));
+      push(deps.channelPointOf(route.pieceIds[0]));
       for (let i = 1; i < route.pieceIds.length; i++) {
         push(deps.connectionPointOf(route.pieceIds[i - 1], route.pieceIds[i]));
-        push(deps.originOf(route.pieceIds[i]));
+        push(deps.channelPointOf(route.pieceIds[i]));
       }
       if (points.length < 2) continue;
       // Tension 0 = straight runs between channel points (piece centres and
