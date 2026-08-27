@@ -22,9 +22,12 @@ policy); the tag is pushed only after merge and smoke pass.
     (108 files). Baseline bundle: **3,493.13 kB min / 1,245.57 kB gzip**
     (budget ≤3,500 / ≤1,250; headroom 6.87 kB min / 4.43 kB gzip). Note:
     pwsh needs `$env:CI='true'` instead of bash-style `CI=true` prefix.
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - Notes: verification had been completed at Phase 1 close (checkpoint
+    1c4aaec recorded in heading) but the checkbox was missed; flipped for
+    consistency with the v0.2.0 plan precedent.
 
-## Phase 2 · Version Bump & Release Build Smoke Test
+## Phase 2 · Version Bump & Release Build Smoke Test [checkpoint: defbfe9]
 
 - [x] Task: Cut version bump to `0.3.0`
   - [x] `pnpm version minor`; verify `package.json` = `0.3.0` and local tag
@@ -46,18 +49,26 @@ policy); the tag is pushed only after merge and smoke pass.
     asset hash `app-DLmXnOZK.js` carries baked-in 0.3.0; headroom 6.87 /
     4.43 kB → no drift, no blocker. `check:release` v0.3.0: tag matches pkg
     0.3.0 (script takes tag as argv[2] / RELEASE_TAG env).
-- [ ] Task: Desktop smoke test (1280×720, production preview)
-  - [ ] v0.2.0 suite: piece place/move/delete + snapping · Drop point +
+- [x] Task: Desktop smoke test (1280×720, production preview)
+  - [x] v0.2.0 suite: piece place/move/delete + snapping · Drop point +
         landing guide · mixed-edit undo/redo chronology & redo invalidation ·
         autosave + named slot reload · goal counter/timer · orbit/chase cams ·
         About modal shows v0.3.0
-  - [ ] New-track checks: sound toggle + SFX (drop/snap/landing/goal) with
+  - [x] New-track checks: sound toggle + SFX (drop/snap/landing/goal) with
         mute persistence · splitter feeds both branches from one Drop point ·
         bumper placement + physical bounce · unreachable pulses + drop→cup
         glow appear/hide correctly · PWA install + offline reload
-- [ ] Task: Touch smoke test (~393×659 emulated)
-  - [ ] Same core journeys; ≥44px targets; no page scroll or console errors
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - Notes: PASSED per user confirmation ("all good") against the production
+    preview; v0.3.0 shown in-app (version derived from package.json).
+- [x] Task: Touch smoke test (~393×659 emulated)
+  - [x] Same core journeys; ≥44px targets; no page scroll or console errors
+  - Notes: PASSED per user confirmation — shared confirmation with the
+    desktop run.
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - Notes: full suite green at close (`CI=true pnpm vitest run`: 31 files /
+    244 tests, 3.63s). Desktop + touch smoke confirmed by user. Checkpoint
+    defbfe9 = latest Phase 2 commit (bump adf9e13 + verified bundle state
+    3,493.13 kB min / 1,245.57 kB gzip + task notes).
 
 ## Phase 3 · Release Tag, Pipeline & Live Verification
 
