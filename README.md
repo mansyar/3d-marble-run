@@ -129,8 +129,9 @@ docker build -t marblescape:local .
 
 `package.json` is the release source of truth. Releases use stable
 `vMAJOR.MINOR.PATCH` tags, and the tag must exactly match the package version.
-Cut each release from a dedicated branch — `master` only accepts changes
-through PRs, so the tag is pushed only after the merge:
+Cut each release from a dedicated branch — per the current CI-gating policy
+the release train reaches `master` through a PR, so the tag is pushed only
+after the merge:
 
 ```bash
 git checkout -b chore/release-vX.Y.Z
