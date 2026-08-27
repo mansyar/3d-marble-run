@@ -2,14 +2,15 @@
 
 ## Phase 1 · Splitter Piece (logic + geometry)
 
-### [ ] Task: Write failing tests for the splitter registry entry
+### [x] Task: Write failing tests for the splitter registry entry `80de0cd`
+- Notes: TDD red — 6 failed / 15 passed. Pinned splitter registry contract: exactly 3 run ports (`inlet` at `[0,0,R]` dir `+Z`; `outlet-l/-r` at `[±R,0,0]` dir `±X`), perpendicular dirs, `run|run` reuse, exhaustive type list 5→6.
 - Extend registry tests: `splitter` in `PIECE_TYPE_IDS` with exactly 3 ports
   all kind `"run"` (inlet at stem top, two outlets at branch tips); port
   positions/directions consistent with new `SPLITTER_*` dimension constants;
   `canConnect` joins via existing `run|run`. Confirm RED before
   implementation.
 
-### [ ] Task: Implement splitter registry entry, geometry & tray
+### [x] Task: Implement splitter registry entry, geometry & tray `abc8fb4`
 - Registry constants + port defs; Y-channel geometry with rounded splitter
   apex in `pieces/builders.ts` + trimesh collider; `PIECE_COLORS` shade
   variant of the curve's hue; `PIECE_LABELS` "Splitter" + tray button
