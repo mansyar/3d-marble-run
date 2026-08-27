@@ -1,0 +1,11 @@
+Task: Establish pre-release baseline on chore/release-v030
+
+Summary: Verified the release-track starting point and recorded baseline gates.
+- Tree clean; branch point 9231355 == origin/master (parity OK)
+- pnpm install --frozen-lockfile: lockfile up to date, supply-chain policy passed
+- CI=true pnpm vitest run --coverage: 244/244 tests passed (31 files), 87.41% stmts / 90.18% lines
+- CI=true pnpm biome check .: clean (108 files)
+- pnpm build: tsc strict + vite build green
+- Baseline payload: 3,493.13 kB min / 1,245.57 kB gzip (budget 3,500 / 1,250; headroom 6.87 / 4.43 kB)
+Files: conductor/tracks/release_v030_20260827/plan.md
+Why: Establishes the gate baseline the v0.3.0 release train is measured against.
