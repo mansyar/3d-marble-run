@@ -16,10 +16,13 @@
   variant of the curve's hue; `PIECE_LABELS` "Splitter" + tray button
   (compile-time Record exhaustiveness forces both). GREEN.
 
-### [ ] Task: Cover changed logic and commit Phase 1
+### [x] Task: Cover changed logic and commit Phase 1 `abc8fb4`
 - `pnpm vitest run --coverage` ≥80% on changed registry logic;
   `CI=true pnpm biome check .`; commit `feat(pieces): Add Y-splitter piece`;
   git note attached.
+- Notes: registry 100% lines / builders 100% lines (full suite) — coverage,
+  Biome, build, and size gate all verified before the single `feat(pieces)`
+  commit (implementation + tests combined per red→green flow).
 
 ### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 - [ ] Run full suite once; propose manual verification (dev server; splitter
