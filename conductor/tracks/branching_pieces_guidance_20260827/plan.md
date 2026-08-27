@@ -110,7 +110,7 @@
   `3e0e702`); user confirmed desktop + touch. Report attached as git note on
   `3e0e702`.
 
-## Phase 4 · Docs & Release Readiness
+## Phase 4 · Docs & Release Readiness [checkpoint: 317a03f]
 
 ### [x] Task: Update product docs `317a03f`
 - `product.md` piece set (5 physical → 7 with splitter + bumper) and
@@ -122,9 +122,11 @@
 - Notes: Biome clean (107 files), 244/244 tests, build OK, payload
   3,493.19 kB min / 1,245.60 kB gzip within budget (3,500 / 1,250).
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-- [ ] Full manual protocol on desktop + touch: Y-branch feeds both cups from
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `317a03f`
+- [x] Full manual protocol on desktop + touch: Y-branch feeds both cups from
   one Drop point; bumper bounce feels physical; pulses/glow behave and exempt
   the bumper; save round-trips.
-- [ ] Await explicit user confirmation; record final phase checkpoint SHA in
+- [x] Await explicit user confirmation; record final phase checkpoint SHA in
   `plan.md`.
+- Notes: user confirmed the full checklist (desktop + touch); report attached
+  as git note on `317a03f`.
