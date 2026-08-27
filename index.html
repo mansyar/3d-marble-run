@@ -12,6 +12,18 @@
   </head>
   <body>
     <div id="app"></div>
+    <div id="boot-screen" role="status" aria-live="polite">
+      <div id="boot-card">
+        <div class="boot-marble" aria-hidden="true"></div>
+        <p class="boot-title">Marblescape</p>
+        <p class="boot-hint">Warming up the marbles…</p>
+      </div>
+      <div id="boot-retry" hidden>
+        <p class="boot-title">Oh no, the marbles didn't load.</p>
+        <p class="boot-hint">Check your connection and try again.</p>
+        <button id="boot-retry-button" type="button">Try again</button>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

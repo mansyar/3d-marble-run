@@ -611,6 +611,14 @@ canvas.camera-orbiting {
   .coach-mark {
     animation: none;
   }
+
+  .boot-marble {
+    animation: none;
+  }
+
+  #boot-screen {
+    transition: none;
+  }
 }
 
 @keyframes coach-mark-in {
@@ -621,5 +629,92 @@ canvas.camera-orbiting {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* --- Boot loading screen ---------------------------------------------------- */
+
+#boot-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  background: #f5efe4;
+  transition: opacity 320ms ease-out;
+}
+
+#boot-screen.boot-done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#boot-card {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  color: #3d3428;
+}
+
+#boot-screen.boot-failed #boot-card {
+  display: none;
+}
+
+.boot-marble {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 28%, #fff 0 12%, #8333ec 13% 60%, #5b1fae 61% 100%);
+  box-shadow: 0 12px 24px rgb(61 52 40 / 0.25);
+  animation: boot-bounce 900ms ease-in-out infinite;
+}
+
+#boot-screen.boot-failed .boot-marble {
+  animation: none;
+}
+
+.boot-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.boot-hint {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+#boot-retry {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  color: #3d3428;
+}
+
+#boot-retry[hidden] {
+  display: none;
+}
+
+#boot-retry-button {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 16px;
+  background: #8333ec;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgb(61 52 40 / 0.22);
+}
+
+@keyframes boot-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-22px);
   }
 }
