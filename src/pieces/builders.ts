@@ -126,7 +126,7 @@ function buildRamp(): BuiltPiece {
   return { group: outer, colliders: built.colliders };
 }
 
-const CURVE_SEGMENTS = 8;
+const CURVE_SEGMENTS = 16;
 
 function buildCurve(): BuiltPiece {
   // Quarter arc approximated by short trough segments along r=CURVE_RADIUS,
