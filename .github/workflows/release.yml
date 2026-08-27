@@ -48,6 +48,9 @@ jobs:
       - name: Build for the repository Pages path
         run: pnpm exec vite build --base="/${{ github.event.repository.name }}/"
 
+      - name: Enforce payload budget
+        run: pnpm check:size
+
   github-release:
     name: Create GitHub Release
     needs: quality
