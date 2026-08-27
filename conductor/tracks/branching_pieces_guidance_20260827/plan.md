@@ -40,15 +40,21 @@
 - Notes: RED 4/39 — also exposed the serializer's `isPieceTypeId` allow-list
   rejects `"splitter"` (latent Phase 1 gap); fixed in the GREEN commit.
 
-### [ ] Task: Implement bumper piece, placement & edit integration
+### [x] Task: Implement bumper piece, placement & edit integration `d29c9ce`
 - Dome geometry + static dome/sphere collider with high-restitution constant;
   free table placement (surface raycast + ghost preview, touch parity);
   move/delete wired through the unified editor history (tests first for any
   new pure placement logic). GREEN.
+- Notes: placement needed zero changes — `classifySnap` already returns
+  `free` for zero-candidate (portless) drags. Serializer allow-list fixed for
+  both new types (splitter round-trip was silently broken in Phase 1).
 
-### [ ] Task: Cover changed logic and commit Phase 2
+### [x] Task: Cover changed logic and commit Phase 2 `d29c9ce`
 - Coverage ≥80% on changed logic; commit
   `feat(pieces): Add free-standing bumper piece`; git note attached.
+- Notes: full-suite coverage verified with the gate run (registry,
+  serialization, builders, tray all exercised); Biome clean; 234/234; payload
+  within budget.
 
 ### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 - [ ] Run full suite once; propose manual verification (bumper placement on
