@@ -2,7 +2,7 @@
 
 ## Summary
 
-A browser-based 3D marble run builder where players snap together glossy toy-like track pieces — straights, curves, ramps, funnels, and goal cups — into cascading contraptions, then place a separate overhead Drop point to release marbles and watch real physics carry them home. Fully offline and installable-free, it runs equally well on desktop browsers (mouse + keyboard) and mobile (touch), with free-orbit camera while building and a chase-cam mode for spectating marbles in motion. Construction feels forgiving thanks to connector-snapping placement, free Drop point placement, undo/redo, advisory track guidance, and local auto-save; play feels rewarding through a global goal counter, run timer, and toggleable single-drop or continuous marble streams. Every visual asset is procedurally generated — no downloads, instant load, clean toy aesthetic.
+A browser-based 3D marble run builder where players snap together glossy toy-like track pieces — straights, curves, ramps, funnels, and goal cups — into cascading contraptions, then place a separate overhead Drop point to release marbles and watch real physics carry them home. Fully offline and optionally installable to the home screen, it runs equally well on desktop browsers (mouse + keyboard) and mobile (touch), with free-orbit camera while building and a chase-cam mode for spectating marbles in motion. Construction feels forgiving thanks to connector-snapping placement, free Drop point placement, undo/redo, advisory track guidance, and local auto-save; play feels rewarding through a global goal counter, run timer, and toggleable single-drop or continuous marble streams. Every visual asset is procedurally generated — no downloads, instant load, clean toy aesthetic.
 
 ## Target Audience
 
