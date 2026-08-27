@@ -108,6 +108,22 @@ export function createPlacementController(deps: PlacementDeps): {
   deleteBtn.addEventListener("click", () => deleteActive());
   document.body.appendChild(deleteBtn);
 
+  // Contextual hint for portless pieces — they place freely instead of
+  // snapping, which otherwise reads as "broken" (found in playtesting).
+  const FREE_PLACEMENT_HINTS: Partial<Record<PieceTypeId, string>> = {
+    bumper: "Bumpers sit free on the table — marbles bounce off them.",
+  };
+  const hintEl = document.createElement("div");
+  hintEl.className = "placement-hint";
+  hintEl.hidden = true;
+  document.body.appendChild(hintEl);
+
+  function refreshHint(): void {
+    const text = activeTypeId ? FREE_PLACEMENT_HINTS[activeTypeId] : undefined;
+    hintEl.textContent = text ?? "";
+    hintEl.hidden = !text;
+  }
+
   const tablePlane = new Plane(new Vector3(0, 1, 0), 0);
   const raycaster = new Raycaster();
   const ndc = new Vector2();
@@ -237,6 +253,7 @@ export function createPlacementController(deps: PlacementDeps): {
     cursorPos = null;
     rotateBtn.hidden = true;
     deleteBtn.hidden = true;
+    refreshHint();
     deps.onEnd?.();
   }
 
@@ -265,6 +282,7 @@ export function createPlacementController(deps: PlacementDeps): {
     ghost = makeGhost(piece.typeId);
     rotateBtn.hidden = false;
     deleteBtn.hidden = false;
+    refreshHint();
   }
 
   function restoreMoving(): void {
@@ -287,6 +305,7 @@ export function createPlacementController(deps: PlacementDeps): {
     cursorPos = null;
     rotateBtn.hidden = true;
     deleteBtn.hidden = true;
+    refreshHint();
     history.execute(graph, new DeleteCommand(state.id, state.beforeSnapshot));
     deps.onChange?.();
     deps.onDelete?.();
@@ -394,6 +413,7 @@ export function createPlacementController(deps: PlacementDeps): {
     ghost = makeGhost(typeId);
     rotateBtn.hidden = false;
     deleteBtn.hidden = true;
+    refreshHint();
   }
 
   function cancel(): void {
@@ -405,6 +425,7 @@ export function createPlacementController(deps: PlacementDeps): {
     cursorPos = null;
     rotateBtn.hidden = true;
     deleteBtn.hidden = true;
+    refreshHint();
     deps.onEnd?.();
   }
 
