@@ -1,0 +1,9 @@
+Task: Rebuild production bundle & recheck payload budget
+
+Summary: Rebuilt production bundle after the version bump and asserted the payload budget.
+- pnpm build: tsc strict + vite build green; PWA precache regenerated
+- Payload: 3,493.13 kB min / 1,245.57 kB gzip (budget 3,500 / 1,250) - identical to baseline (delta 0.00/0.00)
+- New asset hash app-DLmXnOZK.js carries baked-in version 0.3.0; headroom 6.87 kB min / 4.43 kB gzip
+- check:release: tag v0.3.0 matches package.json version 0.3.0
+Files: conductor/tracks/release_v030_20260827/plan.md
+Why: FR-2 budget recheck - drift would have been a blocker to investigate.
