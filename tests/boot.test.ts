@@ -87,6 +87,27 @@ describe("createBootController", () => {
     expect(start).toHaveBeenCalledTimes(1);
   });
 
+  it("begin after ready does not re-run start", async () => {
+    const start = vi.fn(() => Promise.resolve());
+    const controller = createBootController(start);
+    controller.begin();
+    await vi.waitFor(() => expect(controller.phase()).toBe("ready"));
+    controller.begin();
+    expect(start).toHaveBeenCalledTimes(1);
+  });
+
+  it("begin after failed does not re-run start (retry is the only re-entry)", async () => {
+    const deferred = createDeferred();
+    const start = vi.fn(() => deferred.promise);
+    const controller = createBootController(start);
+    controller.begin();
+    deferred.reject(new Error("offline"));
+    await vi.waitFor(() => expect(controller.phase()).toBe("failed"));
+    controller.begin();
+    expect(controller.phase()).toBe("failed");
+    expect(start).toHaveBeenCalledTimes(1);
+  });
+
   it("notifies listeners of each phase transition", () => {
     const first = createDeferred();
     const second = createDeferred();

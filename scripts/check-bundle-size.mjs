@@ -108,6 +108,22 @@ function collectBudgetedFiles(distDir) {
   return entries;
 }
 
+/**
+ * Parse a numeric CLI flag value. Absent flags return undefined so the caller
+ * can apply its default; anything non-numeric — including empty strings,
+ * which `Number()` would coerce to 0 — returns NaN so callers can reject the
+ * run instead of silently disabling the gate.
+ *
+ * @param {string | undefined} raw
+ * @returns {number | undefined}
+ */
+export function parseBudgetValue(raw) {
+  if (raw === undefined) return undefined;
+  if (raw.trim() === "") return NaN;
+  const value = Number(raw);
+  return Number.isFinite(value) ? value : NaN;
+}
+
 function parseArgValue(flag) {
   const index = process.argv.indexOf(flag);
   return index >= 0 ? Number(process.argv[index + 1]) : undefined;
@@ -115,6 +131,14 @@ function parseArgValue(flag) {
 
 function main() {
   const distDir = process.argv[2] && !process.argv[2].startsWith("--") ? process.argv[2] : "dist";
+
+  const minKb = parseBudgetValue(parseArgValue("--min-kb")) ?? BUDGET_MIN_KB;
+  const gzipKb = parseBudgetValue(parseArgValue("--gzip-kb")) ?? BUDGET_GZIP_KB;
+  if (Number.isNaN(minKb) || Number.isNaN(gzipKb)) {
+    console.error("✗ Invalid --min-kb or --gzip-kb value — expected a finite number of kilobytes.");
+    process.exitCode = 1;
+    return;
+  }
 
   let entries;
   try {
@@ -126,8 +150,8 @@ function main() {
   }
 
   const budgets = {
-    minBytes: (parseArgValue("--min-kb") ?? BUDGET_MIN_KB) * 1000,
-    gzipBytes: (parseArgValue("--gzip-kb") ?? BUDGET_GZIP_KB) * 1000,
+    minBytes: minKb * 1000,
+    gzipBytes: gzipKb * 1000,
   };
 
   const totals = sumTotals(entries);

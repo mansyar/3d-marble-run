@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   APPLE_TOUCH_SIZE,
+  buildManifest,
   ICON_SIZES,
   iconManifestEntries,
   MASKABLE_SIZE,
@@ -25,10 +26,17 @@ describe("icon pipeline", () => {
     expect(entries[0].purpose).toBe("any");
     expect(entries[1].purpose).toBe("any");
     expect(entries[2].purpose).toBe("maskable");
-    expect(entries[2].src).toBe("/icons/icon-maskable-512.png");
+    expect(entries[2].src).toBe("icons/icon-maskable-512.png");
   });
 
-  it("builds icon urls under the deployment base path", () => {
+  it("keeps icon src paths stable across sizes", () => {
+    const [small, large, maskable] = iconManifestEntries();
+    expect(small.src).toBe("icons/icon-192.png");
+    expect(large.src).toBe("icons/icon-512.png");
+    expect(maskable.src).toBe("icons/icon-maskable-512.png");
+  });
+
+  it("builds icon urls under an explicit deployment base path", () => {
     const entries = iconManifestEntries("/marblescape/");
     expect(entries.map((entry) => entry.src)).toEqual([
       "/marblescape/icons/icon-192.png",
@@ -36,11 +44,34 @@ describe("icon pipeline", () => {
       "/marblescape/icons/icon-maskable-512.png",
     ]);
   });
+});
 
-  it("keeps icon src paths stable across sizes", () => {
-    const [small, large, maskable] = iconManifestEntries();
-    expect(small.src).toBe("/icons/icon-192.png");
-    expect(large.src).toBe("/icons/icon-512.png");
-    expect(maskable.src).toBe("/icons/icon-maskable-512.png");
+describe("buildManifest", () => {
+  it("pairs the toy-set metadata with the generated icon entries", () => {
+    const manifest = buildManifest();
+    expect(manifest.name).toBe("Marblescape");
+    expect(manifest.short_name).toBe("Marblescape");
+    expect(manifest.display).toBe("standalone");
+    expect(manifest.orientation).toBe("any");
+    expect(manifest.background_color).toBe("#f5efe4");
+    expect(manifest.theme_color).toBe("#f5efe4");
+    expect(manifest.id).toBe("./");
+    expect(manifest.start_url).toBe("./");
+    expect(manifest.scope).toBe("./");
+  });
+
+  it("uses relative icon srcs by default so one manifest serves root and /<repo>/ deploys", () => {
+    const manifest = buildManifest();
+    expect(manifest.icons.map((entry) => entry.src)).toEqual([
+      "icons/icon-192.png",
+      "icons/icon-512.png",
+      "icons/icon-maskable-512.png",
+    ]);
+    expect(manifest.icons.map((entry) => entry.purpose)).toEqual(["any", "any", "maskable"]);
+  });
+
+  it("supports absolute bases for manifest-URL-relative icon resolution", () => {
+    const manifest = buildManifest("/marblescape/");
+    expect(manifest.icons[0].src).toBe("/marblescape/icons/icon-192.png");
   });
 });

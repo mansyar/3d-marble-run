@@ -2,7 +2,8 @@ export type BootPhase = "loading" | "ready" | "failed";
 
 export interface BootController {
   phase(): BootPhase;
-  /** Kicks off the boot sequence once; later calls while in flight are no-ops. */
+  /** Kicks off the boot sequence once; calls while in flight or after the run
+   * finished are no-ops — retry is the only re-entry. */
   begin(): void;
   /** Re-runs the boot sequence after a failure; ignored in any other phase. */
   retry(): void;
@@ -44,7 +45,7 @@ export function createBootController(start: () => Promise<void>): BootController
   return {
     phase: () => phase,
     begin: () => {
-      if (busy) return;
+      if (busy || phase !== "loading") return;
       void run();
     },
     retry: () => {

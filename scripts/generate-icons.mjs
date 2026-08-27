@@ -10,15 +10,37 @@ export const MASKABLE_SIZE = 512;
 /** Apple touch icon size rendered for the index.html link tag (px). */
 export const APPLE_TOUCH_SIZE = 180;
 
+/** Static web-app metadata written into the generated manifest. */
+export const MANIFEST_META = Object.freeze({
+  name: "Marblescape",
+  short_name: "Marblescape",
+  description:
+    "Build a 3D marble run out of toy blocks, drop in marbles, and watch them race home.",
+  id: "./",
+  start_url: "./",
+  scope: "./",
+  display: "standalone",
+  orientation: "any",
+  background_color: "#f5efe4",
+  theme_color: "#f5efe4",
+});
+
+/**
+ * Resolve an icon URL. A relative base ("./" or "") yields relative srcs so
+ * one manifest serves root and /<repo>/ deployments alike; absolute bases are
+ * preserved for manifest-URL-relative resolution.
+ */
 function iconUrl(baseUrl, fileName) {
-  return `${baseUrl.replace(/\/+$/, "")}/icons/${fileName}`;
+  const trimmed = baseUrl.replace(/\/+$/, "");
+  if (trimmed === "." || trimmed === "") return `icons/${fileName}`;
+  return `${trimmed}/icons/${fileName}`;
 }
 
 /**
  * Manifest entries for the generated icons. Pure so the manifest wiring stays
  * unit-testable and base-path aware (GitHub Pages deploys under /<repo>/).
  */
-export function iconManifestEntries(baseUrl = "/") {
+export function iconManifestEntries(baseUrl = "./") {
   return [
     ...ICON_SIZES.map((size) => ({
       src: iconUrl(baseUrl, `icon-${size}.png`),
@@ -33,6 +55,15 @@ export function iconManifestEntries(baseUrl = "/") {
       purpose: "maskable",
     },
   ];
+}
+
+/**
+ * Full web-app manifest object. Pure and unit-tested; the CLI serializes it
+ * to `public/manifest.webmanifest` so icon sizes and metadata share one
+ * source of truth.
+ */
+export function buildManifest(baseUrl = "./") {
+  return { ...MANIFEST_META, icons: iconManifestEntries(baseUrl) };
 }
 
 async function renderIcons(svgPath, outDir) {
@@ -54,6 +85,12 @@ async function renderIcons(svgPath, outDir) {
   }
 }
 
+async function writeManifest(outDir) {
+  const manifestPath = path.join(path.dirname(outDir), "manifest.webmanifest");
+  await writeFile(manifestPath, `${JSON.stringify(buildManifest("./"), null, 2)}\n`);
+  console.log(`  ${path.relative(process.cwd(), manifestPath)}`);
+}
+
 function invokedDirectly() {
   const entry = process.argv[1];
   return entry ? import.meta.url === pathToFileURL(entry).href : false;
@@ -63,4 +100,5 @@ if (invokedDirectly()) {
   const svgPath = process.argv[2] ?? "assets/icon.svg";
   const outDir = process.argv[3] ?? "public/icons";
   await renderIcons(svgPath, outDir);
+  await writeManifest(outDir);
 }

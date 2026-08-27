@@ -32,8 +32,8 @@ Drop point and can be edited normally.
 Marblescape ships as a Progressive Web App. After the first visit, the service
 worker precaches the whole bundle, so airplane-mode reloads stay fully playable,
 and the browser offers **Install** / **Add to Home Screen** (the installed app
-runs standalone with any orientation). Icons are rasterized at build time from
-the single source SVG:
+runs standalone with any orientation). Icons and the web manifest are generated
+at build time from the single source SVG and manifest metadata:
 
 ```bash
 pnpm generate:icons

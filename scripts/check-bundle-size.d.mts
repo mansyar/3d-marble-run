@@ -27,3 +27,4 @@ export function evaluateBudget(
 ): BudgetReport;
 export function formatKB(bytes: number): string;
 export function exitCodeFor(report: BudgetReport): 0 | 1;
+export function parseBudgetValue(raw: string | undefined): number | undefined;

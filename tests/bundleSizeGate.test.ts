@@ -4,6 +4,7 @@ import {
   evaluateBudget,
   exitCodeFor,
   formatKB,
+  parseBudgetValue,
   sumTotals,
 } from "../scripts/check-bundle-size.mjs";
 
@@ -102,5 +103,26 @@ describe("BUDGETED_EXTENSIONS", () => {
     for (const ext of [".png", ".svg", ".ico", ".json", ".webmanifest", ".map"]) {
       expect(BUDGETED_EXTENSIONS).not.toContain(ext);
     }
+  });
+});
+
+describe("parseBudgetValue", () => {
+  it("parses finite numeric flag values", () => {
+    expect(parseBudgetValue("3500")).toBe(3500);
+    expect(parseBudgetValue("1233.29")).toBe(1233.29);
+  });
+
+  it("returns undefined when the flag is absent so defaults apply", () => {
+    expect(parseBudgetValue(undefined)).toBeUndefined();
+  });
+
+  it("marks non-numeric values invalid instead of coercing to NaN passthrough", () => {
+    expect(parseBudgetValue("abc")).toBeNaN();
+    expect(parseBudgetValue("12kb")).toBeNaN();
+  });
+
+  it("marks an empty value invalid rather than coercing to zero", () => {
+    expect(parseBudgetValue("")).toBeNaN();
+    expect(parseBudgetValue("   ")).toBeNaN();
   });
 });

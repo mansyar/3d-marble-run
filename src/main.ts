@@ -25,5 +25,9 @@ function renderPhase(phase: BootPhase): void {
 }
 
 controller.onPhase(renderPhase);
-retryButton?.addEventListener("click", () => controller.retry());
+// Reload rather than re-importing ./app in place: the ES module registry
+// caches evaluation failures, so only a fresh document recovers from both
+// chunk-fetch and evaluation-time errors. With the service worker active the
+// reload is served from precache instantly.
+retryButton?.addEventListener("click", () => window.location.reload());
 controller.begin();
