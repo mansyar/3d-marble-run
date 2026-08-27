@@ -6,7 +6,7 @@ coverage on changed logic, plan status updates `[ ]` → `[~]` → `[x] <sha7>`)
 
 ## Phase 1 — Payload Split & Loading Experience
 
-- [ ] **Task 1.1: TDD bundle-size gate** *(logic-bearing)*
+- [~] **Task 1.1: TDD bundle-size gate** *(logic-bearing)*
   - Write failing unit tests for the size-gate core logic: dist aggregation incl.
     gzip, global budget comparison, exit codes
   - Implement `scripts/check-bundle-size.mjs` (zero new deps, matching
