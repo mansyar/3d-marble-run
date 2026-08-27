@@ -14,7 +14,8 @@ coverage on changed logic, plan status updates `[ ]` → `[~]` → `[x] <sha7>`)
     `check-release-version.mjs` conventions); add `pnpm check:size`
   - Wire into `.github/workflows/ci.yml` + `release.yml` after the build step,
     enforcing the current ≤3,500 kB min / ≤1,250 kB gzip budget immediately
-- [ ] **Task 1.2: Async physics chunk + boot flow** *(logic-bearing)*
+- [x] **Task 1.2: Async physics chunk + boot flow** *(logic-bearing)* — `7dfed56`
+  - Notes: TDD red→green — 10 tests on `src/core/boot.ts` controller (loading → ready | failed, guarded begin/retry, transition-only notifications). Whole former `main.ts` moved verbatim to `src/app.ts`, loaded via dynamic import from a 27-line `src/main.ts` bootstrap — Rapier/WASM + all rapier value importers (builders, landing) now live in the async chunk. Static `#boot-screen` in `index.html` (CSS bouncing marble, zero assets) paints pre-JS; kid-safe retry panel on failure; `prefers-reduced-motion` honored. Gates: 208/208, tsc/biome clean; entry chunk 2.57 kB min / 1.25 kB gzip, app chunk 3,441.50 kB min / 1,246.17 kB gzip.
   - TDD: unit-test the boot state machine first (loading → ready | load-failed →
     retry) — red → green
   - Move `createPhysics()` behind a dynamic import; scene/HUD activate on resolve;
