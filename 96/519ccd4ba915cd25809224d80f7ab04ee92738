@@ -1,0 +1,5 @@
+Task 1.1: TDD bundle-size gate (pwa_budget_20260827)
+
+Added scripts/check-bundle-size.mjs: zero-dependency Node CLI that walks dist/, gzips budgeted files (.js/.mjs/.css/.html/.wasm), and hard-fails when global minified (3500 kB) or gzip (1250 kB) totals exceed the tech-stack budget; --min-kb/--gzip-kb overrides enable the CI oversize probe. Pure helpers (sumTotals, evaluateBudget, formatKB, exitCodeFor) are exported and unit-tested in tests/bundleSizeGate.test.ts (15 tests, TDD red->green); .d.mts sibling keeps tsc strict green for the test import.
+
+Wired pnpm check:size after build in ci.yml and release.yml. Verified: 198/198 suite green, biome clean, tsc clean, real build 3,451.58 kB min / 1,231.89 kB gzip within budget (exit 0), oversize probe exits 1 (AC-6). Changed-logic coverage 100% (CLI fs/argv glue exempt per workflow).
