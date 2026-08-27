@@ -208,7 +208,12 @@ function buildSplitter(): BuiltPiece {
     }
   };
   // Stem: z from 0.45 to 1.0, meeting the inlet port at z = SPLITTER_RADIUS.
-  pushSegment(trough(0.55, "splitter"), [0, 0, 0.725], 0);
+  // Rails guide only the inlet approach — full-length rails ended in wall
+  // caps across the branch mouths, trapping marbles against the nose (found
+  // in playtesting). The floor-only tail sits 1 mm low so the overlapping
+  // branch floors win the coplanar z-fight.
+  pushSegment(trough(0.4, "splitter"), [0, 0, 0.8], 0, -0.001);
+  pushSegment(trough(0.15, "splitter", [false, false]), [0, 0, 0.525], 0, -0.001);
   // Quarter-arc branches of r=SPLITTER_RADIUS centered on (±R, 0, R). The
   // right branch sweeps a: π → 3π/2, the left: 0 → -π/2; under these sweep
   // directions the OUTER rail rides local +X for the right branch and local
