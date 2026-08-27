@@ -75,18 +75,29 @@
 - `routePathsToGoals(graph, landingPieceId)`: ordered piece-id path from the
   landing piece to each reachable goal cup. Confirm RED.
 
-### [ ] Task: Implement guidance helpers
+### [x] Task: Implement guidance helpers `331ef0a`
 - Extend `src/track/health.ts`; GREEN + ≥80% coverage on changed code.
+- Notes: BFS refactor shared via `bfsParents` (parent pointers) +
+  `parentsToPath`; new exports `unreachableConnectorPieces` and
+  `routePathsToGoals` (`GoalRoute`); dropHealth suite 10/10; import-order +
+  optional-chain lint fixed.
 
-### [ ] Task: Implement guidance rendering (visual glue)
+### [x] Task: Implement guidance rendering (visual glue) `331ef0a`
 - Subtle pulse overlay on unreachable pieces (static tint fallback under
   `prefers-reduced-motion`); soft route glow landing→cup(s); recompute only
   on graph/drop-point edits; auto-hide when not applicable; no new HUD
   controls.
+- Notes: new `src/render/guidance.ts` — violet accent (Drop-point hue)
+  emissive pulse with reduced-motion static fallback; additive TubeGeometry
+  glow rebuilt only on refresh; `tick(elapsedMs)` animates phase only when
+  pieces are tracked; refresh hooked into `refreshDropPointHealth`.
 
-### [ ] Task: Cover changed logic and commit Phase 3
+### [x] Task: Cover changed logic and commit Phase 3 `331ef0a`
 - Commit `feat(guidance): Add unreachable highlights and route glow`; git
   note attached.
+- Notes: full gate — Biome clean (107 files), 238/238 tests, build OK,
+  payload 3,491.77 kB min / 1,245.14 kB gzip within budget (3,500 / 1,250;
+  gzip headroom now ~4.9 kB).
 
 ### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 - [ ] Run full suite once; propose manual verification (disconnect a piece →
