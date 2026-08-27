@@ -57,6 +57,10 @@ export function createTray(
   for (const typeId of Object.keys(PIECE_TYPE_IDS) as PieceTypeId[]) {
     addButton(typeId, PIECE_LABELS[typeId], PIECE_COLORS[typeId]);
   }
+  const separator = document.createElement("span");
+  separator.className = "tray-separator";
+  separator.setAttribute("aria-hidden", "true");
+  tray.appendChild(separator);
   addButton("drop-point", DROP_POINT_LABEL, DROP_POINT_COLOR);
 
   function setActive(typeId: TraySelection | null): void {
@@ -65,8 +69,42 @@ export function createTray(
       btn.setAttribute("aria-pressed", String(id === typeId));
     }
     tray.classList.toggle("placing", typeId !== null);
+    if (typeId && buttons.has(typeId)) {
+      const btn = buttons.get(typeId);
+      if (btn && tray.scrollWidth > tray.clientWidth) {
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        btn.scrollIntoView({
+          behavior: reduced ? "auto" : "smooth",
+          block: "nearest",
+          inline: "center",
+        });
+      }
+    }
   }
 
   root.appendChild(tray);
+
+  function updateScrollState(): void {
+    const atStart = tray.scrollLeft <= 1;
+    const atEnd = tray.scrollLeft + tray.clientWidth >= tray.scrollWidth - 1;
+    tray.classList.toggle("at-start", atStart);
+    tray.classList.toggle("at-end", atEnd);
+  }
+  let raf = 0;
+  function scheduleUpdate(): void {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      updateScrollState();
+    });
+  }
+  tray.addEventListener("scroll", scheduleUpdate, { passive: true });
+  window.addEventListener("resize", scheduleUpdate);
+  // initial mask state and after fonts/images settle
+  requestAnimationFrame(updateScrollState);
+  window.addEventListener("load", updateScrollState);
+  // expose for tests if needed
+  (tray as unknown as { __updateScrollState?: () => void }).__updateScrollState = updateScrollState;
+
   return { setActive };
 }
