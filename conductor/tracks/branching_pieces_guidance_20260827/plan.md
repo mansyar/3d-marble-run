@@ -69,7 +69,7 @@
 
 ## Phase 3 · Route Guidance (logic + rendering)
 
-### [ ] Task: Write failing tests for guidance helpers (extend `track/health.ts`)
+### [x] Task: Write failing tests for guidance helpers (extend `track/health.ts`) `5ea9560`
 - `unreachableConnectorPieces(graph, landingPieceId)`: connector-bearing
   pieces not reachable from the landing piece; portless pieces exempt.
 - `routePathsToGoals(graph, landingPieceId)`: ordered piece-id path from the
