@@ -28,14 +28,16 @@ export interface GuidanceState {
 
 export interface GuidanceDeps {
   scene: Scene;
-  /** Mid-channel point of a piece — centroid of its ports' world positions
-   * (rides the ramp's rise; falls back to the placement origin if portless). */
-  channelPointOf: (pieceId: string) => [number, number, number] | null;
+  /** World-space polyline of a piece's channel between the used ports. */
+  channelPathOf: (
+    pieceId: string,
+    inPortId: string | null,
+    outPortId: string | null,
+  ) => [number, number, number][];
+  /** The port id on `pieceId` that connects to `otherId`, if any. */
+  connectedPortOf: (pieceId: string, otherId: string) => string | null;
   /** Rendered group for a piece id, used to pulse its materials. */
   pieceGroupOf: (pieceId: string) => Group | null;
-  /** World position of the shared port between two connected pieces — the
-   * channel bend point that keeps the glow on the track. */
-  connectionPointOf: (aId: string, bId: string) => [number, number, number] | null;
 }
 
 export interface GuidanceRenderer {
@@ -90,17 +92,21 @@ export function createGuidanceRenderer(deps: GuidanceDeps): GuidanceRenderer {
         if (previous && previous.distanceToSquared(point) < 1e-6) return;
         points.push(point);
       };
-      push(deps.channelPointOf(route.pieceIds[0]));
-      for (let i = 1; i < route.pieceIds.length; i++) {
-        push(deps.connectionPointOf(route.pieceIds[i - 1], route.pieceIds[i]));
-        push(deps.channelPointOf(route.pieceIds[i]));
+      for (let i = 0; i < route.pieceIds.length; i += 1) {
+        const pieceId = route.pieceIds[i];
+        const inPort = i > 0 ? deps.connectedPortOf(pieceId, route.pieceIds[i - 1]) : null;
+        const outPort =
+          i < route.pieceIds.length - 1
+            ? deps.connectedPortOf(pieceId, route.pieceIds[i + 1])
+            : null;
+        for (const raw of deps.channelPathOf(pieceId, inPort, outPort)) push(raw);
       }
       if (points.length < 2) continue;
-      // Tension 0 = straight runs between channel points (piece centres and
-      // shared ports), so the glow can never swing outside the rails.
+      // Tension 0 = straight runs between dense channel samples, so the glow
+      // hugs the channel (arcs included) without swinging outside the rails.
       const curve = new CatmullRomCurve3(points, false, "catmullrom", 0);
       const mesh = new Mesh(
-        new TubeGeometry(curve, Math.max(8, (points.length - 1) * 4), 0.025, 6, false),
+        new TubeGeometry(curve, Math.max(8, (points.length - 1) * 3), 0.025, 6, false),
         glowMaterial,
       );
       glowGroup.add(mesh);

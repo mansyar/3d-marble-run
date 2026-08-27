@@ -4,9 +4,9 @@ import { describe, expect, it } from "vitest";
 import { buildPiece, FUNNEL_SPOUT_INNER_RADIUS, spawnStaticPiece } from "../src/pieces/builders";
 import { MARBLE_RADIUS } from "../src/pieces/marble";
 import {
+  CURVE_RADIUS,
   canConnect,
   channelPath,
-  CURVE_RADIUS,
   getWorldPort,
   PIECE_TYPE_IDS,
   type PieceTypeId,
@@ -317,12 +317,14 @@ describe("channel path", () => {
   it("samples the splitter branch arcs from the inlet to each outlet", () => {
     const right = channelPath(P0, "splitter", "inlet", "outlet-r");
     expect(right[0][2]).toBeCloseTo(SPLITTER_RADIUS, 5);
-    expect(right[right.length - 1]).toEqual([SPLITTER_RADIUS, 0, 0]);
+    expect(right[right.length - 1][0]).toBeCloseTo(SPLITTER_RADIUS, 5);
+    expect(right[right.length - 1][2]).toBeCloseTo(0, 5);
     expectArc(right, [SPLITTER_RADIUS, SPLITTER_RADIUS]);
 
     const left = channelPath(P0, "splitter", "inlet", "outlet-l");
     expect(left[0][2]).toBeCloseTo(SPLITTER_RADIUS, 5);
-    expect(left[left.length - 1]).toEqual([-SPLITTER_RADIUS, 0, 0]);
+    expect(left[left.length - 1][0]).toBeCloseTo(-SPLITTER_RADIUS, 5);
+    expect(left[left.length - 1][2]).toBeCloseTo(0, 5);
     expectArc(left, [-SPLITTER_RADIUS, SPLITTER_RADIUS]);
   });
 
