@@ -1,0 +1,1 @@
+Task 1.1: Write failing tests for the splitter registry entry | Extended tests/pieces.test.ts: splitter registered with exactly 3 run ports (inlet at [0,0,R] facing +Z, outlets at [±R,0,0] facing ±X, SPLITTER_RADIUS pin), perpendicular inlet/outlet dirs, run|run compatibility reuse, exhaustive type list 5->6. RED confirmed: 6 failed / 15 passed.
