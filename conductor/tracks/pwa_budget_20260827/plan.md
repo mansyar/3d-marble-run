@@ -35,7 +35,8 @@ coverage on changed logic, plan status updates `[ ]` → `[~]` → `[x] <sha7>`)
   - Notes: Overview + asset constraint now document the PWA-shell exception (manifest, SW, build-rasterized icon PNGs — media still 100% procedural); stack table gains "PWA shell" row naming `vite-plugin-pwa` and `@resvg/resvg-js` as devDependencies (pins recorded in package.json when added).
   - Document `vite-plugin-pwa` + icon rasterizer as devDependencies and the
     manifest/SW/icon-PNG asset exception
-- [ ] **Task 2.2: Icon pipeline** *(logic-bearing config)*
+- [x] 89bb6a2 **Task 2.2: Icon pipeline** *(logic-bearing config)*
+  - Notes: TDD red→green, 5 unit tests on pure exports (`ICON_SIZES`, `MASKABLE_SIZE`, `APPLE_TOUCH_SIZE`, base-path-aware `iconManifestEntries`); `scripts/generate-icons.mjs` (+`.d.mts`) rasterizes `assets/icon.svg` (glossy violet marble on warm wood, Biome a11y `<title>`) to `public/icons/{icon-192,icon-512,icon-maskable-512,icon-apple-180}.png` via `@resvg/resvg-js`; `pnpm generate:icons`; scoped tests 5/5, biome clean (104 files), PNGs verified at all 4 sizes
   - TDD pure parts first (icon size set → manifest entries generation)
   - Source SVG: glossy candy-glass marble on warm wood; build script rasterizes
     192px, 512px + maskable PNGs into `dist/`
