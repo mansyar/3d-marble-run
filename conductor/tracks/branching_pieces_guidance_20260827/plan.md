@@ -1,6 +1,6 @@
 # Implementation Plan: Branching Pieces & Route Guidance
 
-## Phase 1 · Splitter Piece (logic + geometry)
+## Phase 1 · Splitter Piece (logic + geometry) [checkpoint: abc8fb4]
 
 ### [x] Task: Write failing tests for the splitter registry entry `80de0cd`
 - Notes: TDD red — 6 failed / 15 passed. Pinned splitter registry contract: exactly 3 run ports (`inlet` at `[0,0,R]` dir `+Z`; `outlet-l/-r` at `[±R,0,0]` dir `±X`), perpendicular dirs, `run|run` reuse, exhaustive type list 5→6.
@@ -24,10 +24,11 @@
   Biome, build, and size gate all verified before the single `feat(pieces)`
   commit (implementation + tests combined per red→green flow).
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-- [ ] Run full suite once; propose manual verification (dev server; splitter
-  in tray; snaps into routes; yaw rotation works).
-- [ ] Await explicit user confirmation; record phase checkpoint SHA in
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `abc8fb4`
+- [x] Run full suite once; propose manual verification (dev server; splitter
+  in tray; snaps into routes; yaw rotation works). — 229/229; report attached
+  as git note on `abc8fb4`; user confirmed desktop + touch checklist.
+- [x] Await explicit user confirmation; record phase checkpoint SHA in
   `plan.md`.
 
 ## Phase 2 · Bumper Piece (portless node + free placement)
