@@ -40,7 +40,8 @@ coverage on changed logic, plan status updates `[ ]` → `[~]` → `[x] <sha7>`)
   - TDD pure parts first (icon size set → manifest entries generation)
   - Source SVG: glossy candy-glass marble on warm wood; build script rasterizes
     192px, 512px + maskable PNGs into `dist/`
-- [ ] **Task 2.3: Web manifest + HTML head links** *(visual glue)*
+- [x] 63951ef **Task 2.3: Web manifest + HTML head links** *(visual glue)*
+  - Notes: `public/manifest.webmanifest` (standalone, any orientation, warm-palette theme, `id`/`start_url`/`scope` `./`, relative icon srcs → base-safe under root and `/<repo>/` Pages deploys); `index.html` gained `rel=manifest` + `rel=apple-touch-icon` (generated 180px PNG, inline SVG favicon kept); build verified — dist carries manifest + icons + intact links; gate 3,455.32 kB min / 1,233.37 kB gzip ✓
   - name/short_name "Marblescape", `standalone`, orientation `any`, theme/background
     colors; favicon + apple-touch-icon wired in `index.html`
 - [ ] **Task 2.4: Service worker** *(glue)*
