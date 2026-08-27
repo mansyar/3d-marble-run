@@ -6,7 +6,8 @@ coverage on changed logic, plan status updates `[ ]` → `[~]` → `[x] <sha7>`)
 
 ## Phase 1 — Payload Split & Loading Experience
 
-- [~] **Task 1.1: TDD bundle-size gate** *(logic-bearing)*
+- [x] **Task 1.1: TDD bundle-size gate** *(logic-bearing)* — `96519cc`
+  - Notes: TDD red→green — 15 tests on pure helpers (`sumTotals`, `evaluateBudget`, `formatKB`, `exitCodeFor`, `BUDGETED_EXTENSIONS`); `.d.mts` sibling keeps tsc strict green. `pnpm check:size` wired after build in ci.yml + release.yml. Verified: 198/198 suite, biome clean, tsc clean; real build 3,451.58 kB min / 1,231.89 kB gzip within budget (exit 0); oversize probe exits 1 (AC-6). Changed-logic coverage 100%; CLI fs/argv glue exempt per workflow.
   - Write failing unit tests for the size-gate core logic: dist aggregation incl.
     gzip, global budget comparison, exit codes
   - Implement `scripts/check-bundle-size.mjs` (zero new deps, matching
