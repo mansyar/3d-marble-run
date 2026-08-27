@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { createDropPoint } from "../src/track/dropPoint";
 import { addPiece, connect, createTrackGraph } from "../src/track/graph";
-import { assessDropPointHealth, routePathsToGoals, unreachableConnectorPieces } from "../src/track/health";
+import {
+  assessDropPointHealth,
+  routePathsToGoals,
+  unreachableConnectorPieces,
+} from "../src/track/health";
 
 describe("Drop point track health", () => {
   it("reports a missing Drop point before inspecting the graph", () => {
@@ -100,17 +104,27 @@ describe("Route guidance helpers", () => {
     const graph = createTrackGraph();
     const straightId = addPiece(graph, "straight", { position: [0, 0, 0], yawDeg: 0 });
     const splitterId = addPiece(graph, "splitter", { position: [0, 0, 0], yawDeg: 0 });
-    const leftGoalId = addPiece(graph, "goal-cup", { position: [3, 0, 0], yawDeg: 0 });
+    const leftFunnelId = addPiece(graph, "funnel", { position: [3, 0, 0], yawDeg: 0 });
+    const leftGoalId = addPiece(graph, "goal-cup", { position: [4, 0, 0], yawDeg: 0 });
     const curveId = addPiece(graph, "curve", { position: [5, 0, 0], yawDeg: 0 });
+    const rightFunnelId = addPiece(graph, "funnel", { position: [6, 0, 0], yawDeg: 0 });
     const rightGoalId = addPiece(graph, "goal-cup", { position: [7, 0, 0], yawDeg: 0 });
     connect(graph, straightId, "b", splitterId, "inlet");
-    connect(graph, splitterId, "outlet-l", leftGoalId, "inlet");
+    connect(graph, splitterId, "outlet-l", leftFunnelId, "mouth");
+    connect(graph, leftFunnelId, "spout", leftGoalId, "inlet");
     connect(graph, splitterId, "outlet-r", curveId, "b");
-    connect(graph, curveId, "a", rightGoalId, "inlet");
+    connect(graph, curveId, "a", rightFunnelId, "mouth");
+    connect(graph, rightFunnelId, "spout", rightGoalId, "inlet");
 
     expect(routePathsToGoals(graph, straightId)).toEqual([
-      { goalId: leftGoalId, pieceIds: [straightId, splitterId, leftGoalId] },
-      { goalId: rightGoalId, pieceIds: [straightId, splitterId, curveId, rightGoalId] },
+      {
+        goalId: leftGoalId,
+        pieceIds: [straightId, splitterId, leftFunnelId, leftGoalId],
+      },
+      {
+        goalId: rightGoalId,
+        pieceIds: [straightId, splitterId, curveId, rightFunnelId, rightGoalId],
+      },
     ]);
   });
 
@@ -119,9 +133,7 @@ describe("Route guidance helpers", () => {
     const goalId = addPiece(graph, "goal-cup", { position: [0, 0, 0], yawDeg: 0 });
     const aloneId = addPiece(graph, "straight", { position: [4, 0, 0], yawDeg: 0 });
 
-    expect(routePathsToGoals(graph, goalId)).toEqual([
-      { goalId, pieceIds: [goalId] },
-    ]);
+    expect(routePathsToGoals(graph, goalId)).toEqual([{ goalId, pieceIds: [goalId] }]);
     expect(routePathsToGoals(graph, aloneId)).toEqual([]);
     expect(routePathsToGoals(graph, null)).toEqual([]);
   });
