@@ -1,0 +1,5 @@
+Phase 1 checkpoint (pwa_budget_20260827) — verified by user on dev server
+
+Manual protocol: (1) branded boot screen paints instantly and fades into the playable starter track; (2) Network Offline -> failure panel 'Oh no, the marbles didn't load.' -> Try again after restoring network boots cleanly; (3) prefers-reduced-motion disables the marble bounce and the fade.
+
+Gates: 208/208 vitest, tsc clean, biome clean, production build OK, bundle gate within 3,500 kB min / 1,250 kB gzip (measured 3,455.12 / 1,233.29). Entry chunk 2.57 kB min / 1.25 kB gzip; physics+app in async chunk. Phase commits: 96519cc (gate), 7dfed56 (split+boot), ec9f2bb (re-baseline).
