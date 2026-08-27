@@ -48,7 +48,8 @@ coverage on changed logic, plan status updates `[ ]` → `[~]` → `[x] <sha7>`)
   - Notes: `vite-plugin-pwa` 1.3.0, `registerType: autoUpdate` (silent skipWaiting + clients.claim), `manifest: false` (static manifest stays single source), precache glob covers js/css/html/png/webmanifest, per-file limit raised to 4 MiB — the default 2 MiB rejected the 3.44 MB WASM-carrying app chunk; dev stays SW-free. Verified: sw.js + local workbox runtime + injected registration, precache includes HTML/CSS/chunks/manifest/4 icons, zero CDN refs; 213/213 tests, tsc/biome clean, gate 3,472.10 kB min / 1,239.56 kB gzip ✓
   - `vite-plugin-pwa`: precache all hashed assets + `index.html`, cache-first,
     `autoUpdate` (skipWaiting + clients.claim), disabled in dev
-- [ ] **Task 2.5: Docs touch-ups**
+- [x] daef8ac **Task 2.5: Docs touch-ups**
+  - Notes: product.md vision reworded to "optionally installable to the home screen" (install stays optional — no requirement introduced); README gains "Installable PWA" section (offline play, install flows, generated icons, silent updates, SW off in dev, async-chunk rationale), `pnpm check:size` added to quality checks, CI + release gate descriptions mention the payload budget check
   - product.md: clarify installability stays optional ("installable-free" wording);
     README: PWA usage + size-gate sections
 - [ ] **Task 2.6: Phase Verification & Checkpoint** *(refer to workflow.md)*
