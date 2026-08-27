@@ -31,6 +31,9 @@ export interface GuidanceDeps {
   originOf: (pieceId: string) => [number, number, number] | null;
   /** Rendered group for a piece id, used to pulse its materials. */
   pieceGroupOf: (pieceId: string) => Group | null;
+  /** World position of the shared port between two connected pieces — the
+   * channel bend point that keeps the glow on the track. */
+  connectionPointOf: (aId: string, bId: string) => [number, number, number] | null;
 }
 
 export interface GuidanceRenderer {
@@ -77,14 +80,25 @@ export function createGuidanceRenderer(deps: GuidanceDeps): GuidanceRenderer {
       (child as Mesh).geometry.dispose();
     }
     for (const route of routes) {
-      const points = route.pieceIds
-        .map((pieceId) => deps.originOf(pieceId))
-        .filter((origin): origin is [number, number, number] => origin !== null)
-        .map((origin) => new Vector3(origin[0], origin[1] + GLOW_HOVER, origin[2]));
+      const points: Vector3[] = [];
+      const push = (raw: [number, number, number] | null): void => {
+        if (!raw) return;
+        const point = new Vector3(raw[0], raw[1] + GLOW_HOVER, raw[2]);
+        const previous = points[points.length - 1];
+        if (previous && previous.distanceToSquared(point) < 1e-6) return;
+        points.push(point);
+      };
+      push(deps.originOf(route.pieceIds[0]));
+      for (let i = 1; i < route.pieceIds.length; i++) {
+        push(deps.connectionPointOf(route.pieceIds[i - 1], route.pieceIds[i]));
+        push(deps.originOf(route.pieceIds[i]));
+      }
       if (points.length < 2) continue;
-      const curve = new CatmullRomCurve3(points, false, "catmullrom", 0.5);
+      // Tension 0 = straight runs between channel points (piece centres and
+      // shared ports), so the glow can never swing outside the rails.
+      const curve = new CatmullRomCurve3(points, false, "catmullrom", 0);
       const mesh = new Mesh(
-        new TubeGeometry(curve, Math.max(16, points.length * 8), 0.025, 6, false),
+        new TubeGeometry(curve, Math.max(8, (points.length - 1) * 4), 0.025, 6, false),
         glowMaterial,
       );
       glowGroup.add(mesh);

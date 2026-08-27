@@ -9,7 +9,7 @@ import { createEditorHistory } from "./core/editorHistory";
 import { createStepper } from "./core/stepper";
 import { type SpawnedPiece, spawnStaticPiece } from "./pieces/builders";
 import { createMarbleMesh, MARBLE_RADIUS } from "./pieces/marble";
-import type { PieceTypeId, Placement } from "./pieces/registry";
+import { getWorldPort, type PieceTypeId, type Placement } from "./pieces/registry";
 import { type CameraTarget, createFreeOrbitCamera, type FreeOrbitCamera } from "./render/camera";
 import { createDropPointGuide, type DropPointGuide } from "./render/dropPointGuide";
 import { createGuidanceRenderer, type GuidanceRenderer } from "./render/guidance";
@@ -288,6 +288,15 @@ guidance = createGuidanceRenderer({
   scene: handle.scene,
   originOf: (pieceId) => graph.pieces.get(pieceId)?.placement.position ?? null,
   pieceGroupOf: (pieceId) => spawned.get(pieceId)?.group ?? null,
+  connectionPointOf: (aId, bId) => {
+    const piece = graph.pieces.get(aId);
+    if (!piece) return null;
+    for (const [portId, ref] of Object.entries(piece.connections)) {
+      if (!ref || ref.pieceId !== bId) continue;
+      return getWorldPort(piece.placement, piece.typeId, portId).position;
+    }
+    return null;
+  },
 });
 
 const previewMarble = createMarbleMesh();
