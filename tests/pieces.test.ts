@@ -274,7 +274,7 @@ describe("bumper piece", () => {
 });
 
 describe("bumper physics", () => {
-  it("blocks a head-on marble and rebounds it with lively restitution", async () => {
+  it("lets a head-on marble bounce away or pop over, never rest trapped", async () => {
     const world = await createPhysics();
     spawnStaticPiece(new Scene(), world, "bumper", { position: [0, 0, 0], yawDeg: 0 });
     const body = world.createRigidBody(RigidBodyDesc.dynamic().setTranslation(0, 0.1, 1));
@@ -283,15 +283,15 @@ describe("bumper physics", () => {
       body,
     );
     body.setLinvel({ x: 0, y: 0, z: -2 }, true);
-    let rebounded = false;
-    let tunneled = false;
-    for (let step = 0; step < 900 && !rebounded && !tunneled; step += 1) {
+    // The dome must never trap a marble against a rail: with gentle flanks a
+    // head-on marble either rebounds (z back past +0.5) or rides up and over
+    // the low crown (continues past -0.5, no downstream piece in this world).
+    let settled = false;
+    for (let step = 0; step < 900 && !settled; step += 1) {
       world.step();
       const t = body.translation();
-      if (t.z < -0.35) tunneled = true;
-      else if (t.z > 0.5) rebounded = true;
+      if (t.z > 0.5 || t.z < -0.5) settled = true;
     }
-    expect(tunneled).toBe(false);
-    expect(rebounded).toBe(true);
+    expect(settled).toBe(true);
   });
 });

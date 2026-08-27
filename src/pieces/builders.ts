@@ -310,21 +310,23 @@ function buildGoalCup(): BuiltPiece {
   return { group, colliders: [{ kind: "trimesh", ...geometryToTrimesh(cup.geometry) }] };
 }
 
-const BUMPER_RADIUS = 0.22;
-const BUMPER_HEIGHT = 0.28;
+const BUMPER_RADIUS = 0.17;
+const BUMPER_HEIGHT = 0.16;
 /** Lively toy-ball bounce — well above marbles' own restitution (0.15). */
 const BUMPER_RESTITUTION = 0.85;
 
 /** Glossy bounce dome: a squashed hemisphere profile, lathe-built like the
- * funnel/cup round pieces, with the same surface as its trimesh collider. */
+ * funnel/cup round pieces, with the same surface as its trimesh collider.
+ * Kept small and low with gentle flanks so a marble seated against a rail
+ * rides up and over (or bounces back) instead of wedging in a V-gap. */
 function buildBumper(): BuiltPiece {
   const dome = new LatheGeometry(
     [
       new Vector2(BUMPER_RADIUS, 0),
-      new Vector2(0.21, 0.06),
-      new Vector2(0.18, 0.13),
-      new Vector2(0.13, 0.2),
-      new Vector2(0.07, 0.26),
+      new Vector2(0.16, 0.035),
+      new Vector2(0.14, 0.07),
+      new Vector2(0.1, 0.11),
+      new Vector2(0.05, 0.145),
       new Vector2(0.001, BUMPER_HEIGHT),
     ],
     24,
