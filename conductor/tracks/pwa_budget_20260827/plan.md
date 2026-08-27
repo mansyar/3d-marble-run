@@ -52,7 +52,8 @@ coverage on changed logic, plan status updates `[ ]` → `[~]` → `[x] <sha7>`)
   - Notes: product.md vision reworded to "optionally installable to the home screen" (install stays optional — no requirement introduced); README gains "Installable PWA" section (offline play, install flows, generated icons, silent updates, SW off in dev, async-chunk rationale), `pnpm check:size` added to quality checks, CI + release gate descriptions mention the payload budget check
   - product.md: clarify installability stays optional ("installable-free" wording);
     README: PWA usage + size-gate sections
-- [ ] **Task 2.6: Phase Verification & Checkpoint** *(refer to workflow.md)*
+- [x] **Task 2.6: Phase Verification & Checkpoint** *(refer to workflow.md)*
+  - Notes: PASSED — user-verified manually: desktop install via address bar → standalone window; airplane-mode reload fully playable with save slots intact; silent SW update across rebuilds (no prompt); Cache Storage precache holds HTML/CSS/both chunks/manifest/4 icons; Android Chrome install + iOS Add-to-Home-Screen on real devices; 20-marble stream smooth on mid-range phone (AC-3..AC-7). Gates: 213/213 tests, tsc/biome clean, build OK, check:size 3,472.10 kB min / 1,239.56 kB gzip within budget. Phase commits: ba713ec, 89bb6a2, 63951ef, 5138a77, daef8ac
   - Manual protocol: install on desktop Chrome + Android (AC-3), iOS
     Add-to-Home-Screen, airplane-mode reload (AC-4), silent SW update across deploys
     (AC-5), 20-marble mobile perf checkpoint (AC-7)
