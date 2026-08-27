@@ -67,7 +67,7 @@
   (`6f3d80d`); user confirmed desktop + touch. Report attached as git note
   on `6f3d80d`.
 
-## Phase 3 · Route Guidance (logic + rendering)
+## Phase 3 · Route Guidance (logic + rendering) [checkpoint: 3e0e702]
 
 ### [x] Task: Write failing tests for guidance helpers (extend `track/health.ts`) `5ea9560`
 - `unreachableConnectorPieces(graph, landingPieceId)`: connector-bearing
@@ -99,11 +99,16 @@
   payload 3,491.77 kB min / 1,245.14 kB gzip within budget (3,500 / 1,250;
   gzip headroom now ~4.9 kB).
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-- [ ] Run full suite once; propose manual verification (disconnect a piece →
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `3e0e702`
+- [x] Run full suite once; propose manual verification (disconnect a piece →
   pulse; connect → pulse stops; ready route → glow; bumper never pulses).
-- [ ] Await explicit user confirmation; record phase checkpoint SHA in
+- [x] Await explicit user confirmation; record phase checkpoint SHA in
   `plan.md`.
+- Notes: three feedback rounds — glow pinned on rails via shared-port bends
+  (`51423c4`), riding the ramp incline (`b9b3cf1`), then curving smoothly
+  through arcs via registry `channelPath` sampling (RED `4a5a86c`, GREEN
+  `3e0e702`); user confirmed desktop + touch. Report attached as git note on
+  `3e0e702`.
 
 ## Phase 4 · Docs & Release Readiness
 
