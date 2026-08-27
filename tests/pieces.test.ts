@@ -24,14 +24,15 @@ function port(typeId: PieceTypeId, portId: string) {
 }
 
 describe("piece registry", () => {
-  it("defines exactly the six physical piece types", () => {
+  it("defines exactly the seven physical piece types", () => {
     expect(Object.keys(PIECE_TYPE_IDS).sort()).toEqual(
-      ["curve", "funnel", "goal-cup", "ramp", "splitter", "straight"].sort(),
+      ["bumper", "curve", "funnel", "goal-cup", "ramp", "splitter", "straight"].sort(),
     );
   });
 
-  it("gives every piece at least one fully-specified port", () => {
-    for (const def of Object.values(PIECE_TYPE_IDS)) {
+  it("gives every connector piece at least one fully-specified port", () => {
+    for (const [typeId, def] of Object.entries(PIECE_TYPE_IDS)) {
+      if (typeId === "bumper") continue; // free-standing; intentionally portless
       expect(def.ports.length).toBeGreaterThan(0);
       for (const p of def.ports) {
         expect(p.id).toBeTruthy();
@@ -262,5 +263,12 @@ describe("splitter piece", () => {
   it("joins via the existing run|run compatibility rule", () => {
     expect(canConnect(port("splitter", "inlet").kind, "run")).toBe(true);
     expect(canConnect("run", port("splitter", "outlet-l").kind)).toBe(true);
+  });
+});
+
+describe("bumper piece", () => {
+  it("registers a portless free-standing type", () => {
+    const def = PIECE_TYPE_IDS.bumper;
+    expect(def.ports).toEqual([]);
   });
 });

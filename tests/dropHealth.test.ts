@@ -54,4 +54,19 @@ describe("Drop point track health", () => {
       reachableGoalIds: [goalId],
     });
   });
+
+  it("treats portless bumper nodes as neither goals nor route members", () => {
+    const graph = createTrackGraph();
+    const straightId = addPiece(graph, "straight", { position: [0, 0, 0], yawDeg: 0 });
+    const funnelId = addPiece(graph, "funnel", { position: [0, 0, 0], yawDeg: 0 });
+    const goalId = addPiece(graph, "goal-cup", { position: [0, 0, 0], yawDeg: 0 });
+    connect(graph, straightId, "a", funnelId, "mouth");
+    connect(graph, funnelId, "spout", goalId, "inlet");
+    addPiece(graph, "bumper", { position: [2, 0, 2], yawDeg: 0 });
+
+    expect(assessDropPointHealth(graph, createDropPoint([0, 0, 0]), straightId)).toEqual({
+      status: "ready",
+      reachableGoalIds: [goalId],
+    });
+  });
 });
