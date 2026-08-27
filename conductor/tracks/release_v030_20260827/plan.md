@@ -72,8 +72,8 @@ policy); the tag is pushed only after merge and smoke pass.
 
 ## Phase 3 · Release Tag, Pipeline & Live Verification
 
-- [ ] Task: Merge PR, push release tag, monitor pipeline
-  - [ ] Open/merge PR `chore/release-v030` → `master` with CI green; push
+- [~] Task: Merge PR, push release tag, monitor pipeline
+  - [~] Open/merge PR `chore/release-v030` → `master` with CI green; push
         `master`, then tag `v0.3.0`; watch release workflow end-to-end
   - [ ] On gate failure: fix forward, re-cut tag (never force over published
         tags)
