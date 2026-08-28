@@ -2,12 +2,15 @@
 
 ## Phase 1 · Population Governor (pure logic) [checkpoint: TBD]
 
-### [ ] Task: Write failing tests for the population governor
-- Extend a new `src/sim/population.test.ts` (Vitest, pure — no Rapier/Three):
+### [x] Task: Write failing tests for the population governor `84fb84f`
+- Extend a new `tests/population.test.ts` (Vitest, pure — no Rapier/Three):
   `resolveMarbleCap` pins CAPPED→40 / DESKTOP→60;
   `createFrameBudget` hysteresis: sustained 33 ms deltas pause after the window,
   single 100 ms spike never pauses, 60 Hz deltas never pause, resume needs
   sustained headroom. Confirm RED before implementation.
+- Notes: RED confirmed — missing module `src/sim/population`. 10 tests pin the
+  tier-cap and hysteresis semantics (pause needs sustained overage; resume
+  streak resets on relapse).
 
 ### [ ] Task: Implement population governor and commit Phase 1
 - `src/sim/population.ts` — `resolveMarbleCap(tier)` + `createFrameBudget`
