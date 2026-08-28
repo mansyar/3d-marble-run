@@ -1,0 +1,12 @@
+Task: Implement population governor and commit Phase 1 (TDD Green)
+
+Implemented src/sim/population.ts to the pinned contract:
+- resolveMarbleCap(tier): CAPPED→40, DESKTOP→60, unknown tier throws
+- createFrameBudget: rolling-window over-budget detection (30 samples,
+  pause at 12 over-budget) + consecutive-streak resume (20 under-budget
+  samples, relapse resets the streak); invalid configs throw
+Verification: full suite 274/274 GREEN; population.ts coverage 97.82%
+statements / 100% lines / 100% functions (target >=80%); Biome clean
+(119 files)
+Why: tier-aware cap + hysteresis governor is the decision core the stream
+loop consults before each spawn tick (wiring lands in Phase 3).
