@@ -23,7 +23,7 @@ isolated into pure modules and built with TDD (Red → Green).
         (match `guidance.ts` / `tray.ts` matchMedia pattern)
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
-## Phase 2: Tap-a-Marble-to-Ride (logic + glue)
+## Phase 2: Tap-a-Marble-to-Ride (logic + glue) [checkpoint: d2c5cef]
 
 - [x] Task: Write failing tests for tap-gesture classifier (TDD Red)
   (`d96554a`) — `tests/tapGesture.test.ts`, 11 cases: tap, mouse/touch parity,
