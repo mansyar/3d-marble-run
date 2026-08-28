@@ -1,0 +1,15 @@
+Review: hybrid touch detection, blocked ghost tint, lastIsTouch reset
+
+Details:
+- Before: isTouchPointer returned true for any pointer on touch-capable device (|| maxTouchPoints>0), so mouse on Surface/convertible got 16px offset + 0.38 slop + 0.92 emissive ghost incorrectly.
+- After: if pointerType present, strictly === 'touch'; fallback to maxTouchPoints only when pointerType empty (old browsers).
+
+- Before: tintBlocked left emissive at touch boost (white 0.18) even when blocked, producing pink blocked ghosts.
+- After: tintBlocked now sets emissive 0 when blocked, restores lastIsTouch boost when free.
+
+- Before: begin() kept lastIsTouch from prior touch, so new tray-selected ghosts started touch-styled incorrectly.
+- After: begin() resets lastIsTouch=false.
+
+Tests: 244/244, Biome+TSC clean, build 3496.72/1246.57 withinBudget (headroom 3.28/3.43).
+
+Files: src/build/placement.ts, src/build/dropPointController.ts
