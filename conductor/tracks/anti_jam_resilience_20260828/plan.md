@@ -95,6 +95,6 @@
   - Await explicit user confirmation; record final checkpoint SHA.
   - Commit plan: `conductor(plan): Mark phase 'Quality Gate' as complete`.
 
-## Review Fixes (appended by `conductor-review` if needed)
+## Phase: Review Fixes
 
-- [ ] Task: Apply review suggestions — TBD after review.
+- [x] Task: Apply review suggestions `f4f8f13`
