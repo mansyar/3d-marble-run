@@ -1,0 +1,21 @@
+Phase 2 implementation task - marble pool + 2x population wiring.
+
+- src/sim/marblePool.ts (new): pure pool; acquire deploys like a fresh spawn
+  (position, zeroed velocities, awake), release parks (asleep at y=-1000) or
+  destroys at the maxParked bound, clear drains parked only. 8 unit tests via
+  injected createPair/destroyPair seam - no Three/Rapier in the suite.
+- Spawner.setMaxMarbles: live cap re-resolution; shrink recycles oldest-first
+  immediately and returns recycled ids (4 new tests).
+- Pool.setMaxParked: live bound re-resolution (3 new tests).
+- core/quality.resolveTier: capped|desktop decision mirroring resolveQuality,
+  consumed by resolveMarbleCap (1 new test; 100% coverage).
+- app.ts: spawn/remove go through the pool; spawner boot cap provisional
+  (desktop 60) corrected by applyPopulationCap(handle.resolveTier()) before
+  the first frame; quality toggle onModeChange re-resolves cap live.
+- scene.ts: SceneHandle.resolveTier (render glue). qualityToggle.ts:
+  optional onModeChange hook.
+- Frame budget: createFrameBudget records every frame; sustained overage
+  pauses the stream advance (manual one-shot drops bypass the gate).
+
+Gate: 290/290 vitest, tsc clean, biome clean (121 files), vite build OK,
+changed-logic coverage >= 95% stmts / 100% funcs.
