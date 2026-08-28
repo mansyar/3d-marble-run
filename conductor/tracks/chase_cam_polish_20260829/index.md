@@ -2,8 +2,9 @@
 
 - **ID:** `chase_cam_polish_20260829`
 - **Type:** Feature
-- **Status:** New
+- **Status:** Complete
 - **Branch:** `feat/chase_cam_polish_20260829`
+- **Final checkpoint:** `5bff170`
 
 ## Documents
 

@@ -20,4 +20,4 @@
 - [x] **Track: Toy Visual Polish — Subtle Bevel & Material Retune** *Link: [./archive/toy_visual_polish_20260828/index.md](./archive/toy_visual_polish_20260828/index.md)*
 - [x] **Track: Marble Engine Scale-Up — 2× Population with Adaptive Stream Pacing** *Link: [./archive/marble_engine_scaleup_20260828/index.md](./archive/marble_engine_scaleup_20260828/index.md)*
 - [x] **Track: Cut v0.4.0 Release** *Link: [./archive/release_v040_20260828/index.md](./archive/release_v040_20260828/index.md)*
-- [~] **Track: Chase-Cam Immersion Polish — Eased Transitions, Tap-to-Ride, Handoff** *Link: [./tracks/chase_cam_polish_20260829/index.md](./tracks/chase_cam_polish_20260829/index.md)*
+- [x] **Track: Chase-Cam Immersion Polish — Eased Transitions, Tap-to-Ride, Handoff** *Link: [./tracks/chase_cam_polish_20260829/index.md](./tracks/chase_cam_polish_20260829/index.md)*
