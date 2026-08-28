@@ -26,8 +26,10 @@ disconnected pieces are not blocked, so experimentation stays forgiving.
 Route guidance stays ambient: connector pieces you have not joined to the route
 yet pulse gently until they connect, and a soft violet glow traces each ready
 path from the Drop point landing to its goal cup.
-Marbles that leave the playable world are cleaned up automatically, and all
-saves remain local to the browser.
+Marbles that leave the playable world are cleaned up automatically, and
+stalled marbles self-heal — gently nudged then recycled so streams stay
+fluid without ever crediting a goal or stopping play. All saves remain
+local to the browser.
 
 ### Legacy saves
 

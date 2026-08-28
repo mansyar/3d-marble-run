@@ -39,8 +39,15 @@ export type ColliderSpec =
       position?: [number, number, number];
       rotation?: Quaternion;
       restitution?: number;
+      friction?: number;
     }
-  | { kind: "trimesh"; vertices: Float32Array; indices: Uint32Array; restitution?: number };
+  | {
+      kind: "trimesh";
+      vertices: Float32Array;
+      indices: Uint32Array;
+      restitution?: number;
+      friction?: number;
+    };
 
 export interface BuiltPiece {
   group: Group;
@@ -50,7 +57,7 @@ export interface BuiltPiece {
 const FLOOR_T = 0.08;
 const WALL_H = 0.16;
 const RAIL_T = 0.07;
-export const FUNNEL_SPOUT_INNER_RADIUS = 0.13;
+export const FUNNEL_SPOUT_INNER_RADIUS = 0.14;
 const FUNNEL_SPOUT_OUTER_RADIUS = 0.17;
 const Y_AXIS = new Vector3(0, 1, 0);
 const X_AXIS = new Vector3(1, 0, 0);
@@ -284,11 +291,22 @@ function buildFunnel(): BuiltPiece {
   ];
   const spout = shadowed(new Mesh(new LatheGeometry(spoutProfile, 40), mat));
   group.add(spout);
+  // Throat widened to 0.14 (from 0.13, +7.7%) to reduce funnel stalls; wall friction lowered to 0.42 (-0.08 vs default 0.5, inside 0.05–0.10 spec)
   return {
     group,
     colliders: [
-      { kind: "trimesh", ...geometryToTrimesh(bell.geometry) },
-      { kind: "trimesh", ...geometryToTrimesh(spout.geometry) },
+      {
+        kind: "trimesh",
+        ...geometryToTrimesh(bell.geometry),
+        friction: 0.42,
+        restitution: 0.12,
+      },
+      {
+        kind: "trimesh",
+        ...geometryToTrimesh(spout.geometry),
+        friction: 0.42,
+        restitution: 0.12,
+      },
     ],
   };
 }
@@ -370,6 +388,7 @@ function toColliderDesc(spec: ColliderSpec): ColliderDesc {
     }
   }
   if (spec.restitution !== undefined) desc.setRestitution(spec.restitution);
+  if (spec.friction !== undefined) desc.setFriction(spec.friction);
   return desc;
 }
 

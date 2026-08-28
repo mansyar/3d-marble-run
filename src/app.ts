@@ -25,6 +25,7 @@ import { createMarbleImpactTracker, type MarbleVelocitySample } from "./sim/marb
 import { createPhysics } from "./sim/physics";
 import { findOutOfBoundsMarbleIds } from "./sim/playability";
 import { createSpawner, type Spawner } from "./sim/spawner";
+import { createStuckDetector } from "./sim/stuckDetector";
 import type { TrackGraph } from "./track/graph";
 import {
   assessDropPointHealth,
@@ -85,6 +86,10 @@ interface LiveMarble {
 
 const liveMarbles = new Map<number, LiveMarble>();
 const marbleImpacts = createMarbleImpactTracker();
+const stuckDetector = createStuckDetector();
+let stuckClockMs = 0;
+const stuckNudgedAt = new Map<number, number>();
+let nudgeTimestamps: number[] = [];
 
 function spawnMarble(marble: PositionedDropPointMarbleSpawn): void {
   const mesh = createMarbleMesh();
@@ -106,6 +111,8 @@ function spawnMarble(marble: PositionedDropPointMarbleSpawn): void {
 
 function removeMarble(id: number): void {
   marbleImpacts.remove(id);
+  stuckDetector.remove(id);
+  stuckNudgedAt.delete(id);
   const live = liveMarbles.get(id);
   if (!live) return;
   handle.scene.remove(live.mesh);
@@ -184,6 +191,46 @@ function cleanupOutOfBoundsMarbles(): void {
   }
 }
 
+function cleanupStuckMarbles(nowMs: number): void {
+  // Prune nudge rate-limit window
+  nudgeTimestamps = nudgeTimestamps.filter((t) => nowMs - t < 1000);
+
+  for (const id of stuckDetector.stuckIds(nowMs)) {
+    const nudgedAt = stuckNudgedAt.get(id);
+    if (nudgedAt === undefined) {
+      if (nudgeTimestamps.length >= 3) continue;
+      const live = liveMarbles.get(id);
+      if (!live) {
+        stuckDetector.remove(id);
+        continue;
+      }
+      // Gentle lateral nudge — preserves physical simulation, no teleport
+      const impulse = {
+        x: (Math.random() - 0.5) * 0.7,
+        y: 0.1,
+        z: (Math.random() - 0.5) * 0.7,
+      };
+      try {
+        live.body.applyImpulse(impulse, true);
+      } catch {
+        // Rapier body may be invalid if already removed; ignore
+      }
+      stuckNudgedAt.set(id, nowMs);
+      nudgeTimestamps.push(nowMs);
+      if (import.meta.env.DEV) {
+        console.debug(`[stuck-detector] nudge #${id}`);
+      }
+    } else if (nowMs - nudgedAt >= 900) {
+      // Second strike — recycle silently (no goal credit, no SFX)
+      if (spawner.remove(id)) removeMarble(id);
+      else stuckDetector.remove(id);
+      if (import.meta.env.DEV) {
+        console.debug(`[stuck-detector] recycle #${id}`);
+      }
+    }
+  }
+}
+
 let cameraController: FreeOrbitCamera | null = null;
 let dropPointGuide: DropPointGuide | null = null;
 let guidance: GuidanceRenderer | null = null;
@@ -200,6 +247,12 @@ const handle = initScene(app, (elapsedMs) => {
     world.step();
   }
   syncMarbles(alpha);
+  stuckClockMs += elapsedMs;
+  for (const [id, { body }] of liveMarbles) {
+    const pos = body.translation();
+    const vel = body.linvel();
+    stuckDetector.update(id, [pos.x, pos.y, pos.z], [vel.x, vel.y, vel.z], stuckClockMs);
+  }
   const velocitySamples: MarbleVelocitySample[] = [];
   for (const [id, { body }] of liveMarbles) {
     velocitySamples.push({ id, vy: body.linvel().y });
@@ -207,6 +260,7 @@ const handle = initScene(app, (elapsedMs) => {
   marbleImpacts.updateVelocities(velocitySamples).forEach(() => {
     sound.play("landing");
   });
+  cleanupStuckMarbles(stuckClockMs);
   cleanupOutOfBoundsMarbles();
   detectGoalEntries();
   simulationControls.setTimerMs(spawner.state().timerMs);
@@ -442,6 +496,10 @@ function resetSimulationState(): void {
   for (const id of removedIds) removeMarble(id);
   goalTracker.reset();
   marbleImpacts.reset();
+  stuckDetector.reset();
+  stuckNudgedAt.clear();
+  nudgeTimestamps = [];
+  stuckClockMs = 0;
   simulationControls.setGoalCount(0);
   simulationControls.setTimerMs(0);
   simulationControls.setStreamEnabled(false);
