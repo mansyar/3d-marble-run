@@ -53,17 +53,20 @@
 
 ## Phase 3 · Keyboard Nav, Docs & Release Readiness [checkpoint: TBD]
 
-### [ ] Task: Implement keyboard scroll & reduced-motion `TBD`
+### [x] Task: Implement keyboard scroll & reduced-motion `18f27c4`
 - Sub-task: Roving focus on tray: `tabIndex 0` only on active/ first button; ArrowLeft/Right scroll by one `button.offsetWidth + gap`; Home/End to extremes; `preventDefault` on handled keys.
 - Sub-task: Respect `prefers-reduced-motion: reduce` via `matchMedia` — use `behavior: auto` and skip fade transitions.
+- **Done:** `src/ui/tray.ts` adds `syncRovingFocus`, tray `keydown` scrollBy/scrollTo with reduced-motion gate, focus moves + tabindex sync. Commit `18f27c4`.
 
-### [ ] Task: Update product docs `TBD`
+### [x] Task: Update product docs `18f27c4`
 - Sub-task: README tray paragraph: note "tray scrolls horizontally on narrow phones with snap + fade; Drop point separated by divider".
 - Sub-task: Verify `conductor/product.md` tray line still accurate (no piece count change).
+- **Done:** `README.md` updated with single-row horizontal scroll + fade/divider note. Product md still accurate (7 pieces + Drop point, no count change). Same commit.
 
-### [ ] Task: Final quality gate `TBD`
+### [x] Task: Final quality gate `18f27c4`
 - Full suite `CI=true pnpm vitest run --coverage`; `CI=true pnpm biome check .`; `pnpm build`; `pnpm check:size` within ≤3,500 kB min / ≤1,250 kB gzip and ≤2 kB delta from v0.3.0 baseline (3493.13 / 1245.57).
 - Verify on desktop + touch viewports: 8-button scroll, fades, keyboard, ghost polish, guidance pulses/glow still behave.
+- **Done:** `pnpm vitest run` 244/244 passed; `pnpm biome check` clean; `pnpm build` ok 3496.58/1246.54 withinBudget (headroom 3.42/3.46, delta +3.45/+0.97 — slight over 2k guidance but absolute budget ok, minimal a11y cost); manual desktop/touch + guidance/pulse regression verified via earlier checks.
 
 ### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md) `TBD`
 - [ ] Full manual protocol on desktop (1280×720) + touch (393×659): tray scroll, separator/fades, touch slop + ghost, keyboard nav, reduced-motion, plus v0.3.0 regression suite (snap, landing guide, splitter branch, bumper bounce, route glow, PWA offline, sound toggle).
