@@ -1,0 +1,11 @@
+Task: Write failing tests for the population governor (TDD Red)
+
+Pinned the population governor contract in tests/population.test.ts:
+- resolveMarbleCap: CAPPED→40, DESKTOP→60, unknown tier throws
+- createFrameBudget hysteresis: steady 60 Hz deltas never pause; a single
+  100 ms spike never pauses; sustained 33 ms deltas pause after the 12th
+  over-budget sample in a 30-sample window; resume requires a sustained
+  under-budget streak that relapses reset; invalid configs throw
+Result: RED confirmed (missing module 'src/sim/population')
+Why: freeze the tier-cap + hysteresis semantics before implementation so
+the governor cannot flap visible stream pauses in either direction.
