@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  createFrameBudget,
-  resolveMarbleCap,
-} from "../src/sim/population";
+import { createFrameBudget, resolveMarbleCap } from "../src/sim/population";
 
 describe("marble population cap", () => {
   it("maps device tiers to caps: capped→40, desktop→60", () => {
