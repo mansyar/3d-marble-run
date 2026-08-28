@@ -21,6 +21,7 @@ import {
   createDropPointSpawnerDrop,
   type PositionedDropPointMarbleSpawn,
 } from "./sim/dropPointSpawner";
+import { resolveFollowTarget } from "./sim/followTarget";
 import { createGoalTracker, type MarblePosition } from "./sim/goals";
 import type { LandingResult } from "./sim/landing";
 import { createMarbleImpactTracker, type MarbleVelocitySample } from "./sim/marbleImpact";
@@ -156,6 +157,19 @@ function removeMarble(id: number): void {
   handle.scene.remove(live.mesh);
   marblePool.release(live);
   liveMarbles.delete(id);
+  // Follow-target handoff: all four removal paths (goal entry, out-of-bounds
+  // cleanup, stuck recycle, pool shrink) funnel through here.
+  if (id === followedMarbleId) {
+    const next = resolveFollowTarget(followedMarbleId, spawner.state().activeIds, [id]);
+    if (next !== null) {
+      followedMarbleId = next;
+      cameraController?.setMode("chase"); // glide to the next marble
+    } else {
+      followedMarbleId = null;
+      cameraController?.setMode("free"); // ease back to the orbit framing
+      simulationControls.setCameraMode("free");
+    }
+  }
 }
 
 function applySpawnResult(result: ReturnType<typeof createDropPointSpawnerDrop>): void {

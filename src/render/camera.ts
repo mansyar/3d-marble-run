@@ -204,7 +204,19 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
   }
 
   function setMode(nextMode: CameraMode): void {
-    if (cameraMode === nextMode) return;
+    if (cameraMode === nextMode) {
+      if (nextMode === "chase" && !prefersReducedMotion()) {
+        // Re-entering chase (follow-target handoff): glide from the current
+        // pose to the new marble instead of snapping.
+        transition = {
+          kind: "toChase",
+          elapsedMs: 0,
+          fromPos: camera.position.clone(),
+          fromLook: chaseLookAt.clone(),
+        };
+      }
+      return;
+    }
     const fromPos = camera.position.clone();
     const fromLook = (cameraMode === "chase" ? chaseLookAt : target).clone();
     cameraMode = nextMode;
