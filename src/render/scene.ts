@@ -12,6 +12,7 @@ import {
   WebGLRenderer,
 } from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+import { getQualityMode, type QualityMode, resolveQuality } from "../core/quality";
 
 const TABLE_COLOR = 0xc79a63;
 const SKY_COLOR = 0xfbf7ef;
@@ -26,6 +27,7 @@ export interface SceneHandle {
   camera: PerspectiveCamera;
   renderer: WebGLRenderer;
   initialCameraTarget: readonly [number, number, number];
+  applyQuality: (mode: QualityMode) => void;
 }
 
 /**
@@ -39,8 +41,13 @@ export function initScene(
 ): SceneHandle {
   const compactViewport =
     window.matchMedia(MOBILE_VIEWPORT_QUERY).matches || navigator.maxTouchPoints > 0;
-  const renderer = new WebGLRenderer({ antialias: !compactViewport });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, compactViewport ? 1.5 : 2));
+  const deviceMemory = (navigator as unknown as { deviceMemory?: number }).deviceMemory;
+  const qualityMode = getQualityMode();
+  const caps = resolveQuality({ compact: compactViewport, deviceMemory }, qualityMode);
+  const renderer = new WebGLRenderer({
+    antialias: qualityMode === "high" || !compactViewport,
+  });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, caps.dprCap));
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = PCFSoftShadowMap;
@@ -75,8 +82,7 @@ export function initScene(
   sun.position.set(8, 14, 6);
   sun.castShadow = true;
   sun.shadow.radius = 2;
-  const shadowMapSize = compactViewport ? 1024 : 2048;
-  sun.shadow.mapSize.set(shadowMapSize, shadowMapSize);
+  sun.shadow.mapSize.set(caps.shadowSize, caps.shadowSize);
   sun.shadow.camera.left = -15;
   sun.shadow.camera.right = 15;
   sun.shadow.camera.top = 15;
@@ -102,6 +108,14 @@ export function initScene(
 
   window.addEventListener("resize", onResize);
 
+  function applyQuality(mode: QualityMode): void {
+    const nextCaps = resolveQuality({ compact: compactViewport, deviceMemory }, mode);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, nextCaps.dprCap));
+    sun.shadow.mapSize.set(nextCaps.shadowSize, nextCaps.shadowSize);
+    // Force shadow map reallocation on next render.
+    sun.shadow.map = null;
+  }
+
   let lastTime = performance.now();
   renderer.setAnimationLoop(() => {
     const now = performance.now();
@@ -110,5 +124,5 @@ export function initScene(
     renderer.render(scene, camera);
   });
 
-  return { scene, camera, renderer, initialCameraTarget };
+  return { scene, camera, renderer, initialCameraTarget, applyQuality };
 }
