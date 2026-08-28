@@ -63,12 +63,22 @@ export function createTray(
   tray.appendChild(separator);
   addButton("drop-point", DROP_POINT_LABEL, DROP_POINT_COLOR);
 
+  function syncRovingFocus(activeId: TraySelection | null): void {
+    let first = true;
+    for (const [id, btn] of buttons) {
+      const shouldFocus = activeId ? id === activeId : first;
+      btn.tabIndex = shouldFocus ? 0 : -1;
+      first = false;
+    }
+  }
+
   function setActive(typeId: TraySelection | null): void {
     for (const [id, btn] of buttons) {
       btn.classList.toggle("active", id === typeId);
       btn.setAttribute("aria-pressed", String(id === typeId));
     }
     tray.classList.toggle("placing", typeId !== null);
+    syncRovingFocus(typeId);
     if (typeId && buttons.has(typeId)) {
       const btn = buttons.get(typeId);
       if (btn && tray.scrollWidth > tray.clientWidth) {
@@ -83,6 +93,7 @@ export function createTray(
   }
 
   root.appendChild(tray);
+  syncRovingFocus(null);
 
   function updateScrollState(): void {
     const atStart = tray.scrollLeft <= 1;
@@ -103,6 +114,50 @@ export function createTray(
   // initial mask state and after fonts/images settle
   requestAnimationFrame(updateScrollState);
   window.addEventListener("load", updateScrollState);
+  tray.addEventListener("keydown", (ev: KeyboardEvent) => {
+    const step = (buttons.values().next().value?.offsetWidth ?? 64) + 8;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const behavior: ScrollBehavior = reduced ? "auto" : "smooth";
+    if (ev.key === "ArrowLeft") {
+      ev.preventDefault();
+      tray.scrollBy({ left: -step, behavior });
+    } else if (ev.key === "ArrowRight") {
+      ev.preventDefault();
+      tray.scrollBy({ left: step, behavior });
+    } else if (ev.key === "Home") {
+      ev.preventDefault();
+      tray.scrollTo({ left: 0, behavior });
+    } else if (ev.key === "End") {
+      ev.preventDefault();
+      tray.scrollTo({ left: tray.scrollWidth, behavior });
+    }
+    const activeEl = document.activeElement as HTMLElement | null;
+    const focusedBtn =
+      activeEl &&
+      activeEl instanceof HTMLButtonElement &&
+      buttons.has(activeEl.dataset.typeId as TraySelection)
+        ? activeEl
+        : null;
+    if (!focusedBtn) return;
+    const order = [...buttons.values()];
+    const idx = order.indexOf(focusedBtn);
+    if (ev.key === "ArrowLeft" && idx > 0) {
+      const target = order[idx - 1];
+      target.focus();
+      syncRovingFocus(target.dataset.typeId as TraySelection);
+    } else if (ev.key === "ArrowRight" && idx < order.length - 1) {
+      const target = order[idx + 1];
+      target.focus();
+      syncRovingFocus(target.dataset.typeId as TraySelection);
+    } else if (ev.key === "Home" && order.length > 0) {
+      order[0].focus();
+      syncRovingFocus(order[0].dataset.typeId as TraySelection);
+    } else if (ev.key === "End" && order.length > 0) {
+      order[order.length - 1].focus();
+      syncRovingFocus(order[order.length - 1].dataset.typeId as TraySelection);
+    }
+  });
+
   // expose for tests if needed
   (tray as unknown as { __updateScrollState?: () => void }).__updateScrollState = updateScrollState;
 
