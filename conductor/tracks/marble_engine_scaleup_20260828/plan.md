@@ -12,11 +12,14 @@
   tier-cap and hysteresis semantics (pause needs sustained overage; resume
   streak resets on relapse).
 
-### [ ] Task: Implement population governor and commit Phase 1
+### [x] Task: Implement population governor and commit Phase 1 `f6820e0`
 - `src/sim/population.ts` — `resolveMarbleCap(tier)` + `createFrameBudget`
   per pinned tests. GREEN, ≥80% coverage on changed logic.
 - Commit `feat(sim): Add marble population governor with frame-budget hysteresis`;
   git note attached.
+- Notes: full suite 274/274 GREEN; population.ts coverage 97.82% statements /
+  100% lines / 100% functions; Biome clean (119 files, 1 import-format fix
+  applied via `--write`).
 
 ### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 - Run full suite once; propose manual verification of pure-logic scope
