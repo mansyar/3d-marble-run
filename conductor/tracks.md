@@ -13,8 +13,8 @@
 - [x] **Track: Sound Design Polish** *Link: [./archive/sound_polish_20260827/index.md](./archive/sound_polish_20260827/index.md)*
 - [x] **Track: Start-Gate Removal + PR CI Gating** *Link: [./archive/start_gate_removal_ci_20260826/index.md](./archive/start_gate_removal_ci_20260826/index.md)*
 - [x] **Track: Installable PWA & Payload Budget Hardening** *Link: [./archive/pwa_budget_20260827/index.md](./archive/pwa_budget_20260827/index.md)*
-- [x] **Track: Branching Pieces & Route Guidance** *Link: [./tracks/branching_pieces_guidance_20260827/index.md](./tracks/branching_pieces_guidance_20260827/index.md)*
-- [x] **Track: Cut v0.3.0 Release** *Link: [./tracks/release_v030_20260827/index.md](./tracks/release_v030_20260827/index.md)*
+- [x] **Track: Branching Pieces & Route Guidance** *Link: [./archive/branching_pieces_guidance_20260827/index.md](./archive/branching_pieces_guidance_20260827/index.md)*
+- [x] **Track: Cut v0.3.0 Release** *Link: [./archive/release_v030_20260827/index.md](./archive/release_v030_20260827/index.md)*
 - [x] **Track: Mobile Tray Ergonomics & Free-Placement Touch Polish** *Link: [./archive/mobile_tray_ergonomics_20260828/index.md](./archive/mobile_tray_ergonomics_20260828/index.md)*
 - [x] **Track: Anti-Jam Resilience — Stuck-Marble Self-Rescue & Funnel Throughput** *Link: [./archive/anti_jam_resilience_20260828/index.md](./archive/anti_jam_resilience_20260828/index.md)*
 - [x] **Track: Toy Visual Polish — Subtle Bevel & Material Retune** *Link: [./archive/toy_visual_polish_20260828/index.md](./archive/toy_visual_polish_20260828/index.md)*
