@@ -8,19 +8,25 @@ About-modal version from `package.json` — only a post-bump build can display
 policy); the tag is pushed only after merge and smoke pass. pwsh note: use
 `$env:CI='true'` instead of bash-style `CI=true` prefixes.
 
-## Phase 1 · Baseline Verification
+## Phase 1 · Baseline Verification [checkpoint: 29e0829]
 
-- [ ] Task: Establish pre-release baseline on `chore/release-v040`
-  - [ ] Confirm clean working tree and parity with `origin/master` (branch
-        point)
-  - [ ] Run frozen install, `CI=true pnpm vitest run --coverage`,
-        `CI=true pnpm biome check .`
-  - [ ] Record baseline bundle sizes from `pnpm build` + `pnpm check:size`
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Establish pre-release baseline on `chore/release-v040`
+  - [x] Confirmed clean tree vs `origin/master` branch point `e807602` (only
+        this plan file dirty, as expected). Scaffold commit `4b5378b`,
+        registry mark `29e0829`
+  - [x] Frozen install OK (lockfile verified 2026-08-27). `vitest run
+        --coverage`: 35 files / 290 tests passed (2.75s). Coverage: 88.66%
+        stmts / 82.48% branch / 93.28% funcs / 91.37% lines. `biome check .`
+        clean (122 files, no fixes)
+  - [x] Baseline bundle: app chunk 3,470.38 kB min / 1,237.56 kB gzip;
+        TOTAL 3,502.35 kB min / 1,248.60 kB gzip vs budget 3,600 / 1,260 —
+        within budget (+9.2 kB min, +3.0 kB gzip vs the v0.3.0 baseline of
+        3,493.13 / 1,245.57)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2 · Version Bump & Release Build Smoke Test
 
-- [ ] Task: Cut version bump to `0.4.0`
+- [~] Task: Cut version bump to `0.4.0`
   - [ ] Bump `package.json` to `0.4.0`
         (`pnpm version minor --no-git-tag-version` — tree carries plan edits),
         manual bump commit `0.4.0`, verify annotated tag `v0.4.0` created
