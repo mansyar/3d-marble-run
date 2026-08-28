@@ -5,7 +5,7 @@
 
 ## Phase 1 · Stuck Detector — Pure Logic & Self-Rescue Integration
 
-- [ ] **Task 1.1: TDD — failing tests for `stuckDetector.ts` (logic-bearing)** *(RED phase)*
+- [x] **Task 1.1: TDD — failing tests for `stuckDetector.ts` (logic-bearing)** *(RED phase) — RED confirmed (6/9 failing) `abbdecf`*
   - Create `src/sim/stuckDetector.ts` stub + `src/sim/stuckDetector.test.ts` (Vitest, follow `spawner.test.ts`/`playability.test.ts` conventions).
   - Pin cases:
     - steady roller at 0.6 m/s for 2 s → never stuck
@@ -17,7 +17,7 @@
     - nudge-budget helper (if exposed): caps at 3 per 1_000 ms sliding window
   - Run `CI=true pnpm vitest run src/sim/stuckDetector.test.ts` → confirm RED (fails) before implementation. Commit not yet.
 
-- [ ] **Task 1.2: Implement `createStuckDetector` (GREEN phase)**
+- [x] **Task 1.2: Implement `createStuckDetector` (GREEN phase)** — GREEN 9/9  `abbdecf`
   - Implement `createStuckDetector(opts?: { velocityThreshold, positionEpsilon, stuckWindowMs, graceMs })` per FR-1:
     - Internal `Map<id, { startPos, startMs, lastPos, graceUntil, nudgedAt? }>`
     - `update(id, position: Vec3, velocity: Vec3 | { vy, speed }, nowMs)` — compute speed = `hypot(vx,vy,vz)`; if grace → skip; if speed < threshold && dist(startPos, position) < epsilon → keep window else reset window start
@@ -26,7 +26,7 @@
   - Keep pure — no Three/Rapier imports, no DOM, no timers. Document with TSDoc.
   - Re-run tests → GREEN. `CI=true pnpm vitest run --coverage src/sim/stuckDetector.test.ts` target ≥80% line/branch on this module.
 
-- [ ] **Task 1.3: Integrate nudge-then-recycle policy into `src/app.ts`**
+- [x] **Task 1.3: Integrate nudge-then-recycle policy into `src/app.ts`** — nudge±0.35+recycle 900ms+remove hook+clock via `abbdecf` baseline**
   - Instantiate detector alongside `marbleImpacts` / `spawner`; feed it each frame from `liveMarbles` velocities + positions (use `body.linvel()` magnitude and `body.translation()`).
   - Insert `cleanupStuckMarbles()` before `cleanupOutOfBoundsMarbles()` in the RAF loop:
     - On first flag for an id → `body.applyImpulse({x: rand±0.35, y:0.08, z: rand±0.35}, true)` and mark `nudgedAt = nowMs`, rate-limit 3/s globally via a small queue of timestamps.
@@ -34,7 +34,7 @@
   - Dev-only console debug gated by `import.meta.env.DEV` (optional).
   - Verify existing suites still green: `CI=true pnpm vitest run` (expect 244+ new tests passing).
 
-- [ ] **Task 1.4: Cover changed logic and commit Phase 1**
+- [~] **Task 1.4: Cover changed logic and commit Phase 1**
   - `CI=true pnpm vitest run --coverage` ≥80% on `stuckDetector.ts`; `CI=true pnpm biome check .` clean; `pnpm build` ok; `pnpm check:size` within 3,500/1,250 and ≤1.8 kB delta (measure vs 3,496.72/1,246.57 baseline).
   - One commit: `feat(sim): add stuck detector with nudge-then-recycle self-rescue` — attach git note with task summary.
   - Update plan: mark Task 1.1–1.4 `[x] <sha7>`.
