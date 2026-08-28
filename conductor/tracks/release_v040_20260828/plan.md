@@ -24,7 +24,7 @@ policy); the tag is pushed only after merge and smoke pass. pwsh note: use
         3,493.13 / 1,245.57)
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
-## Phase 2 · Version Bump & Release Build Smoke Test
+## Phase 2 · Version Bump & Release Build Smoke Test [checkpoint: ac4220b]
 
 - [x] Task: Cut version bump to `0.4.0`
   - [x] `pnpm version minor --no-git-tag-version` → 0.3.0 → 0.4.0; commit
@@ -52,22 +52,28 @@ policy); the tag is pushed only after merge and smoke pass. pwsh note: use
 - [x] Task: Touch smoke test (~393×659 emulated)
   - [x] Same core journeys + tray ergonomics; ≥44px targets; no page scroll
         or console errors
-- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
-## Phase 3 · Release Tag, Pipeline & Live Verification
+## Phase 3 · Release Tag, Pipeline & Live Verification [checkpoint: 67b6ab2]
 
-- [ ] Task: Merge PR, push release tag, monitor pipeline
-  - [ ] Push `chore/release-v040`; open PR → `master` with CI green; merge
-        with a merge commit, then push tag `v0.4.0`; watch the release
-        workflow end-to-end
-  - [ ] On gate failure: fix forward, re-cut tag (never force over published
-        tags)
-- [ ] Task: Verify live artifacts
-  - [ ] Pages site loads under repository base path; About modal reads
-        `v0.4.0` in production
-  - [ ] GitHub Release published with generated notes covering the four
-        released tracks
-  - [ ] GHCR images present: `0.4.0`, `latest`, commit SHA
-  - [ ] README runbook re-checked against actual flow (update only if
-        drifted)
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Merge PR, push release tag, monitor pipeline
+  - [x] PR #11 CI green (28s); merged with a merge commit (master
+        `e807602` → `67b6ab2`; ancestry of `a19ef0d` confirmed before tag
+        push); tag `v0.4.0` pushed post-merge
+  - [x] Release run `33159722737` watched end-to-end to success: validate +
+        build 26s · GHCR image 1m5s · GitHub Release 6s · Pages 32s+10s ·
+        Coolify webhook 7s. Only annotations: pre-existing Node 20
+        deprecation warnings on pinned actions — non-blocking
+  - Note (runbook): filter `gh run list --workflow=release.yml` by
+        `headBranch` = tag name before `gh run watch` — right after pushing
+        the tag, the previous release run is otherwise the newest
+        `release.yml` run and gets watched by mistake
+- [x] Task: Verify live artifacts
+  - [x] Pages live under repository base path: entry `index-BDBD7mzT.js` +
+        app chunk `app-D5aJWH_l.js` (3,470,362 bytes) served; embedded
+        ``version:`0.4.0``` (source of the About modal)
+  - [x] GitHub Release `v0.4.0` published 2026-08-28 09:32 UTC — generated
+        notes, draft=false, prerelease=false
+  - [x] GHCR tags present: `0.4.0`, `latest`, `sha-a19ef0d` (bump commit)
+  - [x] README runbook re-checked — flow unchanged from v0.3.0, no drift
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
