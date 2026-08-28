@@ -38,6 +38,7 @@ import { loadInitialTrack } from "./track/startup";
 import { createTrackStorage } from "./track/storage";
 import { createAboutDialog } from "./ui/about";
 import { createCoachMarks } from "./ui/coachMarks";
+import { createQualityToggle } from "./ui/qualityToggle";
 import { createSaveSlotControls } from "./ui/save-slots";
 import { createSimulationControls } from "./ui/simulation";
 import { createSoundToggle } from "./ui/soundToggle";
@@ -371,6 +372,7 @@ const soundPreferences = createSoundPreferences();
 const sound = createAudioEngine(createWebAudioSynth());
 sound.setMuted(soundPreferences.isMuted());
 createSoundToggle(topHud, { preferences: soundPreferences, engine: sound });
+createQualityToggle(topHud, { sceneHandle: handle });
 
 const unlockAudio = (): void => sound.unlock();
 document.addEventListener("pointerdown", unlockAudio, { once: true });

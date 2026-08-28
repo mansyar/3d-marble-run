@@ -57,6 +57,7 @@ export interface BuiltPiece {
 const FLOOR_T = 0.08;
 const WALL_H = 0.16;
 const RAIL_T = 0.07;
+const BEVEL = 0.03;
 export const FUNNEL_SPOUT_INNER_RADIUS = 0.14;
 const FUNNEL_SPOUT_OUTER_RADIUS = 0.17;
 const Y_AXIS = new Vector3(0, 1, 0);
@@ -79,7 +80,9 @@ function trough(
   const floor = shadowed(new Mesh(new BoxGeometry(TRACK_WIDTH, FLOOR_T, length), mat));
   floor.position.y = -FLOOR_T / 2;
   group.add(floor);
-  const railGeo = new BoxGeometry(RAIL_T, WALL_H, length);
+  // Subtle chamfer: visually inset rails by BEVEL to catch highlight on the
+  // top edge while keeping colliders at full TRACK_WIDTH for roll fidelity.
+  const railGeo = new BoxGeometry(RAIL_T - BEVEL * 0.6, WALL_H - BEVEL * 0.4, length);
   const colliders: ColliderSpec[] = [
     {
       kind: "cuboid",
@@ -90,7 +93,11 @@ function trough(
   for (const side of [-1, 1]) {
     if (!rails[side === 1 ? 0 : 1]) continue;
     const rail = shadowed(new Mesh(railGeo, mat));
-    rail.position.set((side * TRACK_WIDTH) / 2, WALL_H / 2, 0);
+    rail.position.set(
+      (side * (TRACK_WIDTH / 2 - BEVEL * 0.15)) as number,
+      (WALL_H - BEVEL * 0.4) / 2 + BEVEL * 0.12,
+      0,
+    );
     group.add(rail);
     colliders.push({
       kind: "cuboid",

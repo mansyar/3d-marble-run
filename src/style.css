@@ -123,7 +123,8 @@ canvas.camera-orbiting {
 
 #simulation-controls button,
 #save-slot-toggle,
-.sound-toggle {
+.sound-toggle,
+.quality-toggle {
   min-height: 44px;
   padding: 8px 12px;
   border: 1px solid #cdbda8;
@@ -137,7 +138,8 @@ canvas.camera-orbiting {
 
 #simulation-controls button:active,
 #save-slot-toggle:active,
-.sound-toggle:active {
+.sound-toggle:active,
+.quality-toggle:active {
   background: #f2e8d8;
 }
 
@@ -149,6 +151,7 @@ canvas.camera-orbiting {
 #simulation-controls button:focus-visible,
 #save-slot-toggle:focus-visible,
 .sound-toggle:focus-visible,
+.quality-toggle:focus-visible,
 #about-dialog button:focus-visible,
 #save-slots input:focus-visible,
 #save-slots select:focus-visible,
@@ -354,7 +357,8 @@ canvas.camera-orbiting {
     justify-self: start;
   }
 
-  .sound-toggle {
+  .sound-toggle,
+  .quality-toggle {
     justify-self: start;
   }
 

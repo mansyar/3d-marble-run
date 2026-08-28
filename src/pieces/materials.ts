@@ -18,7 +18,8 @@ export const PIECE_COLORS: Record<PieceTypeId, number> = {
 export function makePieceMaterial(typeId: PieceTypeId): MeshStandardMaterial {
   return new MeshStandardMaterial({
     color: PIECE_COLORS[typeId],
-    roughness: 0.35,
+    roughness: 0.28,
     metalness: 0,
+    envMapIntensity: 1.2,
   });
 }
