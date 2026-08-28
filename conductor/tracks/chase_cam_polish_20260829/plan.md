@@ -43,7 +43,7 @@ isolated into pure modules and built with TDD (Red → Green).
         `isLocked`
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
-## Phase 3: Follow-Target Handoff (logic + glue)
+## Phase 3: Follow-Target Handoff (logic + glue) [checkpoint: 5bff170]
 
 - [x] Task: Write failing tests for follow-target resolver (TDD Red)
   (`22133ec`) — `tests/followTarget.test.ts`, 10 cases covering all four
