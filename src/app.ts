@@ -207,7 +207,7 @@ function cleanupStuckMarbles(nowMs: number): void {
       // Gentle lateral nudge — preserves physical simulation, no teleport
       const impulse = {
         x: (Math.random() - 0.5) * 0.7,
-        y: 0.08,
+        y: 0.1,
         z: (Math.random() - 0.5) * 0.7,
       };
       try {
