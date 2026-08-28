@@ -18,6 +18,8 @@ const PULSE_MIN_INTENSITY = 0.06;
 const PULSE_MAX_INTENSITY = 0.32;
 const PULSE_STATIC_INTENSITY = 0.22;
 const GLOW_HOVER = 0.1; // marble-centre height inside a rail channel
+const GLOW_TUBE_RADIUS = 0.025;
+const MOBILE_VIEWPORT_QUERY = "(max-width: 768px)";
 
 export interface GuidanceState {
   /** Connector pieces the landing cannot reach — they pulse. */
@@ -57,11 +59,24 @@ function prefersReducedMotion(): boolean {
     : false;
 }
 
+function isCompactViewport(): boolean {
+  return typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    typeof navigator !== "undefined"
+    ? window.matchMedia(MOBILE_VIEWPORT_QUERY).matches || navigator.maxTouchPoints > 0
+    : false;
+}
+
 /** Soft route guidance: violet pulses on unreachable connector pieces and an
  * additive glow tube along each landing→cup path. Recomputed only on graph /
  * landing changes (see refresh), animated per frame in tick. */
 export function createGuidanceRenderer(deps: GuidanceDeps): GuidanceRenderer {
   const reducedMotion = prefersReducedMotion();
+  const compactViewport = isCompactViewport();
+  const pulseMin = compactViewport ? PULSE_MIN_INTENSITY * 1.2 : PULSE_MIN_INTENSITY;
+  const pulseMax = compactViewport ? PULSE_MAX_INTENSITY * 1.2 : PULSE_MAX_INTENSITY;
+  const pulseStatic = compactViewport ? PULSE_STATIC_INTENSITY * 1.2 : PULSE_STATIC_INTENSITY;
+  const glowTubeRadius = compactViewport ? GLOW_TUBE_RADIUS * 1.2 : GLOW_TUBE_RADIUS;
   const pulseColor = new Color(GLOW_COLOR);
   const glowMaterial = new MeshBasicMaterial({
     color: GLOW_COLOR,
@@ -106,7 +121,7 @@ export function createGuidanceRenderer(deps: GuidanceDeps): GuidanceRenderer {
       // hugs the channel (arcs included) without swinging outside the rails.
       const curve = new CatmullRomCurve3(points, false, "catmullrom", 0);
       const mesh = new Mesh(
-        new TubeGeometry(curve, Math.max(8, (points.length - 1) * 3), 0.025, 6, false),
+        new TubeGeometry(curve, Math.max(8, (points.length - 1) * 3), glowTubeRadius, 6, false),
         glowMaterial,
       );
       glowGroup.add(mesh);
@@ -142,7 +157,7 @@ export function createGuidanceRenderer(deps: GuidanceDeps): GuidanceRenderer {
         originalEmissive.push(material.emissive.getHex());
         originalIntensity.push(material.emissiveIntensity);
         material.emissive.copy(pulseColor);
-        material.emissiveIntensity = reducedMotion ? PULSE_STATIC_INTENSITY : PULSE_MIN_INTENSITY;
+        material.emissiveIntensity = reducedMotion ? pulseStatic : pulseMin;
       });
       if (meshes.length > 0) tracked.set(pieceId, { meshes, originalEmissive, originalIntensity });
     }
@@ -153,9 +168,7 @@ export function createGuidanceRenderer(deps: GuidanceDeps): GuidanceRenderer {
   function tick(elapsedMs: number): void {
     if (tracked.size === 0 || reducedMotion) return;
     phase = (phase + (elapsedMs * Math.PI * 2) / PULSE_CYCLE_MS) % (Math.PI * 2);
-    const intensity =
-      PULSE_MIN_INTENSITY +
-      ((PULSE_MAX_INTENSITY - PULSE_MIN_INTENSITY) * (1 + Math.sin(phase))) / 2;
+    const intensity = pulseMin + ((pulseMax - pulseMin) * (1 + Math.sin(phase))) / 2;
     for (const entry of tracked.values()) {
       for (const mesh of entry.meshes) {
         (mesh.material as MeshStandardMaterial).emissiveIntensity = intensity;

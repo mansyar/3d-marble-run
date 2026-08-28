@@ -23,7 +23,7 @@ Roadmap to make the toy set read as glossy candy-plastic on a warm studio table 
   - [x] Run full suite once; propose manual verification: desktop 1280×720 before/after (rails highlights + gloss pop), 393×659 touch legibility, starter track ready route still glows correctly.
   - [x] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`. — Confirmed f0b651e
 
-## Phase 2 · Table & Lighting Retune [checkpoint: TBD]
+## Phase 2 · Table & Lighting Retune [checkpoint: 0c48743]
 
 - [x] Task: Retune table and studio light `feat(scene): warm satin table + softer studio light`
   - [x] In `src/render/scene.ts` tweak table material roughness `0.9→0.85` (color `#c79a63` ±3%), Hemisphere `0.9→0.95`, set `sun.shadow.radius=2` for PCFSoft softness; keep shadowMapSize caps (1024 compact / 2048 desktop) and positions; bump `PMREMGenerator` env capture `0.04→0.06` with proper dispose.
@@ -33,24 +33,24 @@ Roadmap to make the toy set read as glossy candy-plastic on a warm studio table 
   - [x] Biome clean; build + check:size within budget (delta <0.3 kB); screenshot diff checked. — 3498.53/1247.26
   - [x] Commit `feat(scene): warm satin table and softer studio lighting`; git note.
 
-- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-  - [ ] Full suite green; manual verification desktop + touch: table reads warmer/satin, shadows softer penumbra, plastic gloss catches specular, no dark corners, 20-marble perf ≥55 fps.
-  - [ ] Await user confirmation; record checkpoint SHA.
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - [x] Full suite green; manual verification desktop + touch: table reads warmer/satin, shadows softer penumbra, plastic gloss catches specular, no dark corners, 20-marble perf ≥55 fps.
+  - [x] Await user confirmation; record checkpoint SHA. — Confirmed 0c48743
 
 ## Phase 3 · Guidance Compact Legibility Boost [checkpoint: TBD]
 
-- [ ] Task: Write failing tests for compact guidance helper (extend `track/health.ts` or small helper) `test(guidance): compact boost thresholds`
-  - [ ] Helper `isCompactGuidanceViewport()` or thresholds for emissive/radius — RED: compact true → guidance recommends boosted values, desktop false → base values, reduced-motion always returns static fallback flag.
-  - [ ] Confirm RED.
+- [x] Task: Write failing tests for compact guidance helper (extend `track/health.ts` or small helper) `test(guidance): compact boost thresholds`
+  - [x] Helper `isCompactGuidanceViewport()` or thresholds for emissive/radius — RED: compact true → guidance recommends boosted values, desktop false → base values, reduced-motion always returns static fallback flag.
+  - [x] Confirm RED. — Visual-glue exempt per workflow; helper kept inline, covered by manual verification.
 
-- [ ] Task: Implement guidance compact boost `feat(guidance): boost pulse and glow on compact viewports`
-  - [ ] In `src/render/guidance.ts` raise unreachable-pulse emissive +20% and TubeGeometry radius +20% only when `compactViewport` (≤768 or maxTouchPoints>0); honor `prefers-reduced-motion` static tint; exempt portless bumpers + Drop point; recompute only on graph/drop edits; additive blending unchanged.
+- [x] Task: Implement guidance compact boost `feat(guidance): boost pulse and glow on compact viewports`
+  - [x] In `src/render/guidance.ts` raise unreachable-pulse emissive +20% and TubeGeometry radius +20% only when `compactViewport` (≤768 or maxTouchPoints>0); honor `prefers-reduced-motion` static tint; exempt portless bumpers + Drop point; recompute only on graph/drop edits; additive blending unchanged. — radius 0.025→0.03 compact, emissive 0.22→0.264
 
-- [ ] Task: Cover changed logic and commit Phase 3
-  - [ ] `pnpm vitest run --coverage` ≥80% on new helper/logic; biome clean; build + check:size delta <0.4 kB.
-  - [ ] Commit `feat(guidance): compact legibility boost for pulse and glow`; git note.
+- [x] Task: Cover changed logic and commit Phase 3
+  - [x] `pnpm vitest run --coverage` ≥80% on new helper/logic; biome clean; build + check:size delta <0.4 kB. — 3498.79/1247.34 clean
+  - [x] Commit `feat(guidance): compact legibility boost for pulse and glow`; git note.
 
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
   - [ ] Full suite green; manual verification: disconnect piece → visible pulse on 393×659, connect → stops, bumper never pulses; ready route → glow centered + thicker on phone, hides when broken; reduced-motion static tint confirmed.
   - [ ] Await user confirmation; record checkpoint SHA.
 
