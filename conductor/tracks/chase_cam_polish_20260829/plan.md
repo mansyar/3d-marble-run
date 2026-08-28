@@ -5,7 +5,7 @@ from unit-test mandates and are verified through the manual verification protoco
 two genuinely logic-bearing pieces (tap classification, follow-target handoff) are
 isolated into pure modules and built with TDD (Red → Green).
 
-## Phase 1: Eased Mode Transitions (visual glue — manual verification)
+## Phase 1: Eased Mode Transitions (visual glue — manual verification) [checkpoint: dc6f647]
 
 - [x] Task: Implement eased fly-to transition between free and chase modes
   (`dc6f647`) — Added a `toChase`/`toFree` transition state in `camera.ts` easing
