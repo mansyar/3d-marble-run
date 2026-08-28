@@ -43,7 +43,8 @@ export function createDropPointController(deps: DropPointControllerDeps): {
   let cursorPosition: Vec3 | null = null;
 
   function isTouchPointer(ev: PointerEvent): boolean {
-    return ev.pointerType === "touch" || navigator.maxTouchPoints > 0;
+    if (ev.pointerType) return ev.pointerType === "touch";
+    return navigator.maxTouchPoints > 0;
   }
 
   function pointOnTable(clientX: number, clientY: number, isTouch = false): Vec3 | null {

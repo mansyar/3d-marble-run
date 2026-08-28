@@ -134,7 +134,8 @@ export function createPlacementController(deps: PlacementDeps): {
   const hit = new Vector3();
 
   function isTouchPointer(ev: PointerEvent): boolean {
-    return ev.pointerType === "touch" || navigator.maxTouchPoints > 0;
+    if (ev.pointerType) return ev.pointerType === "touch";
+    return navigator.maxTouchPoints > 0;
   }
 
   function clientWithOffset(
@@ -242,6 +243,13 @@ export function createPlacementController(deps: PlacementDeps): {
     if (!ghost) return;
     for (const [mat, original] of ghost.originalColors) {
       mat.color.setHex(blocked ? BLOCKED_COLOR : original);
+      if (blocked) {
+        mat.emissive.setHex(0x000000);
+        mat.emissiveIntensity = 0;
+      } else {
+        mat.emissive.setHex(lastIsTouch ? 0xffffff : 0x000000);
+        mat.emissiveIntensity = lastIsTouch ? 0.18 : 0;
+      }
     }
   }
 
@@ -479,6 +487,7 @@ export function createPlacementController(deps: PlacementDeps): {
     }
     activeTypeId = null;
     cursorPos = null;
+    lastIsTouch = false;
     activeTypeId = typeId;
     yawDeg = 0;
     ghost = makeGhost(typeId);
