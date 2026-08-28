@@ -12,7 +12,10 @@ fork a channel into two branches, and bumpers are free-standing domes you can
 seat anywhere — on the table or right on top of a track. The Drop point is a
 separate overhead
 marble entry point: place it freely above the table, then use its vertical guide
-to find the first track surface below. A fresh launch includes a connected
+to find the first track surface below. On narrow phones the tray stays a single
+row that scrolls horizontally with momentum, snap points, edge fades and a
+subtle divider before the Drop point for visual grouping; on desktop it fits
+without scrolling. A fresh launch includes a connected
 five-piece starter route with a ready Drop point, while custom layouts remain
 editable at any time.
 

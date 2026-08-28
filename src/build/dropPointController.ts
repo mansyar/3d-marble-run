@@ -42,12 +42,18 @@ export function createDropPointController(deps: DropPointControllerDeps): {
   let active = false;
   let cursorPosition: Vec3 | null = null;
 
-  function pointOnTable(clientX: number, clientY: number): Vec3 | null {
+  function isTouchPointer(ev: PointerEvent): boolean {
+    if (ev.pointerType) return ev.pointerType === "touch";
+    return navigator.maxTouchPoints > 0;
+  }
+
+  function pointOnTable(clientX: number, clientY: number, isTouch = false): Vec3 | null {
     const rect = domElement.getBoundingClientRect();
     if (rect.width <= 0 || rect.height <= 0) return null;
+    const offY = isTouch ? clientY - 16 : clientY;
     ndc.set(
       ((clientX - rect.left) / rect.width) * 2 - 1,
-      -((clientY - rect.top) / rect.height) * 2 + 1,
+      -((offY - rect.top) / rect.height) * 2 + 1,
     );
     raycaster.setFromCamera(ndc, camera);
     const point = raycaster.ray.intersectPlane(tablePlane, hit);
@@ -63,7 +69,7 @@ export function createDropPointController(deps: DropPointControllerDeps): {
 
   function updateCursor(ev: PointerEvent): void {
     if (!active) return;
-    cursorPosition = pointOnTable(ev.clientX, ev.clientY);
+    cursorPosition = pointOnTable(ev.clientX, ev.clientY, isTouchPointer(ev));
     deps.onMove?.(cursorPosition);
   }
 
@@ -72,12 +78,14 @@ export function createDropPointController(deps: DropPointControllerDeps): {
   }
 
   function onPointerDown(ev: PointerEvent): void {
+    // Allow ghost preview to follow even before explicit begin? No — only when active.
     updateCursor(ev);
   }
 
   function onPointerUp(ev: PointerEvent): void {
     if (!active) return;
-    updateCursor(ev);
+    cursorPosition = pointOnTable(ev.clientX, ev.clientY, isTouchPointer(ev));
+    deps.onMove?.(cursorPosition);
     if (!cursorPosition || !editor.place(cursorPosition)) return;
     deps.onChange?.();
     deps.onPlace?.();

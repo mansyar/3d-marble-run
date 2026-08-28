@@ -386,13 +386,56 @@ canvas.camera-orbiting {
   bottom: max(12px, env(safe-area-inset-bottom));
   transform: translateX(-50%);
   display: flex;
-  gap: 10px;
+  flex-wrap: nowrap;
+  gap: 8px;
   padding: 10px 14px;
   background: rgb(255 255 255 / 0.82);
   backdrop-filter: blur(6px);
   border-radius: 20px;
   box-shadow: 0 4px 16px rgb(61 52 40 / 0.18);
   z-index: 10;
+  max-width: min(720px, calc(100vw - 24px));
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+  scroll-padding: 14px;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 24px,
+    black calc(100% - 24px),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 24px,
+    black calc(100% - 24px),
+    transparent
+  );
+}
+
+#hud-tray::-webkit-scrollbar {
+  display: none;
+}
+
+#hud-tray.at-start {
+  -webkit-mask-image: linear-gradient(to right, black, black calc(100% - 24px), transparent);
+  mask-image: linear-gradient(to right, black, black calc(100% - 24px), transparent);
+}
+
+#hud-tray.at-end {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 24px, black);
+  mask-image: linear-gradient(to right, transparent, black 24px, black);
+}
+
+#hud-tray.at-start.at-end {
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 
 .tray-btn {
@@ -408,6 +451,17 @@ canvas.camera-orbiting {
   background: transparent;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+}
+
+.tray-separator {
+  flex: 0 0 auto;
+  width: 1px;
+  align-self: stretch;
+  margin: 4px 4px;
+  background: rgb(61 52 40 / 0.12);
+  border-radius: 1px;
 }
 
 .tray-btn.active {
@@ -552,18 +606,26 @@ canvas.camera-orbiting {
     left: max(12px, env(safe-area-inset-left));
     right: max(12px, env(safe-area-inset-right));
     transform: none;
-    gap: 2px;
+    max-width: none;
+    gap: 4px;
     padding: 8px 6px;
   }
 
   .tray-btn {
-    min-width: 0;
-    flex: 1 1 0;
-    padding: 8px 2px;
+    min-width: 56px;
+    flex: 0 0 auto;
+    padding: 8px 4px;
   }
 
   .tray-label {
     text-align: center;
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #hud-tray {
+    scroll-behavior: auto;
   }
 }
 

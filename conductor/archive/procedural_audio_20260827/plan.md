@@ -21,9 +21,10 @@
 - Coverage: engine 90.9% / preferences 81.8% statements (≥80%). Full suite 172/172 green; Biome clean.
 - Commit `feat(audio): Add procedural audio engine and persisted mute preference`; git note attached.
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-- [ ] Run full suite once; propose manual verification (dev server, first-gesture sound, toggle state).
-- [ ] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `a05438a`
+- [x] Run full suite once; propose manual verification (dev server, first-gesture sound, toggle state).
+- [x] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
+- Reconciliation note (archive cleanup): suite 172/172 green at Phase 1 commit; checkpoint SHA `a05438a` recorded in phase heading; Phase 2 proceeded — checkboxes back-filled.
 
 ## Phase 2 · Marble Impact Detector (logic) `[checkpoint: b7b662d]`
 
@@ -37,9 +38,10 @@
 - Coverage 100% stmts/branch/funcs/lines; Biome clean.
 - Commit `feat(audio): Add per-marble first-landing detector`; git note attached.
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-- [ ] Run full suite once; manual check that each spawned marble lands at most once.
-- [ ] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `b7b662d`
+- [x] Run full suite once; manual check that each spawned marble lands at most once.
+- [x] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
+- Reconciliation note (archive cleanup): suite green + 100% coverage at Phase 2 commit; checkpoint SHA `b7b662d` recorded in phase heading; Phase 3 proceeded — checkboxes back-filled.
 
 ## Phase 3 · HUD Sound Toggle (UI glue) `[checkpoint: 51baec2]`
 
