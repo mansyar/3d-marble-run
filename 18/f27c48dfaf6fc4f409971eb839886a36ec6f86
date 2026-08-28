@@ -1,0 +1,11 @@
+Task: Implement keyboard scroll & reduced-motion + Update product docs
+
+Summary: Tray a11y polish — roving Tabindex (single Tab stop), ArrowLeft/Right scroll by button+gap, Home/End to edges, smooth scroll unless prefers-reduced-motion, focus follows arrow moves. Docs updated.
+
+Files:
+- src/ui/tray.ts: syncRovingFocus(), setActive calls it, tray keydown handler for Arrow/Home/End with scrollBy/scrollTo + behavior gate, roving focus move on arrows
+- README.md: added narrow-phone single-row horizontal scroll note with snap/fades/divider
+
+Tests: 244/244 pass, Biome clean after write, build 3496.58/1246.54 withinBudget (delta +3.45/+0.97 vs baseline, absolute headroom 3.42/3.46).
+
+Why: Makes 8-button tray usable on 320-393px phones via keyboard and touch, Divider keeps Drop point grouping clear, desktop unchanged.
