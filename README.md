@@ -1,8 +1,9 @@
 # Marblescape
 
 Marblescape is an offline, browser-based 3D marble-run builder. Build a track
-from procedural toy pieces, release physics-driven marbles, and save layouts
-locally in the browser.
+from procedural toy pieces — subtly beveled, glossy candy plastic on a warm
+wooden table — release physics-driven marbles, and save layouts locally in the
+browser.
 
 ## Build and play
 
@@ -25,11 +26,16 @@ ready. Drop and Stream stay disabled until a valid landing and goal route exist;
 disconnected pieces are not blocked, so experimentation stays forgiving.
 Route guidance stays ambient: connector pieces you have not joined to the route
 yet pulse gently until they connect, and a soft violet glow traces each ready
-path from the Drop point landing to its goal cup.
+path from the Drop point landing to its goal cup. On narrow screens the pulse
+and glow read a little stronger so they stay easy to spot.
 Marbles that leave the playable world are cleaned up automatically, and
 stalled marbles self-heal — gently nudged then recycled so streams stay
 fluid without ever crediting a goal or stopping play. All saves remain
 local to the browser.
+
+The top HUD includes a Quality toggle: Auto keeps phones smooth by capping
+resolution and shadow detail, while High lifts the caps for extra crispness.
+The choice persists across visits.
 
 ### Legacy saves
 
