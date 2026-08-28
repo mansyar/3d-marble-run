@@ -16,3 +16,4 @@
 - [x] **Track: Branching Pieces & Route Guidance** *Link: [./tracks/branching_pieces_guidance_20260827/index.md](./tracks/branching_pieces_guidance_20260827/index.md)*
 - [x] **Track: Cut v0.3.0 Release** *Link: [./tracks/release_v030_20260827/index.md](./tracks/release_v030_20260827/index.md)*
 - [x] **Track: Mobile Tray Ergonomics & Free-Placement Touch Polish** *Link: [./archive/mobile_tray_ergonomics_20260828/index.md](./archive/mobile_tray_ergonomics_20260828/index.md)*
+- [ ] **Track: Anti-Jam Resilience — Stuck-Marble Self-Rescue & Funnel Throughput** *Link: [./tracks/anti_jam_resilience_20260828/index.md](./tracks/anti_jam_resilience_20260828/index.md)*
