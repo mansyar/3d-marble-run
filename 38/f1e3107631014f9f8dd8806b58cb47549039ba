@@ -5,3 +5,8 @@ Changes: new src/core/quality.ts (QualityMode get/setQualityMode persisting to l
 Why: cap DPR/shadows on low-power devices so gloss polish never costs fluid 20-marble runs, per FR-4.
 Tests: tests/quality.test.ts 12 cases; quality.ts at 100% stmts/branch/funcs/lines. Suite 264 green; biome+tsc+build green; bundle 3,499.97 kB min / 1,247.75 kB gzip (within 3,500/1,250 gate; track delta within <=2.0/<=1.2 cap).
 Files: src/core/quality.ts, src/ui/qualityToggle.ts, src/render/scene.ts, src/app.ts, src/style.css, tests/quality.test.ts
+
+Phase 4 Verification Report — checkpoint confirmed by user
+Automated: vitest 264/264 green; quality.ts 100% stmts/branch/funcs/lines (12 tests); biome check clean; tsc --noEmit + vite build green; check:size 3,499.97 kB min / 1,247.75 kB gzip within 3,500/1,250 gate.
+Manual (desktop 1280x720 + 393x659 emulated touch): Quality Auto/High button in top-hud beside sound toggle, >=44px with focus-visible; toggles Auto<->High; persists across reloads; hot-updates DPR/shadow caps without reload (canvas ratio ~2 High vs ~1.5 Auto; crisp 2048 vs soft 1024 shadows); compact viewport auto-caps and High lifts; starter route glow, tray scroll, drop guide, sound toggle unaffected. Low-memory/battery stub paths pinned by unit tests.
+User confirmation: explicit yes (checkpoint confirmed).
