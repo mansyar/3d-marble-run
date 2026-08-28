@@ -19,3 +19,4 @@
 - [x] **Track: Anti-Jam Resilience — Stuck-Marble Self-Rescue & Funnel Throughput** *Link: [./archive/anti_jam_resilience_20260828/index.md](./archive/anti_jam_resilience_20260828/index.md)*
 - [x] **Track: Toy Visual Polish — Subtle Bevel & Material Retune** *Link: [./archive/toy_visual_polish_20260828/index.md](./archive/toy_visual_polish_20260828/index.md)*
 - [x] **Track: Marble Engine Scale-Up — 2× Population with Adaptive Stream Pacing** *Link: [./archive/marble_engine_scaleup_20260828/index.md](./archive/marble_engine_scaleup_20260828/index.md)*
+- [ ] **Track: Cut v0.4.0 Release** *Link: [./tracks/release_v040_20260828/index.md](./tracks/release_v040_20260828/index.md)*
