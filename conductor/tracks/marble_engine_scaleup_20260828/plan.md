@@ -75,9 +75,15 @@
   with dated entry.
 - README performance sentence update.
 
-### [ ] Task: Final quality gate
-- `CI=true pnpm biome check .` + `CI=true pnpm vitest run` + `pnpm build` +
-  `pnpm check:size` within ≤3,500 kB min / ≤1,250 kB gzip.
+### [x] Task: Final quality gate
+- `CI=true pnpm biome check .` (121 files clean) + `CI=true pnpm vitest run`
+  (290/290) + `pnpm build` (PWA precache generated) all green on first run.
+- `pnpm check:size` failed by 2.35 kB min (3,502.35 / 1,248.60 vs 3,500 /
+  1,250): this track's governor + pool + wiring added ~3.9 kB min to a
+  WASM-dominated payload that had <2 kB headroom. User chose to re-baseline
+  the budget to ≤3,600 / ≤1,260 (dated note in `tech-stack.md`, constants in
+  `check-bundle-size.mjs`); gate re-run green with 97.65 / 11.40 kB headroom.
+  A future "externalize Rapier WASM" track could reclaim ~800 kB min.
 
 ### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 - Full manual protocol on desktop + touch: desktop cap stream smooth ≥1 min,
