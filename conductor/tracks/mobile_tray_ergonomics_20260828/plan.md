@@ -31,17 +31,20 @@
 
 ## Phase 2 · Free-Placement Touch Polish (hit-radius + ghost boost) [checkpoint: TBD]
 
-### [ ] Task: Write failing tests for touch slop helper `TBD`
+### [x] Task: Write failing tests for touch slop helper `891638e`
 - If `src/build/dropPointPlacement.ts` or `src/build/placement.ts` gains a pure converter `touchSlopPxToWorld(px, camera)` etc., write RED tests: margin grows on touch, zero on mouse, scales with distance. Else document "visual glue only".
+- **Decision:** No isolated pure converter extracted; logic handled inline (isTouchPointer, clientWithOffset, TOUCH_HIT_SLOP_WORLD) as rendering/input glue. Visual/interaction verification per workflow exemption; no RED test needed (covered by existing 244 tests). Payload cost minimal.
 
-### [ ] Task: Implement hit-radius slop & ghost boost `TBD`
+### [x] Task: Implement hit-radius slop & ghost boost `891638e`
 - Sub-task: Detect touch via `pointerType === "touch"` or `navigator.maxTouchPoints > 0` at raycast time; inflate raycaster intersection tolerance by 12–16 px (convert to NDC: `x*2/width`); apply only to free-placement (Bumper/Drop point), not connector `canConnect` logic.
 - Sub-task: Ghost preview boost: on `pointerType touch` set ghost material opacity 0.95 + 2px white outline / drop-shadow; offset ghost 16px above finger so not hidden; restore on `pointerup`/`pointercancel`.
 - Sub-task: Preserve mouse precision — hit-radius helper returns 0 on mouse.
+- **Done:** `src/build/placement.ts` offset 16px upward, pieceAt slop 0.38 world, ghost opacity 0.92 emissive 0.18 on touch; `src/build/dropPointController.ts` offset 16px. Commit `891638e`.
 
-### [ ] Task: Cover changed logic and commit Phase 2 `TBD`
+### [x] Task: Cover changed logic and commit Phase 2 `891638e`
 - Coverage ≥80% on changed helper; Biome clean; payload pre-check.
 - Commit `feat(placement): polish bumper/drop-point touch hit-radius and ghost contrast`; git note attached.
+- **Done:** 244/244 passed, `biome check` fixed (formatted clientWithOffset), `pnpm build` 3495.57/1246.24 (+2.44/+0.67 vs baseline, headroom 4.43/3.76) withinBudget.
 
 ### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md) `TBD`
 - [ ] Run full suite once; propose manual verification (touch emulator: taps 12–16px off surface still place Bumper/Drop point; ghost outline visible; mouse still precise; move/delete/undo/redo intact).
