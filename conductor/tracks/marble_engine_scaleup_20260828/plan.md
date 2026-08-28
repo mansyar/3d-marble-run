@@ -29,7 +29,7 @@
   reacquires) presented; user confirmed checkpoint at `f6820e0`.
 - Checkpoint recorded: Phase 1 `[checkpoint: f6820e0]`.
 
-## Phase 2 · Marble Pool (logic + integration) [checkpoint: TBD]
+## Phase 2 · Marble Pool (logic + integration) [checkpoint: e9a2a23]
 
 ### [x] Task: Write failing tests for the marble pool `bf2ab10`
 - `tests/marblePool.test.ts` (repo convention: suites live in `tests/`, not
@@ -56,10 +56,15 @@
   98.34% stmts / 100% funcs. Shared geometry/material already pooled —
   `createPair` composes them with a parked body, no renderer changes.
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-- Run full suite once; propose manual verification (desktop: 60-marble stream
-  ≥1 min; touch viewport: 40-marble stream ≥1 min; parity vs master).
-- Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `e9a2a23`
+- Full suite verified GREEN on this exact tree: 290/290 passing (16 new
+  tests); `tsc --noEmit` clean; Biome clean (121 files); coverage 98.34%
+  stmts / 100% funcs.
+- Manual protocol (desktop 60-marble stream ≥1 min; touch 40-marble ≥1 min;
+  Auto↔High mid-stream cap re-resolution; one-shot drops never blocked)
+  proposed; user confirmed checkpoint on automated gates at `e9a2a23`,
+  deferring visual verification to the final phase protocol.
+- Checkpoint recorded: Phase 2 `[checkpoint: e9a2a23]`.
 
 ## Phase 3 · Docs & Release Readiness [checkpoint: TBD]
 
