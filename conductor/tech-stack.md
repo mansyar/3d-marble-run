@@ -40,7 +40,10 @@ Web-first, zero-backend, fully offline. Every runtime media asset is procedurall
   the shipped `v0.3.0` build measures 3,493.13 kB min / 1,245.57 kB gzip in total
   (`check:size`, headroom 6.87 / 4.43 kB), with an initial entry chunk of only
   2.60 kB min / 1.26 kB gzip (plus 10.10 kB CSS and the HTML shell).
-  The app chunk remains dominated by Rapier's embedded WASM.
+  At `80e7aa0` on this track the total is 3,498.47 kB / 1,247.23 kB (app
+  3,466.58 / 1,236.20, entry 2.60 / 1.26, headroom 1.53 / 2.77 kB; track delta
+  +1.75 / +0.66 kB vs its 3,496.72 / 1,246.57 baseline, within the ≤1.8 / ≤1.2 kB
+  per-track allowance). The app chunk remains dominated by Rapier's embedded WASM.
 - **Mobile rendering:** compact/touch viewports cap DPR at 1.5, disable antialiasing, and use 1024px shadows; desktop retains DPR 2 and 2048px shadows.
 - **Browser support:** current versions of Chrome, Edge, Firefox, Safari (desktop) · iOS Safari · Android Chrome
 - **Input parity:** every mouse interaction must have a touch equivalent from day one

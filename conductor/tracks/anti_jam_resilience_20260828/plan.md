@@ -76,17 +76,17 @@
 
 ## Phase 3 · Quality Gate, Docs & Release Readiness
 
-- [ ] **Task 3.1: Docs touch-up (if needed)**
+- [x] **Task 3.1: Docs touch-up (if needed)** — README self-heal sentence added, tech-stack payload re-measured 3498.47/1247.23 headroom 1.53/2.77 within allowance
   - If throughput changes are user-visible, add one sentence to `README.md` Build and play: "Runs self-heal — stalled marbles are gently nudged then recycled so streams stay fluid."
   - Verify `conductor/product.md` still accurate (no piece-count or non-goal change); `conductor/tech-stack.md` Payload section updated with measured post-track `check:size` totals + headroom if delta warrants re-baseline note.
 
-- [ ] **Task 3.2: Final quality gate**
+- [x] **Task 3.2: Final quality gate** — 253/253 green, coverage 87.81/80.55 overall & stuckDetector 96.72/94.28 >80, biome clean, build ok, size 3498.47/1247.23 headroom 1.53/2.77, diff scoped logic covered
   - `CI=true pnpm vitest run --coverage` (all logic modules ≥80% overall; new module ≥80%)
   - `CI=true pnpm biome check .`
   - `pnpm build` + `pnpm check:size` — must be ≤3,500 kB min / ≤1,250 kB gzip, delta ≤1.8/1.2 vs v0.3.0 baseline (3,496.72/1,246.57)
   - Scope coverage via `git diff --name-only <previous_checkpoint_sha> HEAD` — every changed logic module has a test file.
 
-- [ ] **Task 3.3: Final Phase Verification & Checkpoint (Refer to workflow.md)**
+- [~] **Task 3.3: Final Phase Verification & Checkpoint (Refer to workflow.md)**
   - Full manual regression on desktop (1280×720) + touch (393×659):
     - Snap connector-to-connector, bumper free-placement, Drop point guide
     - Guidance pulse still legible, route glow traces landing→cup
