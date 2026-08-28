@@ -1,0 +1,1 @@
+Marble Engine Scale-Up — final gate: 290/290 tests, Biome clean (121 files), build OK; check:size re-baselined 3,500/1,250 -> 3,600/1,260 kB (payload Rapier-WASM-dominated; 2.35 kB over after +3.9 kB track delta). Gate green: 3,502.35 min / 1,248.60 gzip vs 3,600/1,260. User confirmed final checkpoint on automated gates; visual protocol deferred by explicit decision.
