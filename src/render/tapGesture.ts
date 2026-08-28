@@ -38,9 +38,7 @@ const DEFAULT_MAX_DURATION_MS = 300;
 const DEFAULT_MAX_MOVEMENT_PX = 10;
 
 /** Classifies pointerdown/up pairs as tap vs. drag/pinch/long-press. */
-export function createTapClassifier(
-  options: TapClassifierOptions = {},
-): TapClassifier {
+export function createTapClassifier(options: TapClassifierOptions = {}): TapClassifier {
   const maxDurationMs = options.maxDurationMs ?? DEFAULT_MAX_DURATION_MS;
   const maxMovementPx = options.maxMovementPx ?? DEFAULT_MAX_MOVEMENT_PX;
   const tracked = new Map<number, TrackedPointer>();
