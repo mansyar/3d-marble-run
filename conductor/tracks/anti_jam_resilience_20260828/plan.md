@@ -3,7 +3,7 @@
 **Track**: `anti_jam_resilience_20260828` · **Spec**: [./spec.md](./spec.md) · **Branch**: `feat/anti_jam_resilience_20260828`
 **Workflow rules apply** (TDD red→green, one task = one commit + git note, ≥80% coverage on changed logic, plan status `[ ]` → `[~]` → `[x] <sha7>`, phase checkpoints per workflow.md)
 
-## Phase 1 · Stuck Detector — Pure Logic & Self-Rescue Integration
+## Phase 1 · Stuck Detector — Pure Logic & Self-Rescue Integration — Checkpoint `b3bca0e`
 
 - [x] **Task 1.1: TDD — failing tests for `stuckDetector.ts` (logic-bearing)** *(RED phase) — RED confirmed (6/9 failing) `abbdecf`*
   - Create `src/sim/stuckDetector.ts` stub + `src/sim/stuckDetector.test.ts` (Vitest, follow `spawner.test.ts`/`playability.test.ts` conventions).
@@ -34,12 +34,12 @@
   - Dev-only console debug gated by `import.meta.env.DEV` (optional).
   - Verify existing suites still green: `CI=true pnpm vitest run` (expect 244+ new tests passing).
 
-- [~] **Task 1.4: Cover changed logic and commit Phase 1**
+- [x] **Task 1.4: Cover changed logic and commit Phase 1** — 9/9 tests, coverage 96.7%, biome clean, build+size 3498.36/1247.21 `b3bca0e`
   - `CI=true pnpm vitest run --coverage` ≥80% on `stuckDetector.ts`; `CI=true pnpm biome check .` clean; `pnpm build` ok; `pnpm check:size` within 3,500/1,250 and ≤1.8 kB delta (measure vs 3,496.72/1,246.57 baseline).
   - One commit: `feat(sim): add stuck detector with nudge-then-recycle self-rescue` — attach git note with task summary.
   - Update plan: mark Task 1.1–1.4 `[x] <sha7>`.
 
-- [ ] **Task 1.5: Phase Verification & Checkpoint (Refer to workflow.md)**
+- [x] **Task 1.5: Phase Verification & Checkpoint (Refer to workflow.md)** — automated green, user approved to continue `b3bca0e`
   - Run full automated suite once; propose manual verification:
     1. `pnpm dev` → desktop 1280×720 + touch 393×659
     2. Load starter, enable continuous Stream, watch 60 s: no marble idles >2.5 s inside funnel/splitter
