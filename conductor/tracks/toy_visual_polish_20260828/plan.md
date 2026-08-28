@@ -54,7 +54,7 @@ Roadmap to make the toy set read as glossy candy-plastic on a warm studio table 
   - [x] Full suite green; manual verification: disconnect piece → visible pulse on 393×659, connect → stops, bumper never pulses; ready route → glow centered + thicker on phone, hides when broken; reduced-motion static tint confirmed.
   - [x] Await user confirmation; record checkpoint SHA. — Confirmed 5960154
 
-## Phase 4 · Quality Preference & Auto Toggle [checkpoint: TBD]
+## Phase 4 · Quality Preference & Auto Toggle [checkpoint: 38f1e31]
 
 - [x] Task: Write failing tests for quality preference (logic-bearing, TDD-mandatory) `test(quality): Auto vs High resolution and persistence`
   - [x] New `src/core/quality.ts`: `getQualityMode()` defaults "auto" from localStorage, `setQualityMode()` persists, `resolveQuality({compact, deviceMemory, battery}, mode)` returns `{dprCap,shadowSize}` — cases: compact→cap, deviceMemory≤4→cap in auto, battery<0.2+!charging→cap in auto, High forces desktop values; injectable storage for tests; no Three imports. Confirm RED (≥8 cases). — RED confirmed (module missing)
@@ -72,9 +72,9 @@ Roadmap to make the toy set read as glossy candy-plastic on a warm studio table 
   - [x] `pnpm vitest run --coverage` ≥80% on `quality.ts`; `CI=true pnpm biome check .` clean; build + check:size delta <0.6 kB (logic + one button). — quality.ts 100% stmts/branch/lines (12 tests incl. no-storage fallback); biome + tsc + build green; gate 3,499.97/1,247.75 kB. Phase-4 delta +1.18 min / +0.41 gzip — exceeds 0.6 estimate, inside spec ≤2.0/≤1.2 track cap (noted for review).
   - [x] Commit `feat(quality): Auto/High quality preference with battery-aware capping`; git note.
 
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-  - [ ] Full suite green; manual verification desktop + 393×659 touch: toggle visible at ≥44px, toggles Auto↔High, persists after reload, hot-updates DPR/shadows; Auto caps on stubbed low-memory/battery (use `deviceMemory=2` stub + `getBattery` mock), High lifts; PWA/tray guidance unaffected.
-  - [ ] Await user confirmation; record checkpoint SHA.
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - [x] Full suite green; manual verification desktop + 393×659 touch: toggle visible at ≥44px, toggles Auto↔High, persists after reload, hot-updates DPR/shadows; Auto caps on stubbed low-memory/battery (use `deviceMemory=2` stub + `getBattery` mock), High lifts; PWA/tray guidance unaffected. — 264 tests green, quality.ts 100% coverage, gate 3,499.97/1,247.75; low-memory/battery stubs pinned by unit tests per user confirmation.
+  - [x] Await user confirmation; record checkpoint SHA. — Confirmed 38f1e31
 
 ## Phase 5 · Docs & Release Readiness [checkpoint: TBD]
 
