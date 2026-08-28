@@ -7,7 +7,12 @@ isolated into pure modules and built with TDD (Red → Green).
 
 ## Phase 1: Eased Mode Transitions (visual glue — manual verification)
 
-- [ ] Task: Implement eased fly-to transition between free and chase modes
+- [x] Task: Implement eased fly-to transition between free and chase modes
+  (`dc6f647`) — Added a `toChase`/`toFree` transition state in `camera.ts` easing
+  position + look-at over 800ms (ease-in-out cubic); chase→free destination is
+  recomputed from live orbit state each frame (mid-flight input honored);
+  `prefers-reduced-motion` → instant cut; existing damped follow takes over after
+  arrival with no snap.
   - [ ] In `src/render/camera.ts`: add a transition state (idle → flying → following /
         → returning) that eases camera position (and look-at) between the current orbit
         framing and the chase position over ~0.6–1.0s with ease-in-out; ease back to the
