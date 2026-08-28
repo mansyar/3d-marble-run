@@ -17,3 +17,4 @@
 - [x] **Track: Cut v0.3.0 Release** *Link: [./tracks/release_v030_20260827/index.md](./tracks/release_v030_20260827/index.md)*
 - [x] **Track: Mobile Tray Ergonomics & Free-Placement Touch Polish** *Link: [./archive/mobile_tray_ergonomics_20260828/index.md](./archive/mobile_tray_ergonomics_20260828/index.md)*
 - [x] **Track: Anti-Jam Resilience — Stuck-Marble Self-Rescue & Funnel Throughput** *Link: [./archive/anti_jam_resilience_20260828/index.md](./archive/anti_jam_resilience_20260828/index.md)*
+- [ ] **Track: Toy Visual Polish — Subtle Bevel & Material Retune** *Link: [./tracks/toy_visual_polish_20260828/index.md](./tracks/toy_visual_polish_20260828/index.md)*
