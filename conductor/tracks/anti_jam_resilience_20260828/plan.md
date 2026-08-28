@@ -74,7 +74,7 @@
     3. XZ edge test: place Drop point at table edge (x=26) and drop — marbles falling beyond 28 are culled within 1 s
   - Await user confirmation; record checkpoint SHA; commit plan.
 
-## Phase 3 · Quality Gate, Docs & Release Readiness
+## Phase 3 · Quality Gate, Docs & Release Readiness — Checkpoint `e3ab4bd`
 
 - [x] **Task 3.1: Docs touch-up (if needed)** — README self-heal sentence added, tech-stack payload re-measured 3498.47/1247.23 headroom 1.53/2.77 within allowance
   - If throughput changes are user-visible, add one sentence to `README.md` Build and play: "Runs self-heal — stalled marbles are gently nudged then recycled so streams stay fluid."
@@ -86,7 +86,7 @@
   - `pnpm build` + `pnpm check:size` — must be ≤3,500 kB min / ≤1,250 kB gzip, delta ≤1.8/1.2 vs v0.3.0 baseline (3,496.72/1,246.57)
   - Scope coverage via `git diff --name-only <previous_checkpoint_sha> HEAD` — every changed logic module has a test file.
 
-- [~] **Task 3.3: Final Phase Verification & Checkpoint (Refer to workflow.md)**
+- [x] **Task 3.3: Final Phase Verification & Checkpoint (Refer to workflow.md)** — manual regression approved, checkpoint `e3ab4bd`
   - Full manual regression on desktop (1280×720) + touch (393×659):
     - Snap connector-to-connector, bumper free-placement, Drop point guide
     - Guidance pulse still legible, route glow traces landing→cup
