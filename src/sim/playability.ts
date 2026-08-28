@@ -5,10 +5,10 @@ export interface PlayableBounds {
   readonly max: readonly [number, number, number];
 }
 
-/** World-space safety envelope for active marbles in an editable track. */
+/** World-space safety envelope for active marbles in an editable track — hardened to ±28 XZ per anti-jam resilience. */
 export const PLAYABLE_BOUNDS: PlayableBounds = {
-  min: [-20, -8, -20],
-  max: [20, 20, 20],
+  min: [-28, -8, -28],
+  max: [28, 20, 28],
 };
 
 export interface MarblePosition {

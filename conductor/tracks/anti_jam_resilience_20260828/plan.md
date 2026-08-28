@@ -49,20 +49,20 @@
   - Await explicit user confirmation ("yes" or feedback).
   - Record phase checkpoint SHA in this plan heading; commit plan update `conductor(plan): Mark phase 'Stuck Detector' as complete`.
 
-## Phase 2 · Throughput Tuning — Funnel Throat & Splitter Fork & Bounds Authority
+## Phase 2 · Throughput Tuning — Funnel Throat & Splitter Fork & Bounds Authority — Checkpoint pending
 
-- [ ] **Task 2.1: Funnel/splitter collider tuning (visual/physics glue)**
+- [x] **Task 2.1: Funnel/splitter collider tuning (visual/physics glue)** — widened throat 0.13→0.14 (+7.7%), lowered funnel friction to 0.38, restitution 0.12, splitter verified identical
   - In `src/pieces/builders.ts` / `src/pieces/trimesh.ts`: widen funnel inner throat by 6–8% (scale inner collider vertices or adjust `trimesh` margin) and lower funnel wall friction by 0.06 (keep restitution ≤0.15–0.18).
   - Verify splitter: both `outlet-l`/`outlet-r` prongs share identical friction/restitution; ridge apex not knife-edge (tiny 0.02 fillet if needed via collider tweak).
   - No new geometry assets, no new deps. Keep `MARBLE_RADIUS`, `TRACK_WIDTH`, `FUNNEL_HEIGHT` constants unchanged.
   - Manual check: single marble at 0.8 m/s from Drop point into splitter inlet exits within 600 ms (time with `performance.now` around `update` loop or video frame count).
 
-- [ ] **Task 2.2: Bounds authority hardening (logic-adjacent, TDD if pure helper)**
+- [x] **Task 2.2: Bounds authority hardening (logic-adjacent, TDD if pure helper)** — expanded PLAYABLE_BOUNDS to ±28 XZ (Y -8) for unified stuck+bounds cull
   - Extend `src/sim/playability.ts` (`findOutOfBoundsMarbleIds`) or its threshold constants: cap XZ playfield at ±28 and Y cull at -8, with a 1 s grace tracked externally if needed; if a pure helper `isOutOfBounds(pos, nowMs)` is extracted, add TDD coverage for it (≥80%).
   - Ensure unified path: bounds-cull and stuck-recycle both call `spawner.remove(id)` + `removeMarble(id)` so timer/goal state stays consistent.
   - Re-run `src/sim/playability.test.ts` and full suite → green.
 
-- [ ] **Task 2.3: Cover changed logic and commit Phase 2**
+- [x] **Task 2.3: Cover changed logic and commit Phase 2** — biome clean, 253 tests green, size 3498.47/1247.23 within budget
   - `CI=true pnpm vitest run --coverage` (playability if touched) ≥80%; `CI=true pnpm biome check .` clean; `pnpm build` + `pnpm check:size` within budget/delta.
   - One commit: `feat(pieces): widen funnel throat and harden bounds authority` + git note.
   - Update plan `[x]`.
