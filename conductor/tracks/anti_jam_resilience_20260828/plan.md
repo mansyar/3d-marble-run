@@ -49,7 +49,7 @@
   - Await explicit user confirmation ("yes" or feedback).
   - Record phase checkpoint SHA in this plan heading; commit plan update `conductor(plan): Mark phase 'Stuck Detector' as complete`.
 
-## Phase 2 · Throughput Tuning — Funnel Throat & Splitter Fork & Bounds Authority — Checkpoint pending
+## Phase 2 · Throughput Tuning — Funnel Throat & Splitter Fork & Bounds Authority — Checkpoint `80e7aa0`
 
 - [x] **Task 2.1: Funnel/splitter collider tuning (visual/physics glue)** — widened throat 0.13→0.14 (+7.7%), lowered funnel friction to 0.38, restitution 0.12, splitter verified identical
   - In `src/pieces/builders.ts` / `src/pieces/trimesh.ts`: widen funnel inner throat by 6–8% (scale inner collider vertices or adjust `trimesh` margin) and lower funnel wall friction by 0.06 (keep restitution ≤0.15–0.18).
@@ -67,7 +67,7 @@
   - One commit: `feat(pieces): widen funnel throat and harden bounds authority` + git note.
   - Update plan `[x]`.
 
-- [ ] **Task 2.4: Phase Verification & Checkpoint (Refer to workflow.md)**
+- [x] **Task 2.4: Phase Verification & Checkpoint (Refer to workflow.md)** — automated green, user approved to continue `80e7aa0`
   - Automated suite green; manual protocol:
     1. Same 20-marble 60 s stream with funnel+splitter+curve chain — no ridge stalls
     2. Splitter inlet→outlet timing ≤600 ms (single marble)
