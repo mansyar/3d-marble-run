@@ -29,7 +29,7 @@
 - [x] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
 - **Checkpoint:** Manual verification confirmed 2026-08-28 — fades hide at edges, snap works, auto-center ok, divider visible, headroom 5.13kB/3.97kB.
 
-## Phase 2 · Free-Placement Touch Polish (hit-radius + ghost boost) [checkpoint: TBD]
+## Phase 2 · Free-Placement Touch Polish (hit-radius + ghost boost) [checkpoint: 599ec0c]
 
 ### [x] Task: Write failing tests for touch slop helper `891638e`
 - If `src/build/dropPointPlacement.ts` or `src/build/placement.ts` gains a pure converter `touchSlopPxToWorld(px, camera)` etc., write RED tests: margin grows on touch, zero on mouse, scales with distance. Else document "visual glue only".
@@ -46,9 +46,10 @@
 - Commit `feat(placement): polish bumper/drop-point touch hit-radius and ghost contrast`; git note attached.
 - **Done:** 244/244 passed, `biome check` fixed (formatted clientWithOffset), `pnpm build` 3495.57/1246.24 (+2.44/+0.67 vs baseline, headroom 4.43/3.76) withinBudget.
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md) `TBD`
-- [ ] Run full suite once; propose manual verification (touch emulator: taps 12–16px off surface still place Bumper/Drop point; ghost outline visible; mouse still precise; move/delete/undo/redo intact).
-- [ ] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `599ec0c`
+- [x] Run full suite once; propose manual verification (touch emulator: taps 12–16px off surface still place Bumper/Drop point; ghost outline visible; mouse still precise; move/delete/undo/redo intact).
+- [x] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
+- **Checkpoint:** Manual verification confirmed 2026-08-28 — ghost 0.92+outline +16px offset on touch, piece slop 0.38 world, Drop point offset ok, mouse precise.
 
 ## Phase 3 · Keyboard Nav, Docs & Release Readiness [checkpoint: TBD]
 
