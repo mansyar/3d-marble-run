@@ -59,7 +59,7 @@ isolated into pure modules and built with TDD (Red → Green).
         out-of-bounds cleanup, stuck recycle, pool shrink); followed marble despawn →
         camera glides to next active marble, else eases back to free orbit; HUD button
         label stays in sync
-- [ ] Task: Final quality gate — full
+- [~] Task: Final quality gate — full
       `CI=true pnpm biome check . && CI=true pnpm vitest run && pnpm build`,
       size-budget gate, desktop + touch manual sweep (Refer to workflow.md)
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
