@@ -1,0 +1,8 @@
+{
+  "id": "release_v040_20260828",
+  "type": "CHORE",
+  "status": "new",
+  "created": "2026-08-28",
+  "updated": "2026-08-28",
+  "description": "Cut the v0.4.0 production release through the established tag-triggered pipeline"
+}
