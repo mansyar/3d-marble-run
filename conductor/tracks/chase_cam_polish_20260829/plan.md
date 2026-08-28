@@ -25,13 +25,19 @@ isolated into pure modules and built with TDD (Red → Green).
 
 ## Phase 2: Tap-a-Marble-to-Ride (logic + glue)
 
-- [ ] Task: Write failing tests for tap-gesture classifier (TDD Red)
-  - [ ] New pure module `src/render/tapGesture.ts` — classify pointerdown/up pairs
-        (duration ≤~300ms, movement <~10px, single pointer) as tap vs. drag; tests cover
-        tap, drag-orbit, pinch, long-press, pointercancel
-- [ ] Task: Implement classifier to pass tests (TDD Green)
-- [ ] Task: Wire tap-to-ride input glue
-  - [ ] Raycast active marble meshes on classified taps in free mode (placement not
+- [x] Task: Write failing tests for tap-gesture classifier (TDD Red)
+  (`d96554a`) — `tests/tapGesture.test.ts`, 11 cases: tap, mouse/touch parity,
+  drag/pinch/long-press/cancel rejection, threshold boundaries.
+- [x] Task: Implement classifier to pass tests (TDD Green) (`67db527`) —
+  `src/render/tapGesture.ts`, pure module; second concurrent pointer taints all
+  presses (pinch never fires a tap).
+- [x] Task: Wire tap-to-ride input glue
+  (`d2c5cef`) — `app.ts` canvas glue: classifier-confirmed taps in free mode
+  raycast active marble meshes and pin chase cam via newly exposed
+  `camera.setMode()`; `followedMarbleId` falls back to newest marble on
+  despawn (full handoff in Phase 3); HUD label synced; resets on toggle-to-free
+  and simulation reset.
+  - [x] Raycast active marble meshes on classified taps in free mode (placement not
         locked); on hit switch to chase cam pinned to that marble id; desktop click +
         single-finger touch parity; must never fire during drags/pinches or while
         `isLocked`
