@@ -16,6 +16,8 @@ export interface FreeOrbitCamera {
   reset(): void;
   dispose(): void;
   mode(): CameraMode;
+  /** Enters the given mode directly (free↔chase), starting an eased transition. */
+  setMode(nextMode: CameraMode): void;
   toggleMode(): CameraMode;
   update(elapsedMs: number, chaseTarget: CameraTarget | null): void;
 }
@@ -296,5 +298,5 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
   domElement.addEventListener("contextmenu", onContextMenu);
 
   applyCamera();
-  return { reset, dispose, mode, toggleMode, update };
+  return { reset, dispose, mode, setMode, toggleMode, update };
 }
