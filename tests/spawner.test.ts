@@ -132,3 +132,49 @@ describe("marble spawner state machine", () => {
     expect(burst.spawned.length).toBeLessThanOrEqual(20);
   });
 });
+
+describe("setMaxMarbles — live cap re-resolution", () => {
+  it("shrinks immediately, recycling oldest-first beyond the new cap", () => {
+    const spawner = createSpawner({ maxMarbles: 5, streamIntervalMs: 100 });
+    spawner.drop();
+    spawner.drop();
+    spawner.drop();
+
+    const recycled = spawner.setMaxMarbles(1);
+
+    expect(recycled).toEqual([1, 2]);
+    expect(spawner.state().activeIds).toEqual([3]);
+  });
+
+  it("grows without touching active marbles", () => {
+    const spawner = createSpawner({ maxMarbles: 2, streamIntervalMs: 100 });
+    spawner.drop();
+    spawner.drop();
+
+    expect(spawner.setMaxMarbles(4)).toEqual([]);
+    expect(spawner.drop().spawned[0]?.id).toBe(3);
+    expect(spawner.state().activeIds).toEqual([1, 2, 3]);
+  });
+
+  it("keeps oldest-first recycling at the new cap", () => {
+    const spawner = createSpawner({ maxMarbles: 3, streamIntervalMs: 100 });
+    spawner.drop();
+    spawner.drop();
+    spawner.setMaxMarbles(2);
+
+    const third = spawner.drop();
+    expect(third.recycled).toEqual([1]);
+    expect(spawner.state().activeIds).toEqual([2, 3]);
+  });
+
+  it("rejects invalid caps and leaves the spawner untouched", () => {
+    const spawner = createSpawner({ maxMarbles: 3, streamIntervalMs: 100 });
+    spawner.drop();
+
+    expect(() => spawner.setMaxMarbles(0)).toThrow();
+    expect(() => spawner.setMaxMarbles(-2)).toThrow();
+    expect(() => spawner.setMaxMarbles(1.5)).toThrow();
+    expect(() => spawner.setMaxMarbles(Number.NaN)).toThrow();
+    expect(spawner.state().activeIds).toEqual([1]);
+  });
+});

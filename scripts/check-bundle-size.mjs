@@ -6,7 +6,9 @@
  * fails with a non-zero exit code when the tech-stack payload budget is
  * exceeded. Zero dependencies beyond Node built-ins.
  *
- * Budget source of truth: `conductor/tech-stack.md` (re-baselined in Task 1.3).
+ * Budget source of truth: `conductor/tech-stack.md` (re-baselined in
+ * pwa_budget_20260827 Task 1.3, and again 2026-08-28 in
+ * `marble_engine_scaleup_20260828`).
  */
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
@@ -18,8 +20,8 @@ import { gzipSync } from "node:zlib";
 export const BUDGETED_EXTENSIONS = Object.freeze([".js", ".mjs", ".css", ".html", ".wasm"]);
 
 /** Tech-stack payload budgets in kB (1 kB = 1000 bytes). */
-export const BUDGET_MIN_KB = 3500;
-export const BUDGET_GZIP_KB = 1250;
+export const BUDGET_MIN_KB = 3600;
+export const BUDGET_GZIP_KB = 1260;
 
 /**
  * Sum raw and gzip sizes across build-output entries.

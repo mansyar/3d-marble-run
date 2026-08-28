@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getQualityMode, resolveQuality, setQualityMode } from "../src/core/quality";
+import { getQualityMode, resolveQuality, resolveTier, setQualityMode } from "../src/core/quality";
 
 function fakeStorage(initial: Record<string, string> = {}): Storage {
   const map = new Map(Object.entries(initial));
@@ -88,5 +88,18 @@ describe("resolveQuality", () => {
   });
   it("high forces desktop on ample device", () => {
     expect(resolveQuality({ compact: false }, "high")).toEqual({ dprCap: 2, shadowSize: 2048 });
+  });
+});
+
+describe("resolveTier", () => {
+  it("mirrors resolveQuality's capped/desktop decision for the population cap", () => {
+    expect(resolveTier({ compact: true }, "auto")).toBe("capped");
+    expect(resolveTier({ compact: false }, "auto")).toBe("desktop");
+    expect(resolveTier({ compact: false, deviceMemory: 4 }, "auto")).toBe("capped");
+    expect(resolveTier({ compact: false, deviceMemory: 8 }, "auto")).toBe("desktop");
+    expect(resolveTier({ compact: false, battery: { level: 0.1, charging: false } }, "auto")).toBe(
+      "capped",
+    );
+    expect(resolveTier({ compact: true, deviceMemory: 2 }, "high")).toBe("desktop");
   });
 });

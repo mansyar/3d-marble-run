@@ -44,3 +44,15 @@ export function resolveQuality(input: QualityInput, mode: QualityMode): QualityC
   }
   return DESKTOP;
 }
+
+/** Device class, as consumed by the marble population cap (`sim/population`). */
+export type QualityTier = "capped" | "desktop";
+
+/**
+ * The same decision as `resolveQuality`, as a discrete tier the population
+ * governor can consume. `high` forces the desktop tier, auto caps on compact
+ * viewports, ≤4 GB device memory, or a low discharging battery.
+ */
+export function resolveTier(input: QualityInput, mode: QualityMode): QualityTier {
+  return resolveQuality(input, mode) === CAPPED ? "capped" : "desktop";
+}

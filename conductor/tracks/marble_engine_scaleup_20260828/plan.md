@@ -1,0 +1,97 @@
+# Implementation Plan: Marble Engine Scale-Up — 2× Population with Adaptive Stream Pacing
+
+## Phase 1 · Population Governor (pure logic) [checkpoint: f6820e0]
+
+### [x] Task: Write failing tests for the population governor `84fb84f`
+- Extend a new `tests/population.test.ts` (Vitest, pure — no Rapier/Three):
+  `resolveMarbleCap` pins CAPPED→40 / DESKTOP→60;
+  `createFrameBudget` hysteresis: sustained 33 ms deltas pause after the window,
+  single 100 ms spike never pauses, 60 Hz deltas never pause, resume needs
+  sustained headroom. Confirm RED before implementation.
+- Notes: RED confirmed — missing module `src/sim/population`. 10 tests pin the
+  tier-cap and hysteresis semantics (pause needs sustained overage; resume
+  streak resets on relapse).
+
+### [x] Task: Implement population governor and commit Phase 1 `f6820e0`
+- `src/sim/population.ts` — `resolveMarbleCap(tier)` + `createFrameBudget`
+  per pinned tests. GREEN, ≥80% coverage on changed logic.
+- Commit `feat(sim): Add marble population governor with frame-budget hysteresis`;
+  git note attached.
+- Notes: full suite 274/274 GREEN; population.ts coverage 97.82% statements /
+  100% lines / 100% functions; Biome clean (119 files, 1 import-format fix
+  applied via `--write`).
+
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `f6820e0`
+- Full suite verified GREEN on this exact tree: 274/274 passing, governor
+  coverage 97.82% stmts / 100% lines / 100% funcs (Biome clean).
+- Manual verification proposal (pure-logic scope: coverage gate + REPL smoke
+  across budget window — spikes hold, sustained overage sheds, recovery
+  reacquires) presented; user confirmed checkpoint at `f6820e0`.
+- Checkpoint recorded: Phase 1 `[checkpoint: f6820e0]`.
+
+## Phase 2 · Marble Pool (logic + integration) [checkpoint: e9a2a23]
+
+### [x] Task: Write failing tests for the marble pool `bf2ab10`
+- `tests/marblePool.test.ts` (repo convention: suites live in `tests/`, not
+  colocated as the plan draft suggested) with a mocked body/deps harness
+  standing in for the Rapier world: acquire-from-pool before create, release
+  parks + resets transform/velocity like a fresh spawn, pool never exceeds
+  cap, clear drains, unknown-id release is a no-op. Confirm RED.
+- Notes: RED confirmed — missing module `src/sim/marblePool`. 8 tests pin
+  the acquire/release/park/clear contract incl. maxParked overflow destroy.
+
+### [x] Task: Implement marble pool, wire into app.ts, commit `e9a2a23`
+- `src/sim/marblePool.ts` — pure pool (`acquire/release/setMaxParked/clear`);
+  pairs park asleep 1000 m below origin with zeroed velocities and redeploy
+  like fresh spawns; overflow releases destroy; shared SphereGeometry/
+  MeshPhysicalMaterial stay in `pieces/marble.ts` (already singletons).
+- Pure additions (TDD): spawner `setMaxMarbles` (shrink recycles oldest-first,
+  returns recycled ids); `resolveTier` in `core/quality.ts`.
+- Wiring: `app.ts` spawn/remove paths go through the pool; frame-budget gate
+  pauses only the stream advance under sustained frame overage (manual
+  one-shot drops bypass); `scene.ts` exposes `resolveTier()`; quality toggle
+  `onModeChange` re-resolves the cap live (boot applies the tier cap before
+  the first frame).
+- Notes: suite 290/290 GREEN; tsc clean; Biome clean (121 files); coverage
+  98.34% stmts / 100% funcs. Shared geometry/material already pooled —
+  `createPair` composes them with a parked body, no renderer changes.
+
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `e9a2a23`
+- Full suite verified GREEN on this exact tree: 290/290 passing (16 new
+  tests); `tsc --noEmit` clean; Biome clean (121 files); coverage 98.34%
+  stmts / 100% funcs.
+- Manual protocol (desktop 60-marble stream ≥1 min; touch 40-marble ≥1 min;
+  Auto↔High mid-stream cap re-resolution; one-shot drops never blocked)
+  proposed; user confirmed checkpoint on automated gates at `e9a2a23`,
+  deferring visual verification to the final phase protocol.
+- Checkpoint recorded: Phase 2 `[checkpoint: e9a2a23]`.
+
+## Phase 3 · Docs & Release Readiness [checkpoint: 448a90f]
+
+### [x] Task: Update product & tech docs `f6903d4`
+- `product.md` success criteria: ~40 marbles on mid-range phones / 60 on
+  desktop with a self-pacing stream.
+- `tech-stack.md`: dated simulation-capacity bullet (tier-aware caps, pooled
+  marbles, frame-budget pacing) + payload re-baseline note.
+- README: quality toggle paragraph extended (population cap, pooling,
+  adaptive stream).
+
+### [x] Task: Final quality gate
+- `CI=true pnpm biome check .` (121 files clean) + `CI=true pnpm vitest run`
+  (290/290) + `pnpm build` (PWA precache generated) all green on first run.
+- `pnpm check:size` failed by 2.35 kB min (3,502.35 / 1,248.60 vs 3,500 /
+  1,250): this track's governor + pool + wiring added ~3.9 kB min to a
+  WASM-dominated payload that had <2 kB headroom. User chose to re-baseline
+  the budget to ≤3,600 / ≤1,260 (dated note in `tech-stack.md`, constants in
+  `check-bundle-size.mjs`); gate re-run green with 97.65 / 11.40 kB headroom.
+  A future "externalize Rapier WASM" track could reclaim ~800 kB min.
+
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `448a90f`
+- Final gate verified on this tree (see above); working tree clean at
+  `5f8991c`.
+- Full manual protocol (desktop 60-marble stream ≥1 min; touch 40-marble;
+  Auto↔High cap re-resolution; one-shot drops under jank; save round-trip)
+  proposed; user confirmed the final checkpoint on automated gates at
+  `448a90f`, deferring visual confirmation (consistent with the Phase 2
+  gate decision).
+- Checkpoint recorded: Phase 3 `[checkpoint: 448a90f]`.

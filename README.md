@@ -35,7 +35,10 @@ local to the browser.
 
 The top HUD includes a Quality toggle: Auto keeps phones smooth by capping
 resolution and shadow detail, while High lifts the caps for extra crispness.
-The choice persists across visits.
+The choice persists across visits and sets how many marbles can run at once —
+up to 40 on phones, 60 on desktop (High always allows the full 60). Marble
+meshes and physics bodies are pooled and reused, and the continuous stream
+slows itself down if the device struggles; manual drops always respond.
 
 ### Legacy saves
 
