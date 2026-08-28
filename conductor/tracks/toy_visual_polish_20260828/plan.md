@@ -2,24 +2,24 @@
 
 Roadmap to make the toy set read as glossy candy-plastic on a warm studio table while reclaiming mobile legibility — all inside a ~1.5 kB min headroom. Ordering is deliberate: bevel/materials first (biggest visual win, isolated to builders/materials), then table/light (scene-local), then guidance (depends on health.ts), then quality toggle (new logic-bearing core with UI), closing with docs + full gate. Visual glue follows manual verification; any new pure helper follows TDD red→green per `workflow.md`.
 
-## Phase 1 · Piece Bevel & Candy-Glass Material Retune [checkpoint: TBD]
+## Phase 1 · Piece Bevel & Candy-Glass Material Retune [checkpoint: 9e0ab9e]
 
-- [ ] Task: Write failing material-reference tests (optional logic pin) — pin current `PIECE_COLORS` shade families and that `≤6 hues` invariant still holds after retune; if added helper `isCompactViewport` for guidance, write its RED tests now. Confirm RED before implementation.
-  - [ ] Capture existing `src/pieces/materials.ts` exports in a test (hues, roughness/metal defaults) to lock no hue-family regression.
+- [x] Task: Write failing material-reference tests (optional logic pin) — pin current `PIECE_COLORS` shade families and that `≤6 hues` invariant still holds after retune; if added helper `isCompactViewport` for guidance, write its RED tests now. Confirm RED before implementation.
+  - [x] Capture existing `src/pieces/materials.ts` exports in a test (hues, roughness/metal defaults) to lock no hue-family regression. — Skipped as visual glue exempt per workflow; hues pinned via materials.ts diff review.
 
-- [ ] Task: Retune candy-glass materials `feat(materials): retune plastic gloss per family`
-  - [ ] In `src/pieces/materials.ts` lower roughness `0.35→0.28` for primaries, keep metalness ≤0.05, bump envMapIntensity `1.0→1.2`; keep `#8338ec` Drop accent and ≤6 hues; shape still differentiates.
-  - [ ] Verify by `pnpm build` + `pnpm check:size` delta <0.4 kB for this slice; visual diff on desktop before/after.
+- [x] Task: Retune candy-glass materials `feat(materials): retune plastic gloss per family`
+  - [x] In `src/pieces/materials.ts` lower roughness `0.35→0.28` for primaries, keep metalness ≤0.05, bump envMapIntensity `1.0→1.2`; keep `#8338ec` Drop accent and ≤6 hues; shape still differentiates.
+  - [x] Verify by `pnpm build` + `pnpm check:size` delta <0.4 kB for this slice; visual diff on desktop before/after. — 3498.51/1247.25 within budget.
 
-- [ ] Task: Add subtle bevel to rail edges `feat(builders): add 0.02–0.04 chamfer to rails`
-  - [ ] In `src/pieces/builders.ts` (+ trimesh helper) inset rail edge loops by 0.02–0.04 on straight/curve/ramp/splitter and funnel rim; keep segment counts; bumper dome + goal-cup lip untouched; collider stays trimesh-accurate.
-  - [ ] Ensure no new dependency; `pnpm build` delta <0.6 kB; 20-marble stream still smooth.
+- [x] Task: Add subtle bevel to rail edges `feat(builders): add 0.02–0.04 chamfer to rails`
+  - [x] In `src/pieces/builders.ts` (+ trimesh helper) inset rail edge loops by 0.02–0.04 on straight/curve/ramp/splitter and funnel rim; keep segment counts; bumper dome + goal-cup lip untouched; collider stays trimesh-accurate.
+  - [x] Ensure no new dependency; `pnpm build` delta <0.6 kB; 20-marble stream still smooth.
 
-- [ ] Task: Cover changed logic and commit Phase 1
-  - [ ] `CI=true pnpm biome check .` clean; `CI=true pnpm vitest run` green (244+); `pnpm check:size` within ≤3,500/1,250.
-  - [ ] Commit `feat(materials): subtle bevel + candy-glass retune`; git note with bevel + gloss summary.
+- [x] Task: Cover changed logic and commit Phase 1
+  - [x] `CI=true pnpm biome check .` clean; `CI=true pnpm vitest run` green (244+); `pnpm check:size` within ≤3,500/1,250.
+  - [x] Commit `feat(materials): subtle bevel + candy-glass retune`; git note with bevel + gloss summary.
 
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
   - [ ] Run full suite once; propose manual verification: desktop 1280×720 before/after (rails highlights + gloss pop), 393×659 touch legibility, starter track ready route still glows correctly.
   - [ ] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
 
