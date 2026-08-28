@@ -3,6 +3,8 @@ import type { SceneHandle } from "../render/scene";
 
 export interface QualityToggleDeps {
   sceneHandle: SceneHandle;
+  /** Called after a mode change is persisted and renderer caps re-applied. */
+  onModeChange?: () => void;
 }
 
 /**
@@ -26,6 +28,7 @@ export function createQualityToggle(root: HTMLElement, deps: QualityToggleDeps):
     const next: QualityMode = getQualityMode() === "high" ? "auto" : "high";
     setQualityMode(next);
     deps.sceneHandle.applyQuality(next);
+    deps.onModeChange?.();
     render();
   });
 

@@ -27,6 +27,12 @@ export interface Spawner {
   drop(): SpawnResult;
   /** Advances stream scheduling and returns all events due during the interval. */
   advance(elapsedMs: number): SpawnResult;
+  /**
+   * Re-resolves the concurrency cap live (device-tier changes). A shrink
+   * immediately recycles oldest-first beyond the new cap and returns their
+   * ids; a grow only raises the bound.
+   */
+  setMaxMarbles(next: number): number[];
   setContinuous(enabled: boolean): void;
   toggleContinuous(): boolean;
   isContinuous(): boolean;
@@ -47,7 +53,7 @@ const MAX_CATCH_UP_EVENTS = 20;
  * create, recycle, or remove live marble bodies and meshes.
  */
 export function createSpawner(options: SpawnerOptions = {}): Spawner {
-  const maxMarbles = options.maxMarbles ?? DEFAULT_MAX_MARBLES;
+  let maxMarbles = options.maxMarbles ?? DEFAULT_MAX_MARBLES;
   const streamIntervalMs = options.streamIntervalMs ?? DEFAULT_STREAM_INTERVAL_MS;
   if (!Number.isSafeInteger(maxMarbles) || maxMarbles < 1) {
     throw new Error("maxMarbles must be a positive integer");
@@ -87,6 +93,19 @@ export function createSpawner(options: SpawnerOptions = {}): Spawner {
   return {
     drop(): SpawnResult {
       return spawnAt(clockMs);
+    },
+
+    setMaxMarbles(next: number): number[] {
+      if (!Number.isSafeInteger(next) || next < 1) {
+        throw new Error("maxMarbles must be a positive integer");
+      }
+      maxMarbles = next;
+      const recycled: number[] = [];
+      while (active.length > maxMarbles) {
+        const oldest = active.shift();
+        if (oldest) recycled.push(oldest.id);
+      }
+      return recycled;
     },
 
     advance(elapsedMs: number): SpawnResult {

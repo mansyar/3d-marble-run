@@ -22,8 +22,10 @@ import {
 import { createGoalTracker, type MarblePosition } from "./sim/goals";
 import type { LandingResult } from "./sim/landing";
 import { createMarbleImpactTracker, type MarbleVelocitySample } from "./sim/marbleImpact";
+import { createMarblePool } from "./sim/marblePool";
 import { createPhysics } from "./sim/physics";
 import { findOutOfBoundsMarbleIds } from "./sim/playability";
+import { createFrameBudget, type DeviceTier, resolveMarbleCap } from "./sim/population";
 import { createSpawner, type Spawner } from "./sim/spawner";
 import { createStuckDetector } from "./sim/stuckDetector";
 import type { TrackGraph } from "./track/graph";
@@ -56,7 +58,13 @@ if (!app) {
 
 const world = await createPhysics();
 const stepper = createStepper(FIXED_DT_MS, MAX_SUB_STEPS);
-const spawner: Spawner = createSpawner({ maxMarbles: 20, streamIntervalMs: 500 });
+const frameBudget = createFrameBudget();
+// Provisional boot cap; applyPopulationCap corrects it once the scene (and
+// with it the device tier) exists, before the first frame runs.
+const spawner: Spawner = createSpawner({
+  maxMarbles: resolveMarbleCap("desktop"),
+  streamIntervalMs: 500,
+});
 const storage = createTrackStorage();
 let initialDocument: TrackDocument;
 try {
@@ -92,19 +100,46 @@ let stuckClockMs = 0;
 const stuckNudgedAt = new Map<number, number>();
 let nudgeTimestamps: number[] = [];
 
-function spawnMarble(marble: PositionedDropPointMarbleSpawn): void {
-  const mesh = createMarbleMesh();
-  mesh.position.set(...marble.position);
-  handle.scene.add(mesh);
+// Pooled marble mesh/body pairs: released marbles park their bodies (asleep,
+// far below the table) instead of being destroyed, so continuous streams at
+// the scaled-up population reuse resources instead of churning them.
+const marblePool = createMarblePool(
+  {
+    createPair: () => {
+      const mesh = createMarbleMesh();
+      const body = world.createRigidBody(RigidBodyDesc.dynamic());
+      world.createCollider(
+        ColliderDesc.ball(MARBLE_RADIUS).setFriction(0.45).setRestitution(0.15),
+        body,
+      );
+      return { mesh, body };
+    },
+    destroyPair: (pair) => {
+      handle.scene.remove(pair.mesh);
+      world.removeRigidBody(pair.body);
+    },
+  },
+  { maxParked: resolveMarbleCap("desktop") },
+);
 
-  const body = world.createRigidBody(RigidBodyDesc.dynamic().setTranslation(...marble.position));
-  world.createCollider(
-    ColliderDesc.ball(MARBLE_RADIUS).setFriction(0.45).setRestitution(0.15),
-    body,
-  );
+/** Applies a device tier's marble cap; a shrink recycles oldest-first. */
+function applyPopulationCap(tier: DeviceTier): void {
+  const cap = resolveMarbleCap(tier);
+  spawner.setMaxMarbles(cap);
+  marblePool.setMaxParked(cap);
+}
+
+function spawnMarble(marble: PositionedDropPointMarbleSpawn): void {
+  const pair = marblePool.acquire({
+    x: marble.position[0],
+    y: marble.position[1],
+    z: marble.position[2],
+  });
+  pair.mesh.position.set(...marble.position);
+  handle.scene.add(pair.mesh);
   liveMarbles.set(marble.id, {
-    mesh,
-    body,
+    mesh: pair.mesh,
+    body: pair.body,
     previousPosition: [...marble.position],
   });
   sound.play("drop");
@@ -117,7 +152,7 @@ function removeMarble(id: number): void {
   const live = liveMarbles.get(id);
   if (!live) return;
   handle.scene.remove(live.mesh);
-  world.removeRigidBody(live.body);
+  marblePool.release(live);
   liveMarbles.delete(id);
 }
 
@@ -239,9 +274,15 @@ let guidance: GuidanceRenderer | null = null;
 const handle = initScene(app, (elapsedMs) => {
   dropPointGuide?.refresh();
   guidance?.tick(elapsedMs);
-  applyDropPointSpawnResult(
-    createDropPointSpawnerAdvance(spawner, dropPointState.point, dropPointLanding, elapsedMs),
-  );
+  frameBudget.record(elapsedMs);
+  // Adaptive stream pacing: under sustained frame-budget pressure the stream
+  // holds (no spawns/recycles) until sustained headroom returns. Manual
+  // one-shot drops are never gated.
+  if (frameBudget.suggest() === "flow") {
+    applyDropPointSpawnResult(
+      createDropPointSpawnerAdvance(spawner, dropPointState.point, dropPointLanding, elapsedMs),
+    );
+  }
   const { steps, alpha } = stepper.advance(elapsedMs);
   for (let i = 0; i < steps; i++) {
     snapshotMarbles();
@@ -267,6 +308,10 @@ const handle = initScene(app, (elapsedMs) => {
   simulationControls.setTimerMs(spawner.state().timerMs);
   cameraController?.update(elapsedMs, latestMarbleTarget(alpha));
 });
+
+// Correct the provisional boot cap with the real device tier before the
+// first frame can spawn anything.
+applyPopulationCap(handle.resolveTier());
 
 // --- Build mode state -------------------------------------------------------
 
@@ -372,7 +417,10 @@ const soundPreferences = createSoundPreferences();
 const sound = createAudioEngine(createWebAudioSynth());
 sound.setMuted(soundPreferences.isMuted());
 createSoundToggle(topHud, { preferences: soundPreferences, engine: sound });
-createQualityToggle(topHud, { sceneHandle: handle });
+createQualityToggle(topHud, {
+  sceneHandle: handle,
+  onModeChange: () => applyPopulationCap(handle.resolveTier()),
+});
 
 const unlockAudio = (): void => sound.unlock();
 document.addEventListener("pointerdown", unlockAudio, { once: true });

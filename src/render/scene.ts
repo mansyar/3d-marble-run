@@ -12,7 +12,13 @@ import {
   WebGLRenderer,
 } from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { getQualityMode, type QualityMode, resolveQuality } from "../core/quality";
+import {
+  getQualityMode,
+  type QualityMode,
+  type QualityTier,
+  resolveQuality,
+  resolveTier as resolveQualityTier,
+} from "../core/quality";
 
 const TABLE_COLOR = 0xc79a63;
 const SKY_COLOR = 0xfbf7ef;
@@ -28,6 +34,8 @@ export interface SceneHandle {
   renderer: WebGLRenderer;
   initialCameraTarget: readonly [number, number, number];
   applyQuality: (mode: QualityMode) => void;
+  /** Current device tier ("capped" | "desktop") under the live quality mode. */
+  resolveTier: () => QualityTier;
 }
 
 /**
@@ -116,6 +124,10 @@ export function initScene(
     sun.shadow.map = null;
   }
 
+  function resolveTier(): QualityTier {
+    return resolveQualityTier({ compact: compactViewport, deviceMemory }, getQualityMode());
+  }
+
   let lastTime = performance.now();
   renderer.setAnimationLoop(() => {
     const now = performance.now();
@@ -124,5 +136,12 @@ export function initScene(
     renderer.render(scene, camera);
   });
 
-  return { scene, camera, renderer, initialCameraTarget, applyQuality };
+  return {
+    scene,
+    camera,
+    renderer,
+    initialCameraTarget,
+    applyQuality,
+    resolveTier,
+  };
 }

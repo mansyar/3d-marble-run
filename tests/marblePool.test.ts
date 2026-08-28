@@ -148,7 +148,7 @@ describe("marble pool — clear and counts", () => {
     const { deps, destroyPair } = makeDeps();
     const pool = createMarblePool(deps, { maxParked: 4 });
     const a = pool.acquire({ x: 0, y: 1, z: 0 });
-    const b = pool.acquire({ x: 0, y: 2, z: 0 });
+    pool.acquire({ x: 0, y: 2, z: 0 });
     pool.release(a);
 
     expect(pool.clear()).toBe(1);
@@ -182,5 +182,50 @@ describe("marble pool — clear and counts", () => {
     expect(() => createMarblePool(deps, { maxParked: -3 })).toThrow();
     expect(() => createMarblePool(deps, { maxParked: 1.5 })).toThrow();
     expect(() => createMarblePool(deps, { maxParked: Number.NaN })).toThrow();
+  });
+});
+
+describe("marble pool — setMaxParked", () => {
+  it("validates like the constructor and leaves counts untouched", () => {
+    const { deps } = makeDeps();
+    const pool = createMarblePool(deps, { maxParked: 2 });
+    const pair = pool.acquire({ x: 0, y: 1, z: 0 });
+    pool.release(pair);
+
+    expect(() => pool.setMaxParked(0)).toThrow();
+    expect(() => pool.setMaxParked(-1)).toThrow();
+    expect(() => pool.setMaxParked(2.5)).toThrow();
+    expect(() => pool.setMaxParked(Number.NaN)).toThrow();
+    expect(pool.parkedCount()).toBe(1);
+    expect(pool.checkedOutCount()).toBe(0);
+  });
+
+  it("shrinking the bound makes overflow releases destroy instead of park", () => {
+    const { deps, destroyPair } = makeDeps();
+    const pool = createMarblePool(deps, { maxParked: 2 });
+    const a = pool.acquire({ x: 0, y: 1, z: 0 });
+    const b = pool.acquire({ x: 0, y: 2, z: 0 });
+    const c = pool.acquire({ x: 0, y: 3, z: 0 });
+    pool.release(a);
+    pool.release(b);
+    expect(pool.parkedCount()).toBe(2);
+
+    pool.setMaxParked(1);
+    expect(pool.release(c)).toBe(true);
+    expect(destroyPair).toHaveBeenCalledWith(c);
+    expect(pool.parkedCount()).toBe(2); // existing parked pairs are left as-is
+  });
+
+  it("growing the bound lets releases park again", () => {
+    const { deps, destroyPair } = makeDeps();
+    const pool = createMarblePool(deps, { maxParked: 1 });
+    const a = pool.acquire({ x: 0, y: 1, z: 0 });
+    const b = pool.acquire({ x: 0, y: 2, z: 0 });
+    pool.release(a);
+
+    pool.setMaxParked(3);
+    expect(pool.release(b)).toBe(true);
+    expect(destroyPair).not.toHaveBeenCalledWith(b);
+    expect(pool.parkedCount()).toBe(2);
   });
 });
