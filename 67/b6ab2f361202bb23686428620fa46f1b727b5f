@@ -1,0 +1,1 @@
+Checkpoint Phase 3 (release_v040_20260828): PR #11 merged (merge commit 67b6ab2), tag v0.4.0 pushed post-merge, release run 33159722737 green end-to-end (GHCR image, GitHub Release, Pages, Coolify webhook). Live artifacts verified: Pages app chunk embeds version 0.4.0, GitHub Release published, GHCR tags 0.4.0/latest/sha-a19ef0d. README runbook: no drift.
