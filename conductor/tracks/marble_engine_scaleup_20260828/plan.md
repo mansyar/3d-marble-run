@@ -66,14 +66,15 @@
   deferring visual verification to the final phase protocol.
 - Checkpoint recorded: Phase 2 `[checkpoint: e9a2a23]`.
 
-## Phase 3 · Docs & Release Readiness [checkpoint: TBD]
+## Phase 3 · Docs & Release Readiness [checkpoint: 448a90f]
 
-### [ ] Task: Update product & tech docs
-- `product.md` V1 feature set + success criteria language (40 mid-range /
-  60 desktop marbles at smooth framerates; adaptive stream pacing description).
-- `tech-stack.md` simulation-capacity note (tier-aware caps, pooled marbles)
-  with dated entry.
-- README performance sentence update.
+### [x] Task: Update product & tech docs `f6903d4`
+- `product.md` success criteria: ~40 marbles on mid-range phones / 60 on
+  desktop with a self-pacing stream.
+- `tech-stack.md`: dated simulation-capacity bullet (tier-aware caps, pooled
+  marbles, frame-budget pacing) + payload re-baseline note.
+- README: quality toggle paragraph extended (population cap, pooling,
+  adaptive stream).
 
 ### [x] Task: Final quality gate
 - `CI=true pnpm biome check .` (121 files clean) + `CI=true pnpm vitest run`
@@ -85,9 +86,12 @@
   `check-bundle-size.mjs`); gate re-run green with 97.65 / 11.40 kB headroom.
   A future "externalize Rapier WASM" track could reclaim ~800 kB min.
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-- Full manual protocol on desktop + touch: desktop cap stream smooth ≥1 min,
-  capped-tier stream smooth ≥1 min, one-shot drops never blocked, zero
-  visual/material parity drift, save round-trips.
-- Await explicit user confirmation; record final phase checkpoint SHA in
-  `plan.md`.
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `448a90f`
+- Final gate verified on this tree (see above); working tree clean at
+  `5f8991c`.
+- Full manual protocol (desktop 60-marble stream ≥1 min; touch 40-marble;
+  Auto↔High cap re-resolution; one-shot drops under jank; save round-trip)
+  proposed; user confirmed the final checkpoint on automated gates at
+  `448a90f`, deferring visual confirmation (consistent with the Phase 2
+  gate decision).
+- Checkpoint recorded: Phase 3 `[checkpoint: 448a90f]`.
