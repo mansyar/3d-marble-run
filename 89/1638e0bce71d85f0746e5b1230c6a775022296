@@ -1,0 +1,11 @@
+Task: Implement hit-radius slop & ghost boost
+
+Summary: Touch polish for Bumper (portless free placement) and Drop point — enlarged hit-radius (0.38 world ~14px slop for piece selection), 16px finger offset for ghost visibility, opacity 0.92 + emissive outline boost on touch.
+
+Files:
+- src/build/placement.ts: isTouchPointer, clientWithOffset, pointerPoint offset, pieceAt nearest-center fallback, makeGhost touch opacity/emissive, applyGhostBoost on pointerMove/Down, lastIsTouch state
+- src/build/dropPointController.ts: pointOnTable touch offset, isTouchPointer helper, updateCursor passes isTouch
+
+Why: Makes bumper/drop point placement roomier on touch phones, ghost doesn't hide under finger, selection forgiving while preserving mouse precision (slop only on touch).
+
+Tests: 244/244 pass, Biome fixed (before 1 error), build 3495.57/1246.24 within budget (delta +2.44 vs baseline, headroom 4.43/3.76).
