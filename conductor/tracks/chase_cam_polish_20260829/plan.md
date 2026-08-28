@@ -45,14 +45,17 @@ isolated into pure modules and built with TDD (Red → Green).
 
 ## Phase 3: Follow-Target Handoff (logic + glue)
 
-- [ ] Task: Write failing tests for follow-target resolver (TDD Red)
-  - [ ] New pure module `src/sim/followTarget.ts` — given the followed id, the active
-        marble ids, and removal events, resolve the next followed id or `null`; tests
-        cover goal/out-of-bounds/stuck/pool-shrink removals, empty-track fallback
-- [ ] Task: Implement resolver to pass tests (TDD Green); verify ≥80% coverage on new
-      logic modules
-- [ ] Task: Wire handoff into marble removal paths and camera
-  - [ ] Hook resolver into the four removal paths in `src/app.ts` (goal entry,
+- [x] Task: Write failing tests for follow-target resolver (TDD Red)
+  (`22133ec`) — `tests/followTarget.test.ts`, 10 cases covering all four
+  removal paths, empty-track fallback, stale ids, same-batch removals.
+- [x] Task: Implement resolver to pass tests (TDD Green); verify ≥80% coverage on new
+      logic modules (`a53c4ec`) — `src/sim/followTarget.ts`, 100% coverage.
+- [x] Task: Wire handoff into marble removal paths and camera
+  (`5bff170`) — `removeMarble()` (funnel for all four removal paths) resolves
+  the next follow target: glides to the newest remaining marble via
+  chase-mode re-entry (now restarts the eased fly-to), or eases back to free
+  orbit with HUD sync when none remain. Reduced-motion keeps instant cuts.
+  - [x] Hook resolver into the four removal paths in `src/app.ts` (goal entry,
         out-of-bounds cleanup, stuck recycle, pool shrink); followed marble despawn →
         camera glides to next active marble, else eases back to free orbit; HUD button
         label stays in sync
