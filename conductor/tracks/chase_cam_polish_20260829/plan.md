@@ -1,0 +1,51 @@
+# Chase-Cam Immersion Polish — Implementation Plan
+
+Workflow note: per `conductor/workflow.md`, cameras and pointer→raycast glue are exempt
+from unit-test mandates and are verified through the manual verification protocol. The
+two genuinely logic-bearing pieces (tap classification, follow-target handoff) are
+isolated into pure modules and built with TDD (Red → Green).
+
+## Phase 1: Eased Mode Transitions (visual glue — manual verification)
+
+- [ ] Task: Implement eased fly-to transition between free and chase modes
+  - [ ] In `src/render/camera.ts`: add a transition state (idle → flying → following /
+        → returning) that eases camera position (and look-at) between the current orbit
+        framing and the chase position over ~0.6–1.0s with ease-in-out; ease back to the
+        prior orbit framing on chase→free
+  - [ ] Keep the existing exponential follow-damping after arrival; no visible snap at
+        transition end
+  - [ ] Respect `prefers-reduced-motion: reduce` — instant cut instead of the fly
+        (match `guidance.ts` / `tray.ts` matchMedia pattern)
+- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
+## Phase 2: Tap-a-Marble-to-Ride (logic + glue)
+
+- [ ] Task: Write failing tests for tap-gesture classifier (TDD Red)
+  - [ ] New pure module `src/render/tapGesture.ts` — classify pointerdown/up pairs
+        (duration ≤~300ms, movement <~10px, single pointer) as tap vs. drag; tests cover
+        tap, drag-orbit, pinch, long-press, pointercancel
+- [ ] Task: Implement classifier to pass tests (TDD Green)
+- [ ] Task: Wire tap-to-ride input glue
+  - [ ] Raycast active marble meshes on classified taps in free mode (placement not
+        locked); on hit switch to chase cam pinned to that marble id; desktop click +
+        single-finger touch parity; must never fire during drags/pinches or while
+        `isLocked`
+- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
+## Phase 3: Follow-Target Handoff (logic + glue)
+
+- [ ] Task: Write failing tests for follow-target resolver (TDD Red)
+  - [ ] New pure module `src/sim/followTarget.ts` — given the followed id, the active
+        marble ids, and removal events, resolve the next followed id or `null`; tests
+        cover goal/out-of-bounds/stuck/pool-shrink removals, empty-track fallback
+- [ ] Task: Implement resolver to pass tests (TDD Green); verify ≥80% coverage on new
+      logic modules
+- [ ] Task: Wire handoff into marble removal paths and camera
+  - [ ] Hook resolver into the four removal paths in `src/app.ts` (goal entry,
+        out-of-bounds cleanup, stuck recycle, pool shrink); followed marble despawn →
+        camera glides to next active marble, else eases back to free orbit; HUD button
+        label stays in sync
+- [ ] Task: Final quality gate — full
+      `CI=true pnpm biome check . && CI=true pnpm vitest run && pnpm build`,
+      size-budget gate, desktop + touch manual sweep (Refer to workflow.md)
+- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
