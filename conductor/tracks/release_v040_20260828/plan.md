@@ -26,17 +26,16 @@ policy); the tag is pushed only after merge and smoke pass. pwsh note: use
 
 ## Phase 2 · Version Bump & Release Build Smoke Test
 
-- [~] Task: Cut version bump to `0.4.0`
-  - [ ] Bump `package.json` to `0.4.0`
-        (`pnpm version minor --no-git-tag-version` — tree carries plan edits),
-        manual bump commit `0.4.0`, verify annotated tag `v0.4.0` created
-        locally
-  - [ ] Keep tag unpushed until smoke passes
-- [ ] Task: Rebuild production bundle & recheck payload budget
-  - [ ] `pnpm build`; assert ≤3,600 kB minified / ≤1,260 kB gzip; note
-        deltas vs baseline
-  - [ ] `pnpm check:release v0.4.0` (tag/package match)
-- [ ] Task: Desktop smoke test (1280×720, production preview)
+- [x] Task: Cut version bump to `0.4.0`
+  - [x] `pnpm version minor --no-git-tag-version` → 0.3.0 → 0.4.0; commit
+        `a19ef0d` ("0.4.0"); annotated tag `v0.4.0` created locally
+        (Phase 1 checkpoint commit `1c5a15b` precedes it)
+  - [x] Tag kept unpushed until smoke passes
+- [x] Task: Rebuild production bundle & recheck payload budget
+  - [x] `pnpm build` post-bump: TOTAL 3,502.35 kB min / 1,248.60 kB gzip —
+        identical to baseline (zero drift); within 3,600 / 1,260 budget
+  - [x] `pnpm check:release v0.4.0`: tag matches package.json 0.4.0
+- [~] Task: Desktop smoke test (1280×720, production preview)
   - [ ] v0.3.0 core suite: piece place/move/delete + snapping · splitter
         forking · bumper placement + bounce · Drop point + landing guide ·
         mixed-edit undo/redo chronology & redo invalidation · autosave +
