@@ -1,0 +1,7 @@
+Phase 4 - Quality Preference & Auto Toggle (tasks 1-4)
+
+Task: test(quality)/feat(quality)/feat(scene)/feat(ui) - Auto/High quality preference
+Changes: new src/core/quality.ts (QualityMode get/setQualityMode persisting to localStorage 'marblescape:quality'; resolveQuality caps DPR 1.5/1024 shadows on compact, deviceMemory<=4, or battery<0.2 not charging in auto; high forces desktop 2/2048; silent fallback when storage/device APIs absent). scene.ts boots renderer from resolved caps (antialias, dpr, shadow mapSize) and exposes applyQuality hot-update (setPixelRatio + shadow mapSize + map=null realloc, no reload). src/ui/qualityToggle.ts adds one top-hud button next to soundToggle (>=44px, aria-label Quality: Auto/High, aria-pressed, persisted). CSS shares sound-toggle styling.
+Why: cap DPR/shadows on low-power devices so gloss polish never costs fluid 20-marble runs, per FR-4.
+Tests: tests/quality.test.ts 12 cases; quality.ts at 100% stmts/branch/funcs/lines. Suite 264 green; biome+tsc+build green; bundle 3,499.97 kB min / 1,247.75 kB gzip (within 3,500/1,250 gate; track delta within <=2.0/<=1.2 cap).
+Files: src/core/quality.ts, src/ui/qualityToggle.ts, src/render/scene.ts, src/app.ts, src/style.css, tests/quality.test.ts
