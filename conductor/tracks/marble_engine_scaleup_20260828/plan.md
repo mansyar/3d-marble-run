@@ -1,6 +1,6 @@
 # Implementation Plan: Marble Engine Scale-Up — 2× Population with Adaptive Stream Pacing
 
-## Phase 1 · Population Governor (pure logic) [checkpoint: TBD]
+## Phase 1 · Population Governor (pure logic) [checkpoint: f6820e0]
 
 ### [x] Task: Write failing tests for the population governor `84fb84f`
 - Extend a new `tests/population.test.ts` (Vitest, pure — no Rapier/Three):
@@ -21,11 +21,13 @@
   100% lines / 100% functions; Biome clean (119 files, 1 import-format fix
   applied via `--write`).
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-- Run full suite once; propose manual verification of pure-logic scope
-  (governor decisions observable via unit harness only — visual check deferred
-  to Phase 3 integration).
-- Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `f6820e0`
+- Full suite verified GREEN on this exact tree: 274/274 passing, governor
+  coverage 97.82% stmts / 100% lines / 100% funcs (Biome clean).
+- Manual verification proposal (pure-logic scope: coverage gate + REPL smoke
+  across budget window — spikes hold, sustained overage sheds, recovery
+  reacquires) presented; user confirmed checkpoint at `f6820e0`.
+- Checkpoint recorded: Phase 1 `[checkpoint: f6820e0]`.
 
 ## Phase 2 · Marble Pool (logic + integration) [checkpoint: TBD]
 
