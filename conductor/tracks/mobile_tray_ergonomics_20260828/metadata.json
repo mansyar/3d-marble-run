@@ -1,7 +1,7 @@
 {
   "id": "mobile_tray_ergonomics_20260828",
   "type": "FEATURE",
-  "status": "new",
+  "status": "completed",
   "created": "2026-08-28",
   "updated": "2026-08-28",
   "description": "Make tray horizontally scrollable on narrow phones (8 buttons: 7 pieces + Drop point) with snap/fade/separator; polish Bumper/Drop-point free-placement touch hit-radius and ghost contrast; keyboard arrow centering with reduced-motion respect — CSS-only, ≤2 kB budget delta"
