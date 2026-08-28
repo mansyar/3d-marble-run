@@ -73,11 +73,13 @@
 - [x] Await explicit user confirmation; record final phase checkpoint SHA in `plan.md`.
 - **Checkpoint:** Final manual sign-off 2026-08-28 — all tray/placement/keyboard/regression checks pass; payload 3496.58/1246.54 within absolute budget (delta +3.45/+0.97 vs baseline, headroom 3.42/3.46).
 
-## Review Fixes [checkpoint: TBD]
+## Review Fixes [checkpoint: fa3e5bf]
 
-### [~] Task: Apply review suggestions `TBD`
+### [x] Task: Apply review suggestions `fa3e5bf`
 - Fix hybrid touch detection `isTouchPointer` to check `pointerType` strictly (mouse on touch-laptops no longer misfires ghost offset/slop).
 - Fix `tintBlocked` emissive handling so blocked ghosts stay pure red, not pink.
 - Reset `lastIsTouch` on `begin()` so tray-selected ghosts start mouse-styled until first touch move.
 - Re-verify 244/244, Biome, build within budget.
+- **Done:** `src/build/placement.ts` + `dropPointController.ts` strict touch check, `tintBlocked` emissive reset, `begin()` resets flag. Re-verified 244/244, Biome clean, build 3496.72/1246.57 withinBudget headroom 3.28/3.43. Commit `fa3e5bf`.
+- **Checkpoint:** Review fixes verified 2026-08-28.
 
