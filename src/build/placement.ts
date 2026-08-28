@@ -21,8 +21,11 @@ import { classifySnap, type SnapClassification } from "../track/snapping";
  */
 
 const GHOST_OPACITY = 0.55;
+const GHOST_OPACITY_TOUCH = 0.92;
 const BLOCKED_COLOR = 0xd00000;
 const ROTATE_STEP_DEG = 45;
+const TOUCH_OFFSET_PX = 16;
+const TOUCH_HIT_SLOP_WORLD = 0.38;
 
 export interface EditablePiece {
   id: string;
@@ -83,6 +86,7 @@ export function createPlacementController(deps: PlacementDeps): {
   let ghost: Ghost | null = null;
   let moving: MoveState | null = null;
   let lastStatus: SnapClassification["status"] = "free";
+  let lastIsTouch = false;
 
   function isEnabled(): boolean {
     return deps.isEnabled?.() ?? true;
@@ -129,15 +133,29 @@ export function createPlacementController(deps: PlacementDeps): {
   const ndc = new Vector2();
   const hit = new Vector3();
 
+  function isTouchPointer(ev: PointerEvent): boolean {
+    return ev.pointerType === "touch" || navigator.maxTouchPoints > 0;
+  }
+
+  function clientWithOffset(
+    clientX: number,
+    clientY: number,
+    isTouch: boolean,
+  ): { x: number; y: number } {
+    return isTouch ? { x: clientX, y: clientY - TOUCH_OFFSET_PX } : { x: clientX, y: clientY };
+  }
+
   /** Seat portless tools (the bumper) on whatever track surface is under
    * the pointer — a raised bell, ramp or rails — instead of always dropping
    * to the table plane; connector pieces stay on the table plane and let
    * classifySnap decide their pose. */
   function pointerPoint(clientX: number, clientY: number): Vector3 | null {
     const rect = domElement.getBoundingClientRect();
+    // Touch offset so finger doesn't hide ghost (16px upward).
+    const off = clientWithOffset(clientX, clientY, lastIsTouch);
     ndc.set(
-      ((clientX - rect.left) / rect.width) * 2 - 1,
-      -((clientY - rect.top) / rect.height) * 2 + 1,
+      ((off.x - rect.left) / rect.width) * 2 - 1,
+      -((off.y - rect.top) / rect.height) * 2 + 1,
     );
     raycaster.setFromCamera(ndc, camera);
     if (activeTypeId && PIECE_TYPE_IDS[activeTypeId].ports.length === 0) {
@@ -152,9 +170,10 @@ export function createPlacementController(deps: PlacementDeps): {
 
   function pieceAt(clientX: number, clientY: number): EditablePiece | null {
     const rect = domElement.getBoundingClientRect();
+    const off = clientWithOffset(clientX, clientY, lastIsTouch);
     ndc.set(
-      ((clientX - rect.left) / rect.width) * 2 - 1,
-      -((clientY - rect.top) / rect.height) * 2 + 1,
+      ((off.x - rect.left) / rect.width) * 2 - 1,
+      -((off.y - rect.top) / rect.height) * 2 + 1,
     );
     raycaster.setFromCamera(ndc, camera);
     const pieces = [...deps.editablePieces()];
@@ -172,6 +191,21 @@ export function createPlacementController(deps: PlacementDeps): {
         object = object.parent;
       }
     }
+    // Touch slop: if exact ray misses but near a piece center (12-16px equivalent), snap to nearest within ~0.38 world.
+    if (lastIsTouch && pieces.length > 0) {
+      let nearest: EditablePiece | null = null;
+      let bestDist = TOUCH_HIT_SLOP_WORLD;
+      for (const piece of pieces) {
+        const center = new Vector3();
+        piece.group.getWorldPosition(center);
+        const dist = raycaster.ray.distanceToPoint(center);
+        if (dist < bestDist) {
+          bestDist = dist;
+          nearest = piece;
+        }
+      }
+      if (nearest) return nearest;
+    }
     return null;
   }
 
@@ -182,13 +216,26 @@ export function createPlacementController(deps: PlacementDeps): {
       if (!("material" in mesh)) continue;
       const mat = (mesh.material as MeshStandardMaterial).clone();
       mat.transparent = true;
-      mat.opacity = GHOST_OPACITY;
+      mat.opacity = lastIsTouch ? GHOST_OPACITY_TOUCH : GHOST_OPACITY;
+      if (lastIsTouch) {
+        mat.emissive.setHex(0xffffff);
+        mat.emissiveIntensity = 0.18;
+      }
       originalColors.set(mat, mat.color.getHex());
       mesh.material = mat;
     }
     group.visible = false;
     scene.add(group);
     return { group, originalColors };
+  }
+
+  function applyGhostBoost(): void {
+    if (!ghost) return;
+    for (const mat of ghost.originalColors.keys()) {
+      mat.opacity = lastIsTouch ? GHOST_OPACITY_TOUCH : GHOST_OPACITY;
+      mat.emissive.setHex(lastIsTouch ? 0xffffff : 0x000000);
+      mat.emissiveIntensity = lastIsTouch ? 0.18 : 0;
+    }
   }
 
   function tintBlocked(blocked: boolean): void {
@@ -351,6 +398,8 @@ export function createPlacementController(deps: PlacementDeps): {
 
   function onPointerMove(ev: PointerEvent): void {
     if (!isEnabled() || !ghost) return;
+    lastIsTouch = isTouchPointer(ev);
+    applyGhostBoost();
     cursorPos = pointerPoint(ev.clientX, ev.clientY);
     refreshGhost();
   }
@@ -363,10 +412,15 @@ export function createPlacementController(deps: PlacementDeps): {
 
   function onPointerDown(ev: PointerEvent): void {
     if (!isEnabled()) return;
+    lastIsTouch = isTouchPointer(ev);
     if (!ghost) {
       const piece = pieceAt(ev.clientX, ev.clientY);
       if (!piece) return;
       startMove(piece);
+      // ensure newly created ghost inherits touch boost
+      applyGhostBoost();
+    } else {
+      applyGhostBoost();
     }
     // First contact also re-anchors the ghost so taps far away still work.
     cursorPos = pointerPoint(ev.clientX, ev.clientY);
