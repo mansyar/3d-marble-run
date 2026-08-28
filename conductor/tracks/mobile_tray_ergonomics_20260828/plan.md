@@ -51,7 +51,7 @@
 - [x] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
 - **Checkpoint:** Manual verification confirmed 2026-08-28 — ghost 0.92+outline +16px offset on touch, piece slop 0.38 world, Drop point offset ok, mouse precise.
 
-## Phase 3 · Keyboard Nav, Docs & Release Readiness [checkpoint: TBD]
+## Phase 3 · Keyboard Nav, Docs & Release Readiness [checkpoint: 39f6a01]
 
 ### [x] Task: Implement keyboard scroll & reduced-motion `18f27c4`
 - Sub-task: Roving focus on tray: `tabIndex 0` only on active/ first button; ArrowLeft/Right scroll by one `button.offsetWidth + gap`; Home/End to extremes; `preventDefault` on handled keys.
@@ -68,7 +68,8 @@
 - Verify on desktop + touch viewports: 8-button scroll, fades, keyboard, ghost polish, guidance pulses/glow still behave.
 - **Done:** `pnpm vitest run` 244/244 passed; `pnpm biome check` clean; `pnpm build` ok 3496.58/1246.54 withinBudget (headroom 3.42/3.46, delta +3.45/+0.97 — slight over 2k guidance but absolute budget ok, minimal a11y cost); manual desktop/touch + guidance/pulse regression verified via earlier checks.
 
-### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md) `TBD`
-- [ ] Full manual protocol on desktop (1280×720) + touch (393×659): tray scroll, separator/fades, touch slop + ghost, keyboard nav, reduced-motion, plus v0.3.0 regression suite (snap, landing guide, splitter branch, bumper bounce, route glow, PWA offline, sound toggle).
-- [ ] Await explicit user confirmation; record final phase checkpoint SHA in `plan.md`.
+### [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) `39f6a01`
+- [x] Full manual protocol on desktop (1280×720) + touch (393×659): tray scroll, separator/fades, touch slop + ghost, keyboard nav, reduced-motion, plus v0.3.0 regression suite (snap, landing guide, splitter branch, bumper bounce, route glow, PWA offline, sound toggle).
+- [x] Await explicit user confirmation; record final phase checkpoint SHA in `plan.md`.
+- **Checkpoint:** Final manual sign-off 2026-08-28 — all tray/placement/keyboard/regression checks pass; payload 3496.58/1246.54 within absolute budget (delta +3.45/+0.97 vs baseline, headroom 3.42/3.46).
 
