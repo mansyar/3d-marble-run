@@ -51,7 +51,7 @@ export function initScene(
 
   // Procedural studio reflections — the toy-plastic gloss source. No assets.
   const pmrem = new PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.06).texture;
   pmrem.dispose();
 
   const camera = new PerspectiveCamera(
@@ -70,10 +70,11 @@ export function initScene(
   camera.lookAt(...initialCameraTarget);
 
   // Bright, soft, even lighting: warm sky bounce plus one soft key light.
-  const hemisphere = new HemisphereLight(0xffffff, 0xd8c3a5, 0.9);
+  const hemisphere = new HemisphereLight(0xffffff, 0xd8c3a5, 0.95);
   const sun = new DirectionalLight(0xfff4e0, 1.6);
   sun.position.set(8, 14, 6);
   sun.castShadow = true;
+  sun.shadow.radius = 2;
   const shadowMapSize = compactViewport ? 1024 : 2048;
   sun.shadow.mapSize.set(shadowMapSize, shadowMapSize);
   sun.shadow.camera.left = -15;
@@ -85,7 +86,7 @@ export function initScene(
   // The playroom table the whole toy world sits on.
   const table = new Mesh(
     new PlaneGeometry(60, 60),
-    new MeshStandardMaterial({ color: TABLE_COLOR, roughness: 0.9 }),
+    new MeshStandardMaterial({ color: TABLE_COLOR, roughness: 0.85 }),
   );
   table.rotation.x = -Math.PI / 2;
   table.receiveShadow = true;

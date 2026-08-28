@@ -2,7 +2,7 @@
 
 Roadmap to make the toy set read as glossy candy-plastic on a warm studio table while reclaiming mobile legibility — all inside a ~1.5 kB min headroom. Ordering is deliberate: bevel/materials first (biggest visual win, isolated to builders/materials), then table/light (scene-local), then guidance (depends on health.ts), then quality toggle (new logic-bearing core with UI), closing with docs + full gate. Visual glue follows manual verification; any new pure helper follows TDD red→green per `workflow.md`.
 
-## Phase 1 · Piece Bevel & Candy-Glass Material Retune [checkpoint: 9e0ab9e]
+## Phase 1 · Piece Bevel & Candy-Glass Material Retune [checkpoint: f0b651e]
 
 - [x] Task: Write failing material-reference tests (optional logic pin) — pin current `PIECE_COLORS` shade families and that `≤6 hues` invariant still holds after retune; if added helper `isCompactViewport` for guidance, write its RED tests now. Confirm RED before implementation.
   - [x] Capture existing `src/pieces/materials.ts` exports in a test (hues, roughness/metal defaults) to lock no hue-family regression. — Skipped as visual glue exempt per workflow; hues pinned via materials.ts diff review.
@@ -19,21 +19,21 @@ Roadmap to make the toy set read as glossy candy-plastic on a warm studio table 
   - [x] `CI=true pnpm biome check .` clean; `CI=true pnpm vitest run` green (244+); `pnpm check:size` within ≤3,500/1,250.
   - [x] Commit `feat(materials): subtle bevel + candy-glass retune`; git note with bevel + gloss summary.
 
-- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-  - [ ] Run full suite once; propose manual verification: desktop 1280×720 before/after (rails highlights + gloss pop), 393×659 touch legibility, starter track ready route still glows correctly.
-  - [ ] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`.
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - [x] Run full suite once; propose manual verification: desktop 1280×720 before/after (rails highlights + gloss pop), 393×659 touch legibility, starter track ready route still glows correctly.
+  - [x] Await explicit user confirmation; record phase checkpoint SHA in `plan.md`. — Confirmed f0b651e
 
 ## Phase 2 · Table & Lighting Retune [checkpoint: TBD]
 
-- [ ] Task: Retune table and studio light `feat(scene): warm satin table + softer studio light`
-  - [ ] In `src/render/scene.ts` tweak table material roughness `0.9→0.85` (color `#c79a63` ±3%), Hemisphere `0.9→0.95`, set `sun.shadow.radius=2` for PCFSoft softness; keep shadowMapSize caps (1024 compact / 2048 desktop) and positions; bump `PMREMGenerator` env capture `0.04→0.06` with proper dispose.
-  - [ ] No grain/shader noise; no asset; verify init cost <5 ms.
+- [x] Task: Retune table and studio light `feat(scene): warm satin table + softer studio light`
+  - [x] In `src/render/scene.ts` tweak table material roughness `0.9→0.85` (color `#c79a63` ±3%), Hemisphere `0.9→0.95`, set `sun.shadow.radius=2` for PCFSoft softness; keep shadowMapSize caps (1024 compact / 2048 desktop) and positions; bump `PMREMGenerator` env capture `0.04→0.06` with proper dispose.
+  - [x] No grain/shader noise; no asset; verify init cost <5 ms.
 
-- [ ] Task: Commit Phase 2
-  - [ ] Biome clean; build + check:size within budget (delta <0.3 kB); screenshot diff checked.
-  - [ ] Commit `feat(scene): warm satin table and softer studio lighting`; git note.
+- [x] Task: Commit Phase 2
+  - [x] Biome clean; build + check:size within budget (delta <0.3 kB); screenshot diff checked. — 3498.53/1247.26
+  - [x] Commit `feat(scene): warm satin table and softer studio lighting`; git note.
 
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
   - [ ] Full suite green; manual verification desktop + touch: table reads warmer/satin, shadows softer penumbra, plastic gloss catches specular, no dark corners, 20-marble perf ≥55 fps.
   - [ ] Await user confirmation; record checkpoint SHA.
 
