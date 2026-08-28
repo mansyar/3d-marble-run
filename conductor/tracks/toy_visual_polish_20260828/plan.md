@@ -37,7 +37,7 @@ Roadmap to make the toy set read as glossy candy-plastic on a warm studio table 
   - [x] Full suite green; manual verification desktop + touch: table reads warmer/satin, shadows softer penumbra, plastic gloss catches specular, no dark corners, 20-marble perf ≥55 fps.
   - [x] Await user confirmation; record checkpoint SHA. — Confirmed 0c48743
 
-## Phase 3 · Guidance Compact Legibility Boost [checkpoint: TBD]
+## Phase 3 · Guidance Compact Legibility Boost [checkpoint: 5960154]
 
 - [x] Task: Write failing tests for compact guidance helper (extend `track/health.ts` or small helper) `test(guidance): compact boost thresholds`
   - [x] Helper `isCompactGuidanceViewport()` or thresholds for emissive/radius — RED: compact true → guidance recommends boosted values, desktop false → base values, reduced-motion always returns static fallback flag.
@@ -50,27 +50,27 @@ Roadmap to make the toy set read as glossy candy-plastic on a warm studio table 
   - [x] `pnpm vitest run --coverage` ≥80% on new helper/logic; biome clean; build + check:size delta <0.4 kB. — 3498.79/1247.34 clean
   - [x] Commit `feat(guidance): compact legibility boost for pulse and glow`; git note.
 
-- [~] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-  - [ ] Full suite green; manual verification: disconnect piece → visible pulse on 393×659, connect → stops, bumper never pulses; ready route → glow centered + thicker on phone, hides when broken; reduced-motion static tint confirmed.
-  - [ ] Await user confirmation; record checkpoint SHA.
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - [x] Full suite green; manual verification: disconnect piece → visible pulse on 393×659, connect → stops, bumper never pulses; ready route → glow centered + thicker on phone, hides when broken; reduced-motion static tint confirmed.
+  - [x] Await user confirmation; record checkpoint SHA. — Confirmed 5960154
 
 ## Phase 4 · Quality Preference & Auto Toggle [checkpoint: TBD]
 
-- [ ] Task: Write failing tests for quality preference (logic-bearing, TDD-mandatory) `test(quality): Auto vs High resolution and persistence`
-  - [ ] New `src/core/quality.ts`: `getQualityMode()` defaults "auto" from localStorage, `setQualityMode()` persists, `resolveQuality({compact, deviceMemory, battery}, mode)` returns `{dprCap,shadowSize}` — cases: compact→cap, deviceMemory≤4→cap in auto, battery<0.2+!charging→cap in auto, High forces desktop values; injectable storage for tests; no Three imports. Confirm RED (≥8 cases).
+- [x] Task: Write failing tests for quality preference (logic-bearing, TDD-mandatory) `test(quality): Auto vs High resolution and persistence`
+  - [x] New `src/core/quality.ts`: `getQualityMode()` defaults "auto" from localStorage, `setQualityMode()` persists, `resolveQuality({compact, deviceMemory, battery}, mode)` returns `{dprCap,shadowSize}` — cases: compact→cap, deviceMemory≤4→cap in auto, battery<0.2+!charging→cap in auto, High forces desktop values; injectable storage for tests; no Three imports. Confirm RED (≥8 cases). — RED confirmed (module missing)
 
-- [ ] Task: Implement quality preference logic `feat(quality): add Auto/High resolver with persistence`
-  - [ ] Implement `src/core/quality.ts` exactly per tests; handle missing `getBattery`/`deviceMemory` fallbacks; wire `localStorage` key `marblescape:quality`; GREEN + ≥80% coverage on changed code.
+- [x] Task: Implement quality preference logic `feat(quality): add Auto/High resolver with persistence`
+  - [x] Implement `src/core/quality.ts` exactly per tests; handle missing `getBattery`/`deviceMemory` fallbacks; wire `localStorage` key `marblescape:quality`; GREEN + ≥80% coverage on changed code. — 85.7% stmts 80% branch
 
-- [ ] Task: Wire quality into scene boot and hot-update `feat(scene): wire quality caps into renderer`
-  - [ ] Modify `src/render/scene.ts` `initScene` to read `resolveQuality` before `WebGLRenderer` creation (antialias, dprCap, shadowSize); expose hot-update path so toggling from UI calls `renderer.setPixelRatio` and updates `sun.shadow.mapSize` without reload.
+- [x] Task: Wire quality into scene boot and hot-update `feat(scene): wire quality caps into renderer`
+  - [x] Modify `src/render/scene.ts` `initScene` to read `resolveQuality` before `WebGLRenderer` creation (antialias, dprCap, shadowSize); expose hot-update path so toggling from UI calls `renderer.setPixelRatio` and updates `sun.shadow.mapSize` without reload. — caps wired, applyQuality exposes hot-update
 
-- [ ] Task: Implement quality toggle UI (visual glue) `feat(ui): add Auto/High quality toggle`
-  - [ ] Top-hud icon button next to `soundToggle` (reuse `top-hud` pattern), ≥44px, `aria-label` "Quality: Auto/High", `aria-pressed`, one button only, persisted; communicates via `quality.ts`; respects `product-guidelines.md` minimal HUD.
+- [x] Task: Implement quality toggle UI (visual glue) `feat(ui): add Auto/High quality toggle`
+  - [x] Top-hud icon button next to `soundToggle` (reuse `top-hud` pattern), ≥44px, `aria-label` "Quality: Auto/High", `aria-pressed`, one button only, persisted; communicates via `quality.ts`; respects `product-guidelines.md` minimal HUD. — `src/ui/qualityToggle.ts` mounted in `app.ts` beside `soundToggle`; text button in the sound-toggle visual pattern (no glyph needed at ≥44px); `.quality-toggle` CSS shares sound-toggle rules incl. focus-visible + mobile justify.
 
-- [ ] Task: Cover changed logic and commit Phase 4
-  - [ ] `pnpm vitest run --coverage` ≥80% on `quality.ts`; `CI=true pnpm biome check .` clean; build + check:size delta <0.6 kB (logic + one button).
-  - [ ] Commit `feat(quality): Auto/High quality preference with battery-aware capping`; git note.
+- [x] Task: Cover changed logic and commit Phase 4
+  - [x] `pnpm vitest run --coverage` ≥80% on `quality.ts`; `CI=true pnpm biome check .` clean; build + check:size delta <0.6 kB (logic + one button). — quality.ts 100% stmts/branch/lines (12 tests incl. no-storage fallback); biome + tsc + build green; gate 3,499.97/1,247.75 kB. Phase-4 delta +1.18 min / +0.41 gzip — exceeds 0.6 estimate, inside spec ≤2.0/≤1.2 track cap (noted for review).
+  - [x] Commit `feat(quality): Auto/High quality preference with battery-aware capping`; git note.
 
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
   - [ ] Full suite green; manual verification desktop + 393×659 touch: toggle visible at ≥44px, toggles Auto↔High, persists after reload, hot-updates DPR/shadows; Auto caps on stubbed low-memory/battery (use `deviceMemory=2` stub + `getBattery` mock), High lifts; PWA/tray guidance unaffected.
