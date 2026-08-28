@@ -76,16 +76,16 @@ Roadmap to make the toy set read as glossy candy-plastic on a warm studio table 
   - [x] Full suite green; manual verification desktop + 393×659 touch: toggle visible at ≥44px, toggles Auto↔High, persists after reload, hot-updates DPR/shadows; Auto caps on stubbed low-memory/battery (use `deviceMemory=2` stub + `getBattery` mock), High lifts; PWA/tray guidance unaffected. — 264 tests green, quality.ts 100% coverage, gate 3,499.97/1,247.75; low-memory/battery stubs pinned by unit tests per user confirmation.
   - [x] Await user confirmation; record checkpoint SHA. — Confirmed 38f1e31
 
-## Phase 5 · Docs & Release Readiness [checkpoint: TBD]
+## Phase 5 · Docs & Release Readiness [checkpoint: 5134bd4]
 
-- [ ] Task: Update product docs `docs(polish): update product and README for toy polish`
-  - [ ] If `product.md` or `product-guidelines.md` guidance/render description drifts, update minimally (bevel/gloss + lighting + quality toggle allowance already permits the toggle — note it explicitly if missing). Update README toy description + PWA/payload bulleted details if needed; keep tone kid-safe, sentence-case.
+- [x] Task: Update product docs `docs(polish): update product and README for toy polish`
+  - [x] If `product.md` or `product-guidelines.md` guidance/render description drifts, update minimally (bevel/gloss + lighting + quality toggle allowance already permits the toggle — note it explicitly if missing). Update README toy description + PWA/payload bulleted details if needed; keep tone kid-safe, sentence-case. — product.md already permits quality toggle + reset (non-goals) and its glossy-toy language matches; product-guidelines.md lighting/gloss wording already matches the retune: no changes needed. README: intro now names bevel + candy-gloss on warm wood, compact guidance boost noted, Quality toggle documented.
 
-- [ ] Task: Final quality gate `chore(quality-gate): polish track final verification`
-  - [ ] Run `CI=true pnpm vitest run --coverage` (logic ≥80% on quality + helpers), `CI=true pnpm biome check .`, `tsc --noEmit`, `pnpm build`, `pnpm check:size` within ≤3,500 min / ≤1,250 gzip and delta ≤2.0/1.2 kB vs baseline at branch point; document final bundle in plan notes.
-  - [ ] Full manual protocol desktop (1280×720) + touch (393×659): starter ready route, tray scroll, Splitter/Bumper placement + bounce, anti-jam nudge/recycle, guidance pulse/glow with new legibility, quality toggle, save/autosave, PWA offline, audio SFX; confirm 20-marble stream fluidity.
+- [x] Task: Final quality gate `chore(quality-gate): polish track final verification`
+  - [x] Run `CI=true pnpm vitest run --coverage` (logic ≥80% on quality + helpers), `CI=true pnpm biome check .`, `tsc --noEmit`, `pnpm build`, `pnpm check:size` within ≤3,500 min / ≤1,250 gzip and delta ≤2.0/1.2 kB vs baseline at branch point; document final bundle in plan notes. — biome clean; 265/265 tests; src/core 98.83% stmts / 97.36% branch (quality.ts 100%); tsc + build green; final bundle **3,499.97 kB min / 1,247.75 kB gzip** (budget 3,500/1,250), track delta ≈ +1.5 min / +0.5 gzip vs ~3,498.5 baseline — within ≤2.0/≤1.2 cap.
+  - [x] Full manual protocol desktop (1280×720) + touch (393×659): starter ready route, tray scroll, Splitter/Bumper placement + bounce, anti-jam nudge/recycle, guidance pulse/glow with new legibility, quality toggle, save/autosave, PWA offline, audio SFX; confirm 20-marble stream fluidity. — All checks passed per user confirmation.
 
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
-  - [ ] Present manual verification results + automated gate output; await explicit user confirmation that polish meets "proudly say play my game" bar.
-  - [ ] Record final phase checkpoint SHA in `plan.md`.
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - [x] Present manual verification results + automated gate output; await explicit user confirmation that polish meets "proudly say play my game" bar. — Confirmed by user.
+  - [x] Record final phase checkpoint SHA in `plan.md`. — Checkpoint 5134bd4.
 
