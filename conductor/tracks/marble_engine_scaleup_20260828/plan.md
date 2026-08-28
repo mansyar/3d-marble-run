@@ -31,11 +31,14 @@
 
 ## Phase 2 · Marble Pool (logic + integration) [checkpoint: TBD]
 
-### [ ] Task: Write failing tests for the marble pool
-- `src/sim/marblePool.test.ts` with a mocked Rapier world: acquire-from-pool
-  before create, release parks + resets transform/velocity like a fresh spawn,
-  pool never exceeds cap, clear drains, unknown-id release is a no-op.
-  Confirm RED.
+### [x] Task: Write failing tests for the marble pool `bf2ab10`
+- `tests/marblePool.test.ts` (repo convention: suites live in `tests/`, not
+  colocated as the plan draft suggested) with a mocked body/deps harness
+  standing in for the Rapier world: acquire-from-pool before create, release
+  parks + resets transform/velocity like a fresh spawn, pool never exceeds
+  cap, clear drains, unknown-id release is a no-op. Confirm RED.
+- Notes: RED confirmed — missing module `src/sim/marblePool`. 8 tests pin
+  the acquire/release/park/clear contract incl. maxParked overflow destroy.
 
 ### [ ] Task: Implement marble pool, wire into app.ts, commit
 - `src/sim/marblePool.ts` — shared `SphereGeometry` + `MeshPhysicalMaterial`,
