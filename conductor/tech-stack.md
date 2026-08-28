@@ -45,5 +45,6 @@ Web-first, zero-backend, fully offline. Every runtime media asset is procedurall
   +1.75 / +0.66 kB vs its 3,496.72 / 1,246.57 baseline, within the ≤1.8 / ≤1.2 kB
   per-track allowance). The app chunk remains dominated by Rapier's embedded WASM.
 - **Mobile rendering:** compact/touch viewports cap DPR at 1.5, disable antialiasing, and use 1024px shadows; desktop retains DPR 2 and 2048px shadows.
+- **Simulation capacity (2026-08-28, `marble_engine_scaleup_20260828`):** the marble population cap is tier-aware — 40 marbles on capped/touch tiers, 60 on desktop (`resolveMarbleCap`), applied at boot and re-resolved live when the quality preference changes; shrinking recycles the oldest marbles first. Marble meshes and rigid bodies are pooled (`src/sim/marblePool.ts`): released pairs park asleep offscreen and redeploy like fresh spawns instead of being destroyed. The continuous stream is paced by a frame-budget governor (`createFrameBudget`): sustained frame overage pauses only stream advancement, while manual drops always respond.
 - **Browser support:** current versions of Chrome, Edge, Firefox, Safari (desktop) · iOS Safari · Android Chrome
 - **Input parity:** every mouse interaction must have a touch equivalent from day one

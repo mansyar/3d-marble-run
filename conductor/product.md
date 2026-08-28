@@ -34,7 +34,7 @@ A browser-based 3D marble run builder where players snap together glossy toy-lik
 ## Success Criteria (V1)
 
 - Deployed at a shareable URL; loads fast on desktop *and* mobile browsers
-- ~15–20 simultaneous marbles at smooth framerates on a mid-range phone
+- ~40 simultaneous marbles at smooth framerates on a mid-range phone (60 on desktop); the continuous stream paces itself under sustained frame drops
 - A friend can build and run their first working contraption within minutes, unassisted
 - Feels polished enough to proudly say *"play my game"*
 
