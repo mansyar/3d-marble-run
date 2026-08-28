@@ -40,15 +40,21 @@
 - Notes: RED confirmed — missing module `src/sim/marblePool`. 8 tests pin
   the acquire/release/park/clear contract incl. maxParked overflow destroy.
 
-### [ ] Task: Implement marble pool, wire into app.ts, commit
-- `src/sim/marblePool.ts` — shared `SphereGeometry` + `MeshPhysicalMaterial`,
-  parked bodies reused via `acquire/release/clear`.
-- `app.ts` — spawn path goes through the pool; cap-shrink recycles
-  oldest-first via existing spawner recycle; quality-preference change
-  re-resolves the cap live. All pinned suites stay green (stream, timer,
-  stuck detector, goals, autosave). GREEN + coverage.
-- Commit `feat(sim): Pool marble meshes and colliders for 2× population`;
-  git note attached.
+### [x] Task: Implement marble pool, wire into app.ts, commit `e9a2a23`
+- `src/sim/marblePool.ts` — pure pool (`acquire/release/setMaxParked/clear`);
+  pairs park asleep 1000 m below origin with zeroed velocities and redeploy
+  like fresh spawns; overflow releases destroy; shared SphereGeometry/
+  MeshPhysicalMaterial stay in `pieces/marble.ts` (already singletons).
+- Pure additions (TDD): spawner `setMaxMarbles` (shrink recycles oldest-first,
+  returns recycled ids); `resolveTier` in `core/quality.ts`.
+- Wiring: `app.ts` spawn/remove paths go through the pool; frame-budget gate
+  pauses only the stream advance under sustained frame overage (manual
+  one-shot drops bypass); `scene.ts` exposes `resolveTier()`; quality toggle
+  `onModeChange` re-resolves the cap live (boot applies the tier cap before
+  the first frame).
+- Notes: suite 290/290 GREEN; tsc clean; Biome clean (121 files); coverage
+  98.34% stmts / 100% funcs. Shared geometry/material already pooled —
+  `createPair` composes them with a parked body, no renderer changes.
 
 ### [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 - Run full suite once; propose manual verification (desktop: 60-marble stream
