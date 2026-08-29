@@ -2,7 +2,7 @@
 
 Workflow note: per `conductor/workflow.md`, the per-cup tally is a **logic-bearing module** → TDD (Red → Green, ≥80% coverage). The floating label layer is **rendering/presentation glue** → verified through the manual verification protocol at the phase checkpoint.
 
-## Phase 1: Per-Cup Tally Logic (TDD)
+## Phase 1: Per-Cup Tally Logic (TDD) [checkpoint: 5914d1f]
 
 - [x] Task: Write failing tests for per-cup tally (TDD Red)
   (`d591dd8`) — `tests/goals.test.ts` extended with 3 cases: per-cup
@@ -19,7 +19,8 @@ Workflow note: per `conductor/workflow.md`, the per-cup tally is a **logic-beari
   in `src/app.ts` already iterates full `GoalEntry[]` objects that carry
   `goalPieceId`; the Phase 2 label layer consumes these entries directly, so a
   separate delta-publish seam would be speculative glue. No code change needed.
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+      `[checkpoint: 5914d1f]` — verification report attached to `5914d1f`
 
 ## Phase 2: Floating Counter Labels (visual glue — manual verification)
 
