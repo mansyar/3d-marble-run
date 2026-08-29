@@ -59,7 +59,18 @@ isolated into pure modules and built with TDD (Red → Green).
         out-of-bounds cleanup, stuck recycle, pool shrink); followed marble despawn →
         camera glides to next active marble, else eases back to free orbit; HUD button
         label stays in sync
-- [~] Task: Final quality gate — full
+- [x] Task: Final quality gate — full
       `CI=true pnpm biome check . && CI=true pnpm vitest run && pnpm build`,
       size-budget gate, desktop + touch manual sweep (Refer to workflow.md)
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+      — all gates passed (biome clean, 311/311 tests, bundleSizeGate 19/19,
+      build ok; sweep user-confirmed)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+      `[checkpoint: 5bff170]` — verification report attached to `5bff170`
+
+## Phase: Review Fixes
+
+- [x] Task: Apply review suggestions `d5a4748` — Rewrote the stale
+  `followedMarbleTarget` fallback comment: it is a safety net for removal paths
+  that bypass `removeMarble` (e.g. the immediate `setMaxMarbles` shrink), not a
+  pending Phase 3 replacement. Advisory notes (immediate-shrink glide bypass,
+  touch occlusion offset) recorded in the review report; no code change needed.
