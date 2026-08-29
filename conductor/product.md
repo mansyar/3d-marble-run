@@ -16,7 +16,8 @@ A browser-based 3D marble run builder where players snap together glossy toy-lik
 
 1. **Build** — pick pieces from a tray, snap them connector-to-connector into contraptions
 2. **Release** — place a Drop point above the track, drop one marble on demand, or flip on the continuous stream
-3. **Watch** — orbit freely or ride chase-cam as marbles tumble through your creation
+3. **Watch** — orbit freely, or tap any marble to ride it chase-cam through your
+   creation; mode switches and marble handoffs are eased, never hard cuts
 4. **Iterate** — goal-cup counters show how your build performs; tweak and grow it
 
 ## V1 Feature Set
@@ -26,7 +27,9 @@ A browser-based 3D marble run builder where players snap together glossy toy-lik
 - **Connector-snapping placement** with ghost preview and rotation; free-standing bumpers seat anywhere on the table or track
 - **Editing tools:** place · delete · move · undo/redo
 - **Spawning:** manual drop + continuous stream from the single active Drop point, toggleable only when a landing and goal route are ready
-- **Cameras:** free orbit (build/spectate) + chase cam (follow a marble)
+- **Cameras:** free orbit (build/spectate) + chase cam — tap any marble to ride it,
+  with eased fly-to transitions (instant under reduced motion) and automatic handoff
+  to the next marble when the followed one despawns
 - **Light metrics:** global goal counter, run timer
 - **Persistence:** version-2 IndexedDB auto-save + named save slots, with version-1 Start-gate migration (fully offline)
 - **Guidance:** advisory status for missing Drop points, missing landings, disconnected goals, and ready routes; ambient route guidance pulses unreachable connector pieces and glows ready landing-to-cup paths; lost marbles are cleaned up outside playable bounds

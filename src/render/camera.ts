@@ -16,6 +16,8 @@ export interface FreeOrbitCamera {
   reset(): void;
   dispose(): void;
   mode(): CameraMode;
+  /** Enters the given mode directly (free↔chase), starting an eased transition. */
+  setMode(nextMode: CameraMode): void;
   toggleMode(): CameraMode;
   update(elapsedMs: number, chaseTarget: CameraTarget | null): void;
 }
@@ -28,11 +30,27 @@ const ROTATE_SPEED = 0.008;
 const PAN_SPEED = 0.0025;
 const PINCH_ZOOM_SPEED = 0.004;
 const WHEEL_ZOOM_SPEED = 0.001;
+const MODE_TRANSITION_MS = 800;
 
 type MouseMode = "rotate" | "pan";
 
+type ModeTransition =
+  | { kind: "none" }
+  | { kind: "toChase"; elapsedMs: number; fromPos: Vector3; fromLook: Vector3 }
+  | { kind: "toFree"; elapsedMs: number; fromPos: Vector3; fromLook: Vector3 };
+
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
+}
+
+function easeInOutCubic(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+}
+
+function prefersReducedMotion(): boolean {
+  return typeof window !== "undefined" && typeof window.matchMedia === "function"
+    ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    : false;
 }
 
 /** Adds bounded orbit, zoom, and pan gestures to the main Three.js camera. */
@@ -52,10 +70,13 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
   let pinchDistance = 0;
   let pinchMidpoint = new Vector2();
   let cameraMode: CameraMode = "free";
+  let transition: ModeTransition = { kind: "none" };
   const chaseLookAt = new Vector3();
   const chasePosition = new Vector3();
   const chaseOffset = new Vector3(5, 4, 7);
-
+  const scratchLook = new Vector3();
+  const scratchDest = new Vector3();
+  const scratchSpherical = new Spherical();
   function applyCamera(): void {
     spherical.radius = clamp(spherical.radius, MIN_RADIUS, MAX_RADIUS);
     spherical.phi = clamp(spherical.phi, MIN_POLAR_ANGLE, MAX_POLAR_ANGLE);
@@ -143,7 +164,9 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
     } else {
       return;
     }
-    applyCamera();
+    // While easing back to the orbit framing, keep target/spherical in sync but
+    // let the transition own the camera transform (it lands on this framing).
+    if (transition.kind !== "toFree") applyCamera();
     event.preventDefault();
   }
 
@@ -161,7 +184,7 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
   function onWheel(event: WheelEvent): void {
     if (cameraMode === "chase" || isLocked?.()) return;
     zoom(event.deltaY * WHEEL_ZOOM_SPEED);
-    applyCamera();
+    if (transition.kind !== "toFree") applyCamera();
     event.preventDefault();
   }
 
@@ -172,6 +195,7 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
   function reset(): void {
     target.copy(resetTarget);
     spherical.copy(initialSpherical);
+    transition = { kind: "none" };
     applyCamera();
   }
 
@@ -180,12 +204,38 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
   }
 
   function setMode(nextMode: CameraMode): void {
-    if (cameraMode === nextMode) return;
+    if (cameraMode === nextMode) {
+      if (nextMode === "chase" && !prefersReducedMotion()) {
+        // Re-entering chase (follow-target handoff): glide from the current
+        // pose to the new marble instead of snapping.
+        transition = {
+          kind: "toChase",
+          elapsedMs: 0,
+          fromPos: camera.position.clone(),
+          fromLook: chaseLookAt.clone(),
+        };
+      }
+      return;
+    }
+    const fromPos = camera.position.clone();
+    const fromLook = (cameraMode === "chase" ? chaseLookAt : target).clone();
     cameraMode = nextMode;
     activePointers.clear();
     mouseMode = null;
     domElement.classList.remove("camera-orbiting");
-    if (cameraMode === "free") applyCamera();
+    if (prefersReducedMotion()) {
+      transition = { kind: "none" };
+      if (cameraMode === "free") applyCamera();
+      return;
+    }
+    if (cameraMode === "free") {
+      // Compute the destination orbit framing now; the flight eases toward it
+      // (and toward whatever framing the user dials in mid-flight).
+      applyCamera();
+      transition = { kind: "toFree", elapsedMs: 0, fromPos, fromLook };
+    } else {
+      transition = { kind: "toChase", elapsedMs: 0, fromPos, fromLook };
+    }
   }
 
   function toggleMode(): CameraMode {
@@ -193,13 +243,53 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
     return cameraMode;
   }
 
+  function advanceTransition(active: { elapsedMs: number }, elapsedMs: number): number {
+    active.elapsedMs += elapsedMs;
+    const t = Math.min(active.elapsedMs / MODE_TRANSITION_MS, 1);
+    if (t >= 1) transition = { kind: "none" };
+    return easeInOutCubic(t);
+  }
+
   function update(elapsedMs: number, targetPosition: CameraTarget | null): void {
-    if (cameraMode !== "chase" || !targetPosition) return;
-    chaseLookAt.set(targetPosition[0], targetPosition[1], targetPosition[2]);
-    chasePosition.copy(chaseLookAt).add(chaseOffset);
-    const blend = 1 - Math.exp(-Math.min(elapsedMs, 100) * 0.01);
-    camera.position.lerp(chasePosition, blend);
-    camera.lookAt(chaseLookAt);
+    if (cameraMode === "chase") {
+      if (!targetPosition) {
+        // Nothing to ride yet — arrive instantly rather than flying to nowhere.
+        transition = { kind: "none" };
+        return;
+      }
+      chaseLookAt.set(targetPosition[0], targetPosition[1], targetPosition[2]);
+      chasePosition.copy(chaseLookAt).add(chaseOffset);
+      if (transition.kind === "toChase") {
+        // Fly from the captured orbit framing to the (live) chase framing.
+        const { fromPos, fromLook } = transition;
+        const eased = advanceTransition(transition, elapsedMs);
+        camera.position.lerpVectors(fromPos, chasePosition, eased);
+        camera.lookAt(scratchLook.copy(fromLook).lerp(chaseLookAt, eased));
+        return;
+      }
+      const blend = 1 - Math.exp(-Math.min(elapsedMs, 100) * 0.01);
+      camera.position.lerp(chasePosition, blend);
+      camera.lookAt(chaseLookAt);
+      return;
+    }
+    if (transition.kind === "toFree") {
+      // Ease from the chase framing back to the current orbit framing. The
+      // destination is recomputed from the live orbit state so orbit/zoom
+      // input during the flight lands exactly where the user dialed in.
+      const { fromPos, fromLook } = transition;
+      const eased = advanceTransition(transition, elapsedMs);
+      const destination = scratchDest
+        .setFromSpherical(
+          scratchSpherical.set(
+            clamp(spherical.radius, MIN_RADIUS, MAX_RADIUS),
+            clamp(spherical.phi, MIN_POLAR_ANGLE, MAX_POLAR_ANGLE),
+            spherical.theta,
+          ),
+        )
+        .add(target);
+      camera.position.lerpVectors(fromPos, destination, eased);
+      camera.lookAt(scratchLook.copy(fromLook).lerp(target, eased));
+    }
   }
 
   function dispose(): void {
@@ -220,5 +310,5 @@ export function createFreeOrbitCamera(options: FreeOrbitCameraOptions): FreeOrbi
   domElement.addEventListener("contextmenu", onContextMenu);
 
   applyCamera();
-  return { reset, dispose, mode, toggleMode, update };
+  return { reset, dispose, mode, setMode, toggleMode, update };
 }

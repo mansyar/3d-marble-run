@@ -1,4 +1,5 @@
 import { ColliderDesc, RigidBodyDesc, type World } from "@dimforge/rapier3d-compat";
+import { type Mesh, Raycaster, Vector2 } from "three";
 import { createAudioEngine } from "./audio/engine";
 import { createSoundPreferences } from "./audio/preferences";
 import { createWebAudioSynth } from "./audio/synth";
@@ -14,11 +15,13 @@ import { type CameraTarget, createFreeOrbitCamera, type FreeOrbitCamera } from "
 import { createDropPointGuide, type DropPointGuide } from "./render/dropPointGuide";
 import { createGuidanceRenderer, type GuidanceRenderer } from "./render/guidance";
 import { initScene } from "./render/scene";
+import { createTapClassifier } from "./render/tapGesture";
 import {
   createDropPointSpawnerAdvance,
   createDropPointSpawnerDrop,
   type PositionedDropPointMarbleSpawn,
 } from "./sim/dropPointSpawner";
+import { resolveFollowTarget } from "./sim/followTarget";
 import { createGoalTracker, type MarblePosition } from "./sim/goals";
 import type { LandingResult } from "./sim/landing";
 import { createMarbleImpactTracker, type MarbleVelocitySample } from "./sim/marbleImpact";
@@ -154,6 +157,19 @@ function removeMarble(id: number): void {
   handle.scene.remove(live.mesh);
   marblePool.release(live);
   liveMarbles.delete(id);
+  // Follow-target handoff: all four removal paths (goal entry, out-of-bounds
+  // cleanup, stuck recycle, pool shrink) funnel through here.
+  if (id === followedMarbleId) {
+    const next = resolveFollowTarget(followedMarbleId, spawner.state().activeIds, [id]);
+    if (next !== null) {
+      followedMarbleId = next;
+      cameraController?.setMode("chase"); // glide to the next marble
+    } else {
+      followedMarbleId = null;
+      cameraController?.setMode("free"); // ease back to the orbit framing
+      simulationControls.setCameraMode("free");
+    }
+  }
 }
 
 function applySpawnResult(result: ReturnType<typeof createDropPointSpawnerDrop>): void {
@@ -208,6 +224,21 @@ function latestMarbleTarget(alpha: number): CameraTarget | null {
     return interpolatedPosition(live, alpha);
   }
   return null;
+}
+
+/** Marble the chase cam is pinned to (tap-to-ride); null = follow newest spawn. */
+let followedMarbleId: number | null = null;
+
+function followedMarbleTarget(alpha: number): CameraTarget | null {
+  if (followedMarbleId !== null) {
+    const live = liveMarbles.get(followedMarbleId);
+    if (live) return interpolatedPosition(live, alpha);
+    // Safety net: handoff is normally resolved at removal time (removeMarble),
+    // but a bypass route (e.g. the immediate setMaxMarbles shrink) can drop the
+    // id from activeIds without gliding — keep spectating the newest marble.
+    followedMarbleId = null;
+  }
+  return latestMarbleTarget(alpha);
 }
 
 function detectGoalEntries(): void {
@@ -306,7 +337,7 @@ const handle = initScene(app, (elapsedMs) => {
   cleanupOutOfBoundsMarbles();
   detectGoalEntries();
   simulationControls.setTimerMs(spawner.state().timerMs);
-  cameraController?.update(elapsedMs, latestMarbleTarget(alpha));
+  cameraController?.update(elapsedMs, followedMarbleTarget(alpha));
 });
 
 // Correct the provisional boot cap with the real device tier before the
@@ -542,6 +573,7 @@ cameraController = createFreeOrbitCamera({
 });
 
 function resetSimulationState(): void {
+  followedMarbleId = null;
   const { removedIds } = spawner.reset();
   for (const id of removedIds) removeMarble(id);
   goalTracker.reset();
@@ -576,7 +608,11 @@ const simulationControls = createSimulationControls(topHud, {
     }
     return spawner.toggleContinuous();
   },
-  onToggleCamera: () => cameraController?.toggleMode() ?? "free",
+  onToggleCamera: () => {
+    const nextMode = cameraController?.toggleMode() ?? "free";
+    if (nextMode === "free") followedMarbleId = null;
+    return nextMode;
+  },
   onReset: resetSimulationState,
   onUndo: undoEdit,
   onRedo: redoEdit,
@@ -586,6 +622,77 @@ const simulationControls = createSimulationControls(topHud, {
 refreshEditHistory = () => {
   simulationControls.setEditHistory(history.canUndo(), history.canRedo());
 };
+
+// --- Tap-a-marble-to-ride ---------------------------------------------------
+// Pure tap classification (see tapGesture.ts) + pointer→raycast glue: in free
+// mode, a tap on an active marble pins the chase cam to that marble. Drags,
+// pinches, long-presses, and placement-locked pointers never trigger it.
+
+const tapClassifier = createTapClassifier();
+const marbleRaycaster = new Raycaster();
+const marbleNdc = new Vector2();
+const canvasElement = handle.renderer.domElement;
+
+function placementLocked(): boolean {
+  return placement.activeTypeId !== null || dropPointPlacement.active;
+}
+
+function marbleIdAt(clientX: number, clientY: number): number | null {
+  const rect = canvasElement.getBoundingClientRect();
+  if (rect.width <= 0 || rect.height <= 0) return null;
+  marbleNdc.set(
+    ((clientX - rect.left) / rect.width) * 2 - 1,
+    -((clientY - rect.top) / rect.height) * 2 + 1,
+  );
+  marbleRaycaster.setFromCamera(marbleNdc, handle.camera);
+  const meshes: Mesh[] = [];
+  for (const live of liveMarbles.values()) meshes.push(live.mesh);
+  const hits = marbleRaycaster.intersectObjects(meshes, false);
+  if (hits.length === 0) return null;
+  const hitMesh = hits[0].object;
+  for (const [id, live] of liveMarbles) {
+    if (live.mesh === hitMesh) return id;
+  }
+  return null;
+}
+
+function rideMarble(id: number): void {
+  followedMarbleId = id;
+  cameraController?.setMode("chase");
+  simulationControls.setCameraMode("chase");
+}
+
+canvasElement.addEventListener("pointerdown", (event) => {
+  if (cameraController?.mode() !== "free" || placementLocked()) return;
+  if (event.pointerType === "mouse" && event.button !== 0) return;
+  tapClassifier.begin({
+    pointerId: event.pointerId,
+    x: event.clientX,
+    y: event.clientY,
+    timeMs: event.timeStamp,
+  });
+});
+
+canvasElement.addEventListener("pointerup", (event) => {
+  if (event.pointerType === "mouse" && event.button !== 0) return;
+  if (cameraController?.mode() !== "free" || placementLocked()) {
+    tapClassifier.cancel(event.pointerId);
+    return;
+  }
+  const isTap = tapClassifier.end({
+    pointerId: event.pointerId,
+    x: event.clientX,
+    y: event.clientY,
+    timeMs: event.timeStamp,
+  });
+  if (!isTap) return;
+  const id = marbleIdAt(event.clientX, event.clientY);
+  if (id !== null) rideMarble(id);
+});
+
+canvasElement.addEventListener("pointercancel", (event) => {
+  tapClassifier.cancel(event.pointerId);
+});
 
 simulationControls.setStreamEnabled(spawner.isContinuous());
 simulationControls.setGoalCount(goalTracker.count());
