@@ -50,4 +50,9 @@ Workflow note: per `conductor/workflow.md`, the per-cup tally is a **logic-beari
 
 ## Phase: Review Fixes
 
-- [ ] Task: Apply review suggestions (appended by `conductor-review` if findings arise)
+- [x] Task: Apply review suggestions `5e6314f` — Removed the never-called
+  `dispose()` (dead API; counters live for the page lifetime) and the write-only
+  `CupChip.count` field; the chips map now holds `HTMLDivElement`s directly.
+  Advisory note: per-frame `getWorldPort` allocation is consistent with the
+  existing `detectGoalEntries()` pattern — no change needed. Gates re-run: biome
+  clean, tsc clean, 314/314 tests.
