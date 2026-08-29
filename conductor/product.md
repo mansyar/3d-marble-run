@@ -30,7 +30,8 @@ A browser-based 3D marble run builder where players snap together glossy toy-lik
 - **Cameras:** free orbit (build/spectate) + chase cam — tap any marble to ride it,
   with eased fly-to transitions (instant under reduced motion) and automatic handoff
   to the next marble when the followed one despawns
-- **Light metrics:** global goal counter, run timer
+- **Light metrics:** global goal counter, per-goal-cup counters (session-scoped,
+  reset with the table), run timer
 - **Persistence:** version-2 IndexedDB auto-save + named save slots, with version-1 Start-gate migration (fully offline)
 - **Guidance:** advisory status for missing Drop points, missing landings, disconnected goals, and ready routes; ambient route guidance pulses unreachable connector pieces and glows ready landing-to-cup paths; lost marbles are cleaned up outside playable bounds
 
