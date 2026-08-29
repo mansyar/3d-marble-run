@@ -233,8 +233,9 @@ function followedMarbleTarget(alpha: number): CameraTarget | null {
   if (followedMarbleId !== null) {
     const live = liveMarbles.get(followedMarbleId);
     if (live) return interpolatedPosition(live, alpha);
-    // Followed marble despawned — fall back to the newest active marble.
-    // (Phase 3 replaces this with a proper eased handoff.)
+    // Safety net: handoff is normally resolved at removal time (removeMarble),
+    // but a bypass route (e.g. the immediate setMaxMarbles shrink) can drop the
+    // id from activeIds without gliding — keep spectating the newest marble.
     followedMarbleId = null;
   }
   return latestMarbleTarget(alpha);
