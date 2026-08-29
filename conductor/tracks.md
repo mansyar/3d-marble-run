@@ -21,3 +21,4 @@
 - [x] **Track: Marble Engine Scale-Up — 2× Population with Adaptive Stream Pacing** *Link: [./archive/marble_engine_scaleup_20260828/index.md](./archive/marble_engine_scaleup_20260828/index.md)*
 - [x] **Track: Cut v0.4.0 Release** *Link: [./archive/release_v040_20260828/index.md](./archive/release_v040_20260828/index.md)*
 - [x] **Track: Chase-Cam Immersion Polish — Eased Transitions, Tap-to-Ride, Handoff** *Link: [./archive/chase_cam_polish_20260829/index.md](./archive/chase_cam_polish_20260829/index.md)*
+- [ ] **Track: Per-Cup Goal Counters** *Link: [./tracks/per_cup_goal_counters_20260829/index.md](./tracks/per_cup_goal_counters_20260829/index.md)*
