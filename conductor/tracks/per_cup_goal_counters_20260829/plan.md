@@ -14,8 +14,11 @@ Workflow note: per `conductor/workflow.md`, the per-cup tally is a **logic-beari
   entry; `countFor(id)` / `counts()` snapshot added to `GoalTracker`; reset clears
   tallies. 100% statements/branches/functions/lines on `goals.ts`; full suite green.
   - [ ] Extend `src/sim/goals.ts` `GoalTracker` with a per-cup count map keyed by goal piece id; keep `GoalEntry` shape untouched; verify ≥80% coverage on changed logic
-- [ ] Task: Wire per-cup tallies into the scoring path
-  - [ ] `src/app.ts`: on `GoalTracker.update()` entries, publish per-cup deltas to the label layer (thin glue only; label rendering lands in Phase 2)
+- [x] Task: Wire per-cup tallies into the scoring path
+  — Folded into Phase 2 wiring (in-flight refinement): `detectGoalEntries()`
+  in `src/app.ts` already iterates full `GoalEntry[]` objects that carry
+  `goalPieceId`; the Phase 2 label layer consumes these entries directly, so a
+  separate delta-publish seam would be speculative glue. No code change needed.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2: Floating Counter Labels (visual glue — manual verification)
