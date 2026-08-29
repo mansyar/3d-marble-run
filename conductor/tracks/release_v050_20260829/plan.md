@@ -8,13 +8,20 @@ on `chore/release-v050` and reach `master` through a PR (current CI-gating
 policy); the tag is pushed only after merge and smoke pass. pwsh note: use
 `$env:CI='true'` instead of bash-style `CI=true` prefixes.
 
-## Phase 1 · Baseline Verification
+## Phase 1 · Baseline Verification [checkpoint: 5244e8d]
 
-- [ ] Task: Establish pre-release baseline on `chore/release-v050`
-  - [ ] Confirm clean tree vs `origin/master` branch point `9ffa8d0`
-  - [ ] Gates: `vitest run --coverage`, `biome check .`, `tsc --noEmit`
-  - [ ] Baseline bundle via `pnpm build` + `pnpm check:size` vs 3,600/1,260 budget
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Establish pre-release baseline on `chore/release-v050`
+  - [x] Confirmed clean tree vs `origin/master` branch point `9ffa8d0` (scaffold
+        commit `0386dbf`, registry mark `5244e8d`)
+  - [x] Gates: 314/314 vitest (coverage 88.93% stmts / 83% branch / 93.48%
+        funcs / 91.56% lines); biome clean (130 files); tsc strict clean
+  - [x] Baseline bundle: TOTAL 3,507.17 kB min / 1,250.12 kB gzip vs budget
+        3,600 / 1,260 — within budget (+4.82 kB min, +1.52 kB gzip vs the
+        v0.4.0 baseline of 3,502.35 / 1,248.60; accounted for by the five
+        merged tracks, incl. per-cup counters)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+      `[checkpoint: 5244e8d]` — automated-only phase (no app-code changes);
+      all gates green, report above
 
 ## Phase 2 · Version Bump & Release Build Smoke Test
 
