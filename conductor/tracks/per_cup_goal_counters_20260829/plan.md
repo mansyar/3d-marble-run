@@ -22,7 +22,7 @@ Workflow note: per `conductor/workflow.md`, the per-cup tally is a **logic-beari
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
       `[checkpoint: 5914d1f]` — verification report attached to `5914d1f`
 
-## Phase 2: Floating Counter Labels (visual glue — manual verification)
+## Phase 2: Floating Counter Labels (visual glue — manual verification) [checkpoint: 2c32a29]
 
 - [x] Task: Implement cup label overlay
   (`b7ef0ce`) — `src/render/cupCounters.ts`: pooled HTML chip per goal cup,
@@ -38,7 +38,8 @@ Workflow note: per `conductor/workflow.md`, the per-cup tally is a **logic-beari
   `score(goalPieceId, countFor(goalPieceId))`; `resetSimulationState()` zeroes
   chips (covers table reset and save-slot load, which calls it before
   `replaceGraph`). Global HUD counter untouched.
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+      `[checkpoint: 2c32a29]` — verification report attached to `2c32a29`
 
 ## Phase 3: Final Quality Gate
 
