@@ -4,7 +4,10 @@ Workflow note: per `conductor/workflow.md`, the per-cup tally is a **logic-beari
 
 ## Phase 1: Per-Cup Tally Logic (TDD)
 
-- [ ] Task: Write failing tests for per-cup tally (TDD Red)
+- [x] Task: Write failing tests for per-cup tally (TDD Red)
+  (`d591dd8`) — `tests/goals.test.ts` extended with 3 cases: per-cup
+  tallies + unknown-cup zero, reset clearing tallies, one-time-per-marble across
+  repeated updates. Confirmed Red before implementation (3 failed / 3 passed).
   - [ ] Extend `tests/goals.test.ts`: `countFor(goalPieceId)` / `counts()` snapshot reflect per-cup entries; one-time-per-marble semantics unchanged; global `count()` remains the sum; `reset()` clears per-cup tallies
 - [ ] Task: Implement per-cup tally to pass tests (TDD Green)
   - [ ] Extend `src/sim/goals.ts` `GoalTracker` with a per-cup count map keyed by goal piece id; keep `GoalEntry` shape untouched; verify ≥80% coverage on changed logic
