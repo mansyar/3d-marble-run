@@ -23,16 +23,25 @@ policy); the tag is pushed only after merge and smoke pass. pwsh note: use
       `[checkpoint: 5244e8d]` — automated-only phase (no app-code changes);
       all gates green, report above
 
-## Phase 2 · Version Bump & Release Build Smoke Test
+## Phase 2 · Version Bump & Release Build Smoke Test [checkpoint: a948d92]
 
-- [ ] Task: Cut version bump to `0.5.0`
-  - [ ] `pnpm version minor --no-git-tag-version` → 0.4.0 → 0.5.0; bump commit;
-        annotated tag `v0.5.0` created locally, kept unpushed until smoke passes
-- [ ] Task: Rebuild production bundle & recheck payload budget; `pnpm check:release v0.5.0`
-- [ ] Task: Desktop smoke test (1280×720, production preview) — core suite +
+- [x] Task: Cut version bump to `0.5.0`
+  - [x] `pnpm version minor --no-git-tag-version` → 0.4.0 → 0.5.0; bump commit
+        `a948d92` ("0.5.0"); annotated tag `v0.5.0` created locally, kept
+        unpushed until smoke passes
+- [x] Task: Rebuild production bundle & recheck payload budget; `pnpm check:release v0.5.0`
+  - [x] Post-bump build: TOTAL 3,507.17 kB min / 1,250.12 kB gzip — identical
+        to baseline (zero drift), within 3,600 / 1,260 budget
+  - [x] `pnpm check:release v0.5.0`: tag matches package.json 0.5.0
+- [x] Task: Desktop smoke test (1280×720, production preview) — core suite +
         v0.5.0 regression checks (chase cam, per-cup counters); About modal shows v0.5.0
-- [ ] Task: Touch smoke test (~393×659 emulated)
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  — user-verified 2026-08-29 at http://localhost:4173/ (production preview,
+        tag unpushed): all suites passed; About modal reads `v0.5.0`
+- [x] Task: Touch smoke test (~393×659 emulated) — user-confirmed: same
+        journeys; tray ergonomics ok; chips don't block building; no page
+        scroll or console errors
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+      `[checkpoint: a948d92]` — verification report attached to `a948d92`
 
 ## Phase 3 · Release Tag, Pipeline & Live Verification
 
