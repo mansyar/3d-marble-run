@@ -22,4 +22,4 @@
 - [x] **Track: Cut v0.4.0 Release** *Link: [./archive/release_v040_20260828/index.md](./archive/release_v040_20260828/index.md)*
 - [x] **Track: Chase-Cam Immersion Polish — Eased Transitions, Tap-to-Ride, Handoff** *Link: [./archive/chase_cam_polish_20260829/index.md](./archive/chase_cam_polish_20260829/index.md)*
 - [x] **Track: Per-Cup Goal Counters** *Link: [./archive/per_cup_goal_counters_20260829/index.md](./archive/per_cup_goal_counters_20260829/index.md)*
-- [x] **Track: Cut v0.5.0 Release** *Link: [./tracks/release_v050_20260829/index.md](./tracks/release_v050_20260829/index.md)*
+- [x] **Track: Cut v0.5.0 Release** *Link: [./archive/release_v050_20260829/index.md](./archive/release_v050_20260829/index.md)*
