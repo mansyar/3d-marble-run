@@ -2,8 +2,9 @@
 
 - **ID:** `per_cup_goal_counters_20260829`
 - **Type:** Feature
-- **Status:** New
+- **Status:** Complete
 - **Branch:** `feat/per_cup_goal_counters_20260829`
+- **Final checkpoint:** `2c32a29`
 
 ## Documents
 
