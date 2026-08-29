@@ -24,10 +24,20 @@ Workflow note: per `conductor/workflow.md`, the per-cup tally is a **logic-beari
 
 ## Phase 2: Floating Counter Labels (visual glue — manual verification)
 
-- [ ] Task: Implement cup label overlay
-  - [ ] New `src/render/cupCounters.ts`: one pooled HTML chip per placed goal cup, positioned each frame by projecting the cup inlet (`getWorldPort(goal-cup, inlet)`) with the active camera; hide when behind camera; `pointer-events: none`; toy-styled, kid-readable digits; punch/pop animation on increment, instant under `prefers-reduced-motion: reduce`
-- [ ] Task: Wire labels to piece lifecycle and scoring
-  - [ ] `src/app.ts`: create/remove/move chips as cups are placed, moved, deleted, undone/redone; new cups start at 0; feed Phase 1 per-cup deltas to drive increments; reset all chips on table reset and save load; global HUD counter untouched
+- [x] Task: Implement cup label overlay
+  (`b7ef0ce`) — `src/render/cupCounters.ts`: pooled HTML chip per goal cup,
+  projected from the cup inlet (+0.45 lift) each frame; hidden when behind the
+  camera; `pointer-events: none`; toy-styled chip (goal-pop palette); punch
+  animation on increment, disabled under `prefers-reduced-motion` (CSS + JS
+  guard). Chip lifecycle handled by per-frame diff in `update()` — placement,
+  deletion, moves, undo/redo, and save loads stay consistent without extra hooks.
+- [x] Task: Wire labels to piece lifecycle and scoring
+  (`2c32a29`) — `src/app.ts`: per-frame `cupCounters.update(graph.pieces)`
+  in the render callback (declared before `initScene` per the
+  `dropPointGuide` optional-chaining pattern); `detectGoalEntries()` feeds
+  `score(goalPieceId, countFor(goalPieceId))`; `resetSimulationState()` zeroes
+  chips (covers table reset and save-slot load, which calls it before
+  `replaceGraph`). Global HUD counter untouched.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 3: Final Quality Gate
