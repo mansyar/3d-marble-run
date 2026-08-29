@@ -43,7 +43,10 @@ Workflow note: per `conductor/workflow.md`, the per-cup tally is a **logic-beari
 
 ## Phase 3: Final Quality Gate
 
-- [ ] Task: Full `CI=true pnpm biome check . && CI=true pnpm vitest run && pnpm build`, size-budget gate, desktop + touch manual sweep (Refer to workflow.md)
+- [x] Task: Full `CI=true pnpm biome check . && CI=true pnpm vitest run && pnpm build`, size-budget gate, desktop + touch manual sweep (Refer to workflow.md)
+      — all gates passed (biome clean, 314/314 tests, build ok, payload
+      3,507.28 kB min / 1,250.16 kB gzip within 3,600/1,260 budget; desktop +
+      touch sweep user-confirmed, incl. reduced-motion and reset/load zeroing).
 
 ## Phase: Review Fixes
 
