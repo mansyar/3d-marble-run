@@ -1,0 +1,10 @@
+{
+  "id": "per_cup_goal_counters_20260829",
+  "title": "Per-Cup Goal Counters",
+  "type": "feature",
+  "status": "complete",
+  "branch": "feat/per_cup_goal_counters_20260829",
+  "createdAt": "2026-08-29T00:00:00.000Z",
+  "updatedAt": "2026-08-29T00:00:00.000Z",
+  "finalCheckpoint": "2c32a29"
+}

@@ -16,6 +16,10 @@ export interface GoalTracker {
   /** Detects new cup entries from the current live marble positions. */
   update(pieces: Iterable<PlacedPiece>, marbles: readonly MarblePosition[]): GoalEntry[];
   count(): number;
+  /** Score tallied for one goal cup, keyed by its piece id. */
+  countFor(goalPieceId: string): number;
+  /** Snapshot of every cup tally keyed by goal piece id. */
+  counts(): Record<string, number>;
   reset(): void;
 }
 
@@ -39,6 +43,7 @@ function isInsideInlet(marble: MarblePosition, inlet: Vec3): boolean {
 /** Tracks one-time marble entries into every placed goal cup. */
 export function createGoalTracker(): GoalTracker {
   const countedMarbles = new Set<number>();
+  const perCup = new Map<string, number>();
   let total = 0;
 
   return {
@@ -53,6 +58,7 @@ export function createGoalTracker(): GoalTracker {
           if (!isInsideInlet(marble, inlet)) continue;
           countedMarbles.add(marble.id);
           total += 1;
+          perCup.set(goal.id, (perCup.get(goal.id) ?? 0) + 1);
           entries.push({ marbleId: marble.id, goalPieceId: goal.id, celebration: "pop" });
           break;
         }
@@ -64,8 +70,17 @@ export function createGoalTracker(): GoalTracker {
       return total;
     },
 
+    countFor(goalPieceId: string): number {
+      return perCup.get(goalPieceId) ?? 0;
+    },
+
+    counts(): Record<string, number> {
+      return Object.fromEntries(perCup);
+    },
+
     reset(): void {
       countedMarbles.clear();
+      perCup.clear();
       total = 0;
     },
   };

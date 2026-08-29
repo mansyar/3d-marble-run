@@ -12,6 +12,7 @@ import { type SpawnedPiece, spawnStaticPiece } from "./pieces/builders";
 import { createMarbleMesh, MARBLE_RADIUS } from "./pieces/marble";
 import { channelPath, type PieceTypeId, type Placement } from "./pieces/registry";
 import { type CameraTarget, createFreeOrbitCamera, type FreeOrbitCamera } from "./render/camera";
+import { type CupCounters, createCupCounters } from "./render/cupCounters";
 import { createDropPointGuide, type DropPointGuide } from "./render/dropPointGuide";
 import { createGuidanceRenderer, type GuidanceRenderer } from "./render/guidance";
 import { initScene } from "./render/scene";
@@ -245,6 +246,7 @@ function detectGoalEntries(): void {
   for (const entry of goalTracker.update(graph.pieces.values(), currentMarblePositions())) {
     if (spawner.remove(entry.marbleId)) removeMarble(entry.marbleId);
     simulationControls.setGoalCount(goalTracker.count());
+    cupCounters?.score(entry.goalPieceId, goalTracker.countFor(entry.goalPieceId));
     if (entry.celebration === "pop") {
       sound.play("goal");
       simulationControls.showGoalPop();
@@ -301,10 +303,12 @@ function cleanupStuckMarbles(nowMs: number): void {
 let cameraController: FreeOrbitCamera | null = null;
 let dropPointGuide: DropPointGuide | null = null;
 let guidance: GuidanceRenderer | null = null;
+let cupCounters: CupCounters | null = null;
 
 const handle = initScene(app, (elapsedMs) => {
   dropPointGuide?.refresh();
   guidance?.tick(elapsedMs);
+  cupCounters?.update(graph.pieces.values());
   frameBudget.record(elapsedMs);
   // Adaptive stream pacing: under sustained frame-budget pressure the stream
   // holds (no spawns/recycles) until sustained headroom returns. Manual
@@ -414,6 +418,8 @@ function refreshDropPointHealth(): void {
 }
 
 syncScene();
+
+cupCounters = createCupCounters({ container: app, camera: handle.camera });
 
 guidance = createGuidanceRenderer({
   scene: handle.scene,
@@ -577,6 +583,7 @@ function resetSimulationState(): void {
   const { removedIds } = spawner.reset();
   for (const id of removedIds) removeMarble(id);
   goalTracker.reset();
+  cupCounters?.reset();
   marbleImpacts.reset();
   stuckDetector.reset();
   stuckNudgedAt.clear();
