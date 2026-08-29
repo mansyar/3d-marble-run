@@ -2,9 +2,9 @@
   "id": "release_v050_20260829",
   "title": "Cut v0.5.0 Release",
   "type": "chore",
-  "status": "new",
+  "status": "complete",
   "branch": "chore/release-v050",
   "createdAt": "2026-08-29T00:00:00.000Z",
   "updatedAt": "2026-08-29T00:00:00.000Z",
-  "finalCheckpoint": null
+  "finalCheckpoint": "a948d92"
 }

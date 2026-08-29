@@ -45,11 +45,27 @@ policy); the tag is pushed only after merge and smoke pass. pwsh note: use
 
 ## Phase 3 · Release Tag, Pipeline & Live Verification
 
-- [ ] Task: Merge PR, push release tag, monitor pipeline (watch the run whose
+- [x] Task: Merge PR, push release tag, monitor pipeline (watch the run whose
       `headBranch` = `v0.5.0`, not the previous release run)
-- [ ] Task: Verify live artifacts (Pages, GitHub Release notes, GHCR tags,
+  - PR #14 CI green (26s); merged with a merge commit; ancestry of bump commit
+        `a948d92` confirmed in master before tag push; tag `v0.5.0` pushed
+        post-merge; branch cleanup (local + remote) done
+  - Release run `33224477644` watched end-to-end to success: validate+build,
+        GHCR publish, GitHub Release, Pages build+deploy, Coolify trigger —
+        all 6 jobs success. Only annotations: pre-existing Node 20
+        deprecation warnings on pinned actions — non-blocking
+- [x] Task: Verify live artifacts (Pages, GitHub Release notes, GHCR tags,
       About modal version; README runbook drift check)
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+  - Pages live: HTTP 200 under repository base path; entry
+        `index-DOKVMCKO.js` → async `app-BBe5SXa4.js` (3,474,768 bytes) with
+        embedded version `0.5.0`
+  - GitHub Release `v0.5.0` published 2026-08-29 00:46 UTC — draft=false,
+        prerelease=false, generated notes spanning v0.4.0…v0.5.0
+  - GHCR manifests present: `0.5.0` and `latest` (verified via manifest inspect)
+  - README runbook re-checked — flow identical to v0.4.0 (incl. the
+        headBranch watch filter note), no drift
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+      — verification evidence inline above; pipeline run `33224477644`
 
 ## Phase: Review Fixes
 
